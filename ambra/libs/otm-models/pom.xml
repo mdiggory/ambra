@@ -1,0 +1,39 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.ambraproject</groupId>
+  <artifactId>ambra-otm-models</artifactId>
+  <version>2.2.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>Old Ambra Models</name>
+
+  <parent>
+    <groupId>org.ambraproject</groupId>
+    <artifactId>ambra-libs</artifactId>
+    <version>2.2.1-SNAPSHOT</version>
+  </parent>
+  
+  <dependencies>
+    <!-- We need fedora and topaz as dependencies to compile all the annotations
+      and DetachedCriteria in Aggregation.  Leaving those until we refactor all the models -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>fedora-blobstore</artifactId>
+      <version>1.7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.topazproject</groupId>
+      <artifactId>otm</artifactId>
+      <version>0.9.5.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <classifier>jdk15</classifier>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <defaultGoal>install</defaultGoal>
+  </build>
+</project>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ $HeadURL:
+  ~ $Id:
+  ~
+  ~ Copyright (c) 2006-2011 by Public Library of Science
+  ~
+  ~ http://plos.org
+  ~ http://ambraproject.org
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.topazproject.ambra.models" auto-import="false">
+  <class name="Reply" table="Reply">
+    <id name="id" type="URIType" column="replyUri" length="255">
+      <generator class="org.ambraproject.hibernate.AmbraIdGenerator" />
+    </id>
+
+    <discriminator type="boolean" column="isThread"/>
+    <!--Annotea Properties-->
+    <property name="creator" type="string" column="creator"/>
+    <property name="anonymousCreator" type="string" column="anonymousCreator"/>
+    <property name="created" type="timestamp" column="creationDate"/>
+    <property name="title" type="string" column="title"/>
+    <property name="mediator" type="string" column="mediator"/>
+    <property name="state" type="int" column="state"/>
+    <property name="type" type="string" column="type" />
+    <property name="webType" type="string" column="webType" />
+    <many-to-one name="body" class="org.topazproject.ambra.models.ReplyBlob" column="body" cascade="all"/>
+
+    <property name="root" type="string" column="root"/>
+    <property name="inReplyTo" type="string" column="inReplyTo"/>
+
+    <subclass name="org.topazproject.ambra.models.ReplyThread" discriminator-value="true">
+      <!--Cascade is off as all replies will copied anyway -->
+      <list name="replies" table="RepliesJoinTable" cascade="none">
+        <key column="originalThreadUri" />
+        <list-index column="sortOrder" />
+        <many-to-many class="ReplyThread" column="replyThreadUri" />
+      </list>
+    </subclass>
+
+  </class>
+</hibernate-mapping>

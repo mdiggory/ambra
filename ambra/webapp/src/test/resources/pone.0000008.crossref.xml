@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doi_batch xmlns="http://www.crossref.org/schema/3.0.3"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           version="3.0.3"
+           xsi:schemaLocation="http://www.crossref.org/schema/3.0.3 http://www.crossref.org/schema/3.0.3/crossref3.0.3.xsd">
+   <head>
+      <doi_batch_id>10.1371/journal.pone.0000008</doi_batch_id>
+      <timestamp>20110921115047</timestamp>
+      <depositor>
+         <name>Public Library of Science</name>
+         <email_address>dev@ambraproject.org</email_address>
+      </depositor>
+      <registrant>Public Library of Science</registrant>
+   </head>
+   <body>
+      <journal>
+         <journal_metadata language="en">
+            <full_title>PLoS One</full_title>
+            <abbrev_title>PLoS ONE</abbrev_title>
+            <issn media_type="electronic">1932-6203</issn>
+         </journal_metadata>
+         <journal_issue>
+            <publication_date media_type="online">
+               <month>11</month>
+               <day/>
+               <year>2006</year>
+            </publication_date>
+            <journal_volume>
+               <volume>1</volume>
+            </journal_volume>
+            <issue>1</issue>
+         </journal_issue>
+         <journal_article publication_type="full_text">
+            <titles>
+               <title>Molecular Adaptation during Adaptive Radiation in the Hawaiian Endemic Genus Schiedea</title>
+            </titles>
+            <contributors>
+               <person_name contributor_role="author" sequence="first">
+                  <given_name>Maxim V.</given_name>
+                  <surname>Kapralov</surname>
+               </person_name>
+               <person_name contributor_role="author" sequence="additional">
+                  <given_name>Dmitry A.</given_name>
+                  <surname>Filatov</surname>
+               </person_name>
+               <person_name contributor_role="editor" sequence="first">
+                  <given_name>Konrad</given_name>
+                  <surname>Scheffler</surname>
+               </person_name>
+            </contributors>
+            <publication_date media_type="online">
+               <month>11</month>
+               <day/>
+               <year>2006</year>
+            </publication_date>
+            <pages>
+               <first_page/>
+            </pages>
+            <publisher_item>
+               <item_number>10.1371/journal.pone.0000008</item_number>
+            </publisher_item>
+            <doi_data>
+               <doi>10.1371/journal.pone.0000008</doi>
+               <timestamp>20110921115047</timestamp>
+               <resource>http://dx.plos.org/ambra-doi-resolver/10.1371/10.1371/journal.pone.0000008</resource>
+            </doi_data>
+            <component_list/>
+         </journal_article>
+      </journal>
+   </body>
+</doi_batch>

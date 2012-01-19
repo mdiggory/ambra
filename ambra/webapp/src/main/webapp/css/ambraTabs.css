@@ -1,0 +1,195 @@
+/*
+ * $HeadURL::                                                                            $
+ * $Id$
+ *
+ * Copyright (c) 2006-2010 by Public Library of Science
+ * http://plos.org
+ * http://ambraproject.org
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/**
+ * CSS for the browseVolume.ftl. Based on tabbed browsing implementation from http://www.dynamicdrive.com/dynamicindex17/tabcontent.htm
+ */
+.ambraTabsContainer {
+    margin-top: 30px;
+}
+
+.ambraTabs {
+    background: transparent url(../images/tab_bg.gif) repeat-x scroll center bottom;
+    float: left;
+    line-height: normal;
+    margin: 0pt !important;
+    padding: 0pt 0pt 0pt 10px !important;
+    width: 892px;
+    display: block;
+    margin-bottom: 5px;
+    z-index: 10;
+    list-style-type: none;
+    overflow:hidden !important;
+}
+
+.ambraTabs li {
+    background: transparent url(../images/tab_left.gif) no-repeat scroll 0% 0%;
+    color: #666666;
+    cursor: pointer;
+    float: left;
+    font-size: 0.9em;
+    font-weight: bold;
+    list-style-image: none;
+    list-style-position: outside;
+    list-style-type: none;
+    margin: 0pt 2px;
+    padding: 0pt 0pt 0pt 8px;
+}
+
+.ambraTabs li.selected {
+    background-position: 0% -40px;
+}
+
+.ambraTabs li a {
+    background: transparent url(../images/tab_right.gif) no-repeat scroll 100% 0%;
+    display: block;
+    float: left;
+    padding: 8px 16px 8px 8px !important;
+    text-decoration: none;
+}
+
+.ambraTabs li a:visited {
+    color: #2d2b2b;
+}
+
+.ambraTabs li a:hover {
+    text-decoration: underline;
+    color: #2d2b2b;
+}
+
+.ambraTabs li.selected a {
+    background-position: 100% -40px;
+    padding-bottom: 9px !important;
+}
+
+.ambraTabs li.selected a:hover {
+/*selected main tab style */
+    text-decoration: none;
+}
+
+.tabcontent {
+    display: none;
+}
+
+@media print {
+    .tabcontent {
+        display: block !important;
+    }
+}
+
+.ambraTabPane {
+    padding: 30px 0pt 20px 30px;
+    background: #FFFFFF none repeat scroll 0%;
+    border: 1px solid #bababa;
+    border-top: 0;
+    float: left;
+    margin: 0pt;
+    width: 870px;
+}
+
+.thumbnail {
+    width: 122px;
+    float: left;
+    margin: 10px 10px 20px;
+    text-align: center;
+}
+
+.thumbnail img {
+    width: 120px;
+    height: 120px;
+    margin: 0;
+    border: 1px solid #999;
+    display: block;
+}
+
+.thumbnail a:link, .thumbnail a:visited {
+    font-size: .9em;
+    margin: 0;
+    padding: 0;
+    line-height: 1.5em;
+}
+
+.thumbnail a {
+    font-size: 100%;
+    font-weight: bold;
+}
+
+.thumbnail p {
+    display: block;
+}
+
+/* overrides for dojo Tundra theme to get rounded tabs on the Journal Archive page */
+
+.dijitTabListWrapper {
+    width:892px !important;
+    left:0px !important;
+}
+
+div.dijitTabContainerTop-tabs {
+    position: static;
+    background: transparent url(../images/tab_bg.gif) repeat-x scroll center bottom;
+    padding: 0pt 0pt 0pt 10px !important;
+    overflow:hidden !important;
+    border:none;
+}
+
+div.dijitTab,
+div.dijitTabChecked {
+    border: 0 !important;
+    background: transparent url(../images/tab_left.gif) no-repeat scroll 0% 0% !important;
+    color: #666666;
+    cursor: pointer;
+    float: left;
+    font-size: 0.9em;
+    font-weight: bold;
+    margin: 0pt 2px;
+    padding-left: 8px !important;
+}
+
+div.dijitTabChecked {
+    background-position: 0% -40px !important;
+}
+
+div.dijitTabInnerDiv {
+    border: 0 !important;
+    background: transparent url(../images/tab_right.gif) no-repeat scroll 100% 0%;
+    display: block;
+    float: left;
+    padding: 8px 16px 8px 8px !important;
+}
+
+div.dijitTabChecked div.dijitTabInnerDiv {
+    border: 0;
+    background-position: 100% -40px;
+    padding-bottom: 9px !important;
+}
+
+div.dijitContentPane {
+    padding: 12px 0pt 20px 12px;
+}
+
+.dijitHidden {
+    display: none !important;
+}
+
+.dijitVisible {
+    display: block !important;
+    position: relative;
+}

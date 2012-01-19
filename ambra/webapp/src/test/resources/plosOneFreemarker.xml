@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  $HeadURL::                                                                            $
+  $Id$
+  
+  Copyright (c) 2006-2010 by Public Library of Science
+  http://plos.org
+  http://ambraproject.org
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+  http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<pages>
+  <!-- Don't think these are used -->
+  <webapp-dir></webapp-dir>
+  <webapp-subdir></webapp-subdir>
+  <!-- EB -->
+
+  <freemarker>
+    <default>
+      <title>PLoS ONE</title>
+      <css>
+        <file>/css/screen.css</file>
+        <file>/css/iepc.css</file>
+      </css>
+      <javascript>
+        <file>/javascript/js1.js</file>
+        <file>/javascript/js2.js</file>
+        <file>/js3.js</file>      
+      </javascript>
+    </default>
+
+    <page>
+      <name>/WEB-INF/pages/include.ftl</name>
+      <title>Title Goes Here</title>
+      <css>
+        <file>/css/screen.css</file>
+        <file>/css/iepc.css</file>
+      </css>
+      <javascript>
+        <file>/javascript/js1.js</file>
+        <file>/javascript/js2.js</file>
+        <file>/js3.js</file>      
+      </javascript>
+    </page>
+    <page>
+      <name>test2</name>
+      <title>Title2 Goes Here</title>
+      <css>
+        <file>css0</file>
+      </css>
+      <javascript>
+        <file>javascript0</file>
+      </javascript>
+    </page>
+  </freemarker>
+</pages>

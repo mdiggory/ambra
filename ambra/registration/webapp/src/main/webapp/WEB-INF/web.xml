@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+    version="2.4">
+
+  <display-name>Ambra Registration</display-name>
+
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>/WEB-INF/nonJmxApplicationContext.xml</param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>ambra.configuration</param-name>
+    <param-value>file:/etc/ambra/cas.xml</param-value>
+  </context-param>
+
+  <filter>
+    <filter-name>struts2</filter-name>
+    <filter-class>org.apache.struts2.dispatcher.FilterDispatcher</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>struts2</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <!-- Load configuration -->
+  <listener>
+    <listener-class>org.topazproject.ambra.configuration.WebAppListener</listener-class>
+  </listener>
+
+  <!-- to hook in the spring container -->
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+
+  <!-- to hook in the scope management system that provides scopes like session, request for Servlet 2.4 and Spring 2.0 above  -->
+  <listener>
+    <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+  </listener>
+
+  <servlet>
+    <servlet-name>freemarker</servlet-name>
+    <servlet-class>freemarker.ext.servlet.FreemarkerServlet</servlet-class>
+
+    <!-- FreemarkerServlet settings: -->
+    <init-param>
+      <param-name>TemplatePath</param-name>
+      <param-value>/</param-value>
+    </init-param>
+    <init-param>
+      <param-name>NoCache</param-name>
+      <param-value>true</param-value>
+    </init-param>
+    <init-param>
+      <param-name>ContentType</param-name>
+      <param-value>text/html</param-value>
+    </init-param>
+
+    <!-- FreeMarker settings: -->
+    <init-param>
+      <param-name>template_update_delay</param-name>
+      <param-value>0</param-value>
+      <!-- 0 is for development only! Use higher value otherwise. -->
+    </init-param>
+    <init-param>
+      <param-name>default_encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+    <init-param>
+      <param-name>number_format</param-name>
+      <param-value>0.##########</param-value>
+    </init-param>
+
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>freemarker</servlet-name>
+    <url-pattern>*.ftl</url-pattern>
+  </servlet-mapping>
+
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+
+</web-app>

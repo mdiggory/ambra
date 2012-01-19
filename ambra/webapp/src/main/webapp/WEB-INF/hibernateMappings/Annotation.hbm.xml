@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ $HeadURL:
+  ~ $Id:
+  ~
+  ~ Copyright (c) 2006-2011 by Public Library of Science
+  ~
+  ~ http://plos.org
+  ~ http://ambraproject.org
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.topazproject.ambra.models" auto-import="false">
+  <class name="Annotation" table="Annotation">
+    <id name="id" type="org.ambraproject.hibernate.URIType" column="annotationUri" length="255">
+      <generator class="org.ambraproject.hibernate.AmbraIdGenerator" />
+    </id>
+    <discriminator type="string"/>
+    <!--Annotea Properties-->
+    <property name="creator" type="string" column="creator"/>
+    <property name="anonymousCreator" type="string" column="anonymousCreator"/>
+    <property name="created" type="timestamp" column="creationDate"/>
+    <property name="title" type="string" column="title"/>
+    <property name="mediator" type="string" column="mediator"/>
+    <property name="state" type="int" column="state"/>
+    <property name="type" type="string" column="type"/>
+    <property name="webType" type="string" column="webType"/>
+
+    <!--Annotation Properties-->
+    <property name="annotates" type="org.ambraproject.hibernate.URIType" column="annotates"/>
+    <property name="supersedes" type="org.ambraproject.hibernate.URIType" column="supersedesUri"/>
+    <property name="supersededBy" type="org.ambraproject.hibernate.URIType" column="supersededByUri"/>
+    <property name="context" type="string" column="context"/>
+
+    <!--Subclasses - All subclasses have a 'body' property, but of a different type for each subclass-->
+    <subclass name="org.topazproject.ambra.models.Comment" discriminator-value="Comment">
+      <many-to-one name="body" class="org.topazproject.ambra.models.AnnotationBlob" column="body" cascade="all"/>
+    </subclass>
+
+    <subclass name="org.topazproject.ambra.models.MinorCorrection" discriminator-value="MinorCorrection">
+      <many-to-one name="body" class="org.topazproject.ambra.models.AnnotationBlob" column="body" cascade="all"/>
+    </subclass>
+
+    <subclass name="org.topazproject.ambra.models.FormalCorrection" discriminator-value="FormalCorrection">
+      <many-to-one name="body" class="org.topazproject.ambra.models.AnnotationBlob" column="body" cascade="all" />
+      <!--Cascade is off as Citations will be copied over en mass -->
+      <many-to-one name="bibliographicCitation" class="Citation" cascade="none" column="bibliographicCitationUri"/>
+    </subclass>
+
+    <subclass name="org.topazproject.ambra.models.Retraction" discriminator-value="Retraction">
+      <many-to-one name="body" class="org.topazproject.ambra.models.AnnotationBlob" column="body" cascade="all" />
+      <!--Cascade is off as Citations will be copied over en mass -->
+      <many-to-one name="bibliographicCitation" class="Citation" cascade="none" column="bibliographicCitationUri"/>
+    </subclass>
+
+    <subclass name="org.topazproject.ambra.models.Rating" discriminator-value="Rating">
+      <many-to-one name="body" class="org.topazproject.ambra.models.RatingContent" column="body" cascade="all" />
+    </subclass>
+
+    <subclass name="org.topazproject.ambra.models.RatingSummary" discriminator-value="RatingSummary">
+      <many-to-one name="body" class="org.topazproject.ambra.models.RatingSummaryContent" column="body" cascade="all" />
+    </subclass>
+
+    <subclass name="org.topazproject.ambra.models.Trackback" discriminator-value="Trackback">
+      <many-to-one name="body" class="org.topazproject.ambra.models.TrackbackContent" column="body" cascade="all" />
+      <join table="Trackback">
+        <key column="trackbackUri"/>
+        <property name="url" column="url" type="org.ambraproject.hibernate.URLType"/>
+        <property name="excerpt" column="excerpt" type="string"/>
+        <property name="blog_name" column="blog_name" type="string"/>
+      </join>
+    </subclass>
+
+  </class>
+</hibernate-mapping>

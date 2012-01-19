@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  $HeadURL::                                                                            $
+  $Id$
+  
+  Copyright (c) 2006-2010 by Public Library of Science
+  http://plos.org
+  http://ambraproject.org
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+  http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<config>
+  <conf>
+    <test>hello world</test>
+    <def>default</def>
+  </conf>
+  <ambra>
+    <network>
+      <hosts>
+        <default>localhost</default>
+        <mailhost>localhost</mailhost>
+        <cas>${ambra.network.hosts.default}</cas>
+        <registration>${ambra.network.hosts.cas}</registration>
+        <fedora>${ambra.network.hosts.default}</fedora>
+        <mulgara>${ambra.network.hosts.default}</mulgara>
+        <ambra>${ambra.network.hosts.default}</ambra>
+      </hosts>
+      <ports>
+        <default>${ambra.network.ports.ambra}</default>
+        <cas-ssl>7443</cas-ssl>
+        <ambra>8080</ambra>
+        <ambra-ssl>10443</ambra-ssl>
+        <fedora>9090</fedora>
+        <mulgara>9091</mulgara>
+        <registration-ssl>${ambra.network.ports.cas-ssl}</registration-ssl>
+      </ports>
+    </network>
+  </ambra>
+  <exptest>
+    <overrides>
+      <item>bogus1</item>
+      <item>bogus2</item>
+    </overrides>
+    <local>
+      <item>http://${ambra.network.hosts.ambra}:${ambra.network.ports.ambra}/</item>
+      <item>http://test2:${ambra.network.ports.ambra}/</item>
+      <item>http://${ambra.network.hosts.default}:${ambra.network.ports.ambra}/</item>
+    </local>
+  </exptest>
+</config>

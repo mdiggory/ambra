@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  $HeadURL::                                                                                      $
+  $Id$
+  
+  Copyright (c) 2006-2010 by Public Library of Science
+  http://plos.org
+  http://ambraproject.org
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+  http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+  This is the defaults used by any ambra associated webapp and/or command line utility.
+  The ConfigurationStore singleton loads this first. Settings in the defaults.xml
+  resource in libs and webapps that use ConfigurationStore take precedence and
+  override all the settings here. Although normally stuff in defaults.xml simply
+  suplements these settings and it is what is in /etc that overrides these.
+  
+  Please see the ConfigImplementation wiki page for more information.
+-->
+<config>
+  <ambra>
+    <network>
+      <!-- This network section defines the hosts and ports used to talk to the services
+        the publishing system uses.
+        
+        Note to developers: Please do not use anything from the network section directly
+        in code. Instead define something in your own namespace and reference that. Doing
+        so allows more flexibility if re-factoring the network topology later.
+        
+        With the exception of the "webhead", most services run as web-applications within
+        a J2EE container (usually tomcat). Multiple containers can run on the same host
+        by listening on different ports. In fact, the default configuration is to run
+        each container on different ports regardless so that additional configuration
+        change is not required when running containers separately or on the same host.
+        The publishing system uses the following web-applications:
+        * cas          - Handles user authentication for the publishing system
+        * registration - Registers and logs in users (usually runs in the same
+        container that cas runs in.
+        * fedora       - The blob store used to store ingested articles
+        * mulgara      - The triple store.
+        * ambra        - The publishing system
+        * doi-resolver - Resolves DOIs. (Also no configuration here yet. Shares
+        ambra container.)
+        * default      - This is the webhead that runs apache. See wiki for more info.
+        * mailhost     - The machine to send mail via. Usually just localhost if a
+        mail server is running.
+      -->
+      <hosts>
+        <!-- Set hosts.default to FQHN (not localhost) if installing all components on one host
+          (or to webhead FQHN for multiple host installation) -->
+        <default>localhost</default>
+        <mailhost>localhost</mailhost>
+        <!-- For multibox install, change the following entires to the appropriate FQHNs -->
+        <cas>${ambra.network.hosts.default}</cas>
+        <registration>${ambra.network.hosts.cas}</registration>
+        <fedora>${ambra.network.hosts.default}</fedora>
+        <mulgara>${ambra.network.hosts.default}</mulgara>
+        <ambra>${ambra.network.hosts.default}</ambra>
+        <!-- TODO: Use registration apropriately every where. Pull out doi-resolver -->
+      </hosts>
+
+      <ports>
+        <!-- There are 4 protocols that the publishing system uses:
+          * http    - The default protocol
+          * TLS/SSL - When communication needs to be secure
+          * RMI     - An java specific RPC protocol (to be uses soon)
+          * mail    - The SMTP protocol
+          
+          Ports are defined as either "host-protocol" or just "host" if the protocol is http.
+          If defining a port that is http, if the value would be 80, leave it blank.
+          If defining a port that is https, if the value would be 443, leave it blank.
+        -->
+        <!-- If using port 80, set default to empty (not 80) -->
+        <default>${ambra.network.ports.ambra}</default>
+        <!-- If using port 443, set cas-ssl to empty -->
+        <ambra>8080</ambra>
+        <ambra-ssl>10443</ambra-ssl>
+        <cas-ssl>7443</cas-ssl>
+        <doi>${ambra.network.ports.ambra}</doi>
+        <fedora>9090</fedora>
+        <registration-ssl>${ambra.network.ports.cas-ssl}</registration-ssl>
+        <mulgara>8111</mulgara>
+      </ports>
+    </network>
+    <platform>
+      <!-- Predefined URL elements for accessing standard Ambra http services -->
+      <webserverUrl>http://${ambra.network.hosts.default}:${ambra.network.ports.default}${ambra.platform.appContext}/</webserverUrl>
+      <articleAction>article/</articleAction> <!-- action to which doi resolvers forwards to display an article -->
+      <annotationAction>annotation/</annotationAction> <!-- action to which doi resolvers forwards to display an annotation -->
+      <figureAction1>article/slideshow.action?uri=</figureAction1> <!-- with figure-action2, constructs url for graphics and table display -->
+      <figureAction2>&amp;imageURI=</figureAction2>
+      <fetchObjectAction>article/fetchObjectAttachment.action?uri=</fetchObjectAction>
+      <errorPage>static/pageNotFound.action</errorPage> <!-- error page to redirect to in pub app if article not found -->
+      <appContext></appContext> <!-- web-app context path of ambra. Leave empty for ROOT context. -->
+    </platform>
+    
+    <topaz>
+      <!-- Configuration to talk to Fedora -->
+      <blobStore>
+        <fedora>
+          <base-url>
+            http://${ambra.network.hosts.fedora}:${ambra.network.ports.fedora}/fedora/
+          </base-url>
+          <uri>${ambra.topaz.blobStore.fedora.base-url}services/management</uri>
+          <userName>fedoraAdmin</userName>
+          <password>fedoraAdmin</password>
+        </fedora>
+      </blobStore>
+
+      <tripleStore>
+        <mulgara>
+          <baseuri>
+            rmi://${ambra.network.hosts.mulgara}:${ambra.network.ports.mulgara}/topazproject
+          </baseuri>
+          <!-- Configuration to talk to Mulgara -->
+          <itql>
+            <uri>${ambra.topaz.tripleStore.mulgara.baseuri}</uri>
+          </itql>
+        </mulgara>
+      </tripleStore>
+    </topaz>
+
+    <services>
+      <cas>
+        <!-- The following entries defnine how the java webapp talk to the database.
+          For example, talking to postgresql, you need the database name at the end of the url
+          The user and password are for the database as well. -->
+        <db>
+          <user>casuser</user>
+          <password>caspass</password>
+          <url>jdbc:postgresql://localhost/casdb</url>
+          <driver>org.postgresql.Driver</driver>
+        </db>
+        <!-- NOTE: Cannot find any reference to these config parameters... -->
+        <!-- Configuration to talk to CAS -->
+        <cas-server>
+          <base-url>https://${ambra.network.hosts.cas}:${ambra.network.ports.cas-ssl}/cas</base-url>
+        </cas-server>
+      </cas>
+
+      <documentManagement>
+        <imageMagick>
+          <executablePath>/usr/bin/convert</executablePath>
+          <identifyPath>/usr/bin/identify</identifyPath>
+          <tempDirectory>${java.io.tmpdir}</tempDirectory>
+          <imageSetConfigs>
+            <imageSet name="#default">
+              <small width="70" quality="80" />
+              <medium maxDimension="600" quality="80" />
+              <large quality="80" />
+            </imageSet>
+          </imageSetConfigs>
+        </imageMagick>
+      </documentManagement>
+      
+      <xacml>
+        <!-- 
+          The pdpName configures the XACML-PDP used by the corresponding XACML-PEP.
+          PDPs are configured seperately in a PDPConfig.xml. The default PDPConfig 
+          file is in WEB-INF/classes directory. It can be overridden by specifying a 
+          -Dcom.sun.xacml.PDPConfigFile=fileName 
+        -->
+        <articles>
+          <pdpName>standard-pdp</pdpName>
+        </articles>
+        <annotations>
+          <pdpName>standard-pdp</pdpName>
+        </annotations>
+        <replies>
+          <pdpName>standard-pdp</pdpName>
+        </replies>
+        <permissions>
+          <pdpName>standard-pdp</pdpName>
+        </permissions>
+        <profiles>
+          <pdpName>standard-pdp</pdpName>
+        </profiles>
+        <preferences>
+          <pdpName>standard-pdp</pdpName>
+        </preferences>
+        <users>
+          <pdpName>standard-pdp</pdpName>
+        </users>
+        <ratings>
+          <pdpName>standard-pdp</pdpName>
+        </ratings>
+        <alerts>
+          <pdpName>standard-pdp</pdpName>
+        </alerts>
+        <access>
+          <pdpName>standard-pdp</pdpName>
+        </access>
+      </xacml>
+    </services>
+
+    <server>
+      <!-- NOTE: Cannot find any reference to these config parameters... -->
+      <!-- Any remaining topaz services (search) are in the ambra container
+        TODO: Use of these parameters should be deprecated -->
+      <hostname>${ambra.network.hosts.ambra}</hostname>
+      <https-port>${ambra.network.ports.ambra-ssl}</https-port>
+    </server>
+  </ambra>
+</config>

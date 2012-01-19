@@ -1,0 +1,307 @@
+/*
+ * $HeadURL::                                                                            $
+ * $Id$
+ *
+ * Copyright (c) 2006-2010 by Public Library of Science
+ * http://plos.org
+ * http://ambraproject.org
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* detail wraps annotation post details such as date and posting time and username */
+div.detail{ font-size: .9em; color: #666; position: relative;}
+div.detail strong{ color: #444; /* strong wraps date and time for added emphasis and clarity */}
+.dialog .tip,
+.dialog .tipu { display: none; }
+#AnnotationDialog .dialog .tip 	{ background:transparent url(../images/dialog_pb.gif) no-repeat 0px 0px;  width:39px; height:22px; position:absolute; bottom: -22px; left:22px; }
+#AnnotationDialog .dialog .tipu 	{ background:transparent url(../images/dialog_pt.gif) no-repeat 0px 0px; width:39px; height:22px; position:absolute; top: -22px; left:22px; }
+#CommentDialog .dialog .tip,
+#CommentDialogMultiple .dialog .tip 	{ background:transparent url(../images/dialog_preview_pb.gif) no-repeat 0px 0px; width:39px; height:22px; position:absolute; bottom: -18px; left:22px; }
+#CommentDialog .dialog .tipu,
+#CommentDialogMultiple .dialog .tipu 	{ background:transparent url(../images/dialog_preview_pt.gif) no-repeat 0px 0px; width:39px; height:22px; position:absolute; top: -18px; left:22px; }
+#CommentDialogMultiple .dialog .tip   { bottom: -21px; }
+#CommentDialogMultiple .dialog .tipu 	{ top: -21px; }
+.dialog .tip.on,
+.dialog .tipu.on { display: block; }
+
+/* --- contains all annotation views --- */
+.dialog	{ line-height: 1.4em; font-size: .9em;}
+/* dialog box title */
+.dialog h5{ margin: 5px 5px 10px;}
+/* annotation post title */
+.dialog h6{ border: 1px solid #666; border-bottom:0; font-size: 1em; padding: 5px; margin: 0; background: #fff; clear: right;}
+.dialog h6 a.discuss { background:url(../images/icon_annotation.gif) left 0.2em no-repeat; }
+/* detail styles specific to dialog box representation */
+div.dialog div.detail{ padding: 5px; background-color: #fff; border: 1px solid #666; border-top-color:#0bf; border-bottom-color:#0bf;}
+div.dialog div#viewLink { border-width:0 1px 1px; border-color:#666; }
+div.dialog div.detail a:link { margin:0; }
+/* wraps the text of the annotation only */
+div.contentwrap{ padding: 10px; background-color: #fff; margin: 0; border: 1px solid #666; border-width: 0 1px;}
+div.contentwrap p { margin:0; }
+
+/*corrections varients*/
+div#cmtContainer.retractionCssStyle h6 a,
+div#cmtContainer.frmlcrctn h6 a,
+div#cmtContainer.minrcrctn h6 a { background:url(../images/icon_correction.gif) left 0% no-repeat; color:#ff0000 !important }
+div#cmtContainer.retractionCssStyle div.contentwrap,
+div#cmtContainer.frmlcrctn div.contentwrap,
+div#cmtContainer.retractionCssStyle h6#viewCmtTitle,
+div#cmtContainer.frmlcrctn h6#viewCmtTitle,
+div#cmtContainer.minrcrctn div.contentwrap,
+div#cmtContainer.minrcrctn h6#viewCmtTitle,
+div#cmtContainer.retractionCssStyle div#viewCmtDetail,
+div#cmtContainer.frmlcrctn div#viewCmtDetail,
+div#cmtContainer.retractionCssStyle div#viewComment,
+div#cmtContainer.frmlcrctn div#viewComment,
+div#cmtContainer.minrcrctn div#viewCmtDetail,
+div#cmtContainer.minrcrctn div#viewComment,
+div#cmtContainer.retractionCssStyle div#viewLink,
+div#cmtContainer.frmlcrctn div#viewLink,
+div#cmtContainer.minrcrctn div#viewLink { background-color:#fff4f0; }
+div#cmtContainer.retractionCssStyle div#viewCmtDetail,
+div#cmtContainer.frmlcrctn div#viewCmtDetail,
+div#cmtContainer.minrcrctn div#viewCmtDetail { border-top-color:#f00; border-bottom-color:#f00; }
+
+div#cmtContainer div#viewCIStatement { padding-top:0; }
+div#cmtContainer div#viewCIStatement div.cis,
+div.citation div.cis,  /* div.citation targets cis in formal corrections, just in case */
+blockquote div.cis { }
+div.citation div.cis { margin-top: 5px; padding-top:5px; }
+div#cmtContainer div#viewCIStatement div.cis,
+div#multidetail div.cis { padding-top: 5px; font-size:0.9em; }
+blockquote div.cis { line-height:1.5em; padding:5px 0; }
+
+
+div.dialog .posting.pane{ background: none; }
+div.comment div.comment{ margin: 10px 0; padding-left: 20px; border-left: 4px solid #999; background-color: #eee;}
+div.comment .comment h6{ background: transparent; color: #333; padding: 4px 0 0 0; }
+
+/* preview is applied to non-interactive dialogs */
+.preview{ width: 32em; border: 3px solid #666; background: url(../images/dialog_preview_bg.gif) repeat-x top;}
+.preview div.detail a { margin: 0 10px; }
+/* annotate is applied to dialog viewers in the annotation process */
+.annotate{ width:52em; border: 3px solid #666; background: #fff url(../images/forms_bg.gif) repeat-x bottom; position:relative;}
+
+div.contextActionDialog { padding:0;margin:0; }
+div.context div.tip { background:transparent url(../images/dialog_pb.gif) no-repeat 0px 0px; width:39px; height:22px; position:absolute; bottom: -22px; left:22px; }
+div.context div.tipu { background:transparent url(../images/dialog_pt.gif) no-repeat 0px 0px; width:39px; height:22px; position:absolute; top: -22px; left:22px; }
+
+div.context{ width:28em; border:3px solid #666; background:#fff url(../images/forms_bg.gif) repeat-x bottom; position:relative;}
+div.context div.contextActionContent { border:0px; margin:10px; }
+div.context div.contextActionContent h5 { padding:0px 0px 3px 0px; margin:0px;}
+div.context div.contextActionContent ul { padding:5px 0px 0px 0px; margin:0px; list-style-type:dot;}
+div.context div.contextActionContent li { padding:0px; margin:0px 0px 0px 17px; }
+div.context div.contextActionContent input { padding:0px; margin:0px; float:right; }
+div.context div.contextActionContent form { padding-top:5px; }
+div.dijitTooltipContainer { border:0px; }
+
+.loadingCycler { z-index: 99998 !important; overflow:hidden; }
+.loadingCycler img { z-index: 99999 !important; overflow:hidden; }
+
+/* comment wraps the contents of annotation blocks to apply padding */
+.comment{ padding: 10px; }
+
+.response fieldset { border:0; }
+.response fieldset .reply{ display: block; margin: 10px 0; padding: 2px; border: 1px solid #ccc}
+.posting .title{ width: 25em; }
+.flag textarea,
+.posting textarea{ width: 25em; height: 8em; overflow: auto; margin-bottom: 10px; margin-left: 0; margin-top: 5px;}
+.response .body{ width: 46em; height: 12em; overflow: auto;}
+
+
+.dojoTooltip {
+	border: solid black 1px;
+	background: beige;
+	color: black;
+	position: absolute;
+	font-size: small;
+	padding: 2px 2px 2px 2px;
+	z-index: 10;
+	display: block;
+}
+
+/* --- userinfo is for user information view --- */
+.userinfo{ width: 16em; text-align: center; font-size: .9em; padding: 5px; border: 2px solid #333;  position: absolute;	z-index: 10; display: block; }
+.userinfo dl,
+.userinfo dd,
+.userinfo dt{ margin: 0; list-style-type: none; font-size: 1em;}
+.userinfo dd{ font-size: .9em; }
+
+/* --- pane contains viewing area --- */
+.pane			{ margin: 20px; padding: 0 5px;  margin:0; position: relative; }
+.reading.pane 	{ height: 12em; }
+.dialog fieldset{ border: 0; margin: 0; padding: 0;}
+.dialog .text label,
+.dialog legend,
+.post legend	{ display: none; }
+.pane .error	{ margin-bottom:5px; padding:5px; border:1px solid #c00; background-color: #fff; font-style: normal; }
+
+.dialog .response { width: 100%; height: 8em; overflow: auto; }
+.dialog .submit input { display: inline;}
+.dialog .submit label { display: inline;}
+.dialog fieldset div { width: 5em; height: 2em; margin-left: 15px;padding: 0; display: inline;}
+.dialog fieldset div label 	{ width: 5em; vertical-align: middle; height: 1.125em; display: inline;}
+.dialog fieldset input.radio 	{ width: 1em; vertical-align: middle; height: 1.125em; display: inline; margin-right: 4px;}
+.dialog fieldset input.checkbox  { width: 1em; vertical-align: middle; height: 1.125em; display: inline; margin-right: 4px;}
+div.btnwrap { width: 100%; display:block; margin: 0; height: auto; }
+div.btnwrap input { margin: 5px auto; display: block; padding: 2px;}
+
+/* --- multiple is the containing block for multiple annotations --- */
+
+div.multiple		{ width: 50em; background-color: #666; position: relative;}
+.multiple ol,
+.multiple li	{ list-style-type: none; margin: 0; padding: 0; font-weight: normal;}
+.multiple .detail	{ font-weight: normal; margin: 0 10px 10px 10px;}
+.multiple ol	{ width: 22em; position: absolute; top: 30px; left: 0;margin: 0 10px 0 10px; border: 1px solid #666; border-width: 1px 0 0 1px; display: inline;}
+.multiple li	{ list-style-position:outside; padding:5px; text-indent:20px; background:#c8c6c6 url(../images/tooltip_addannotation.gif) 5px 0.4em no-repeat; border-bottom: 1px solid #666; border-right: 1px solid #666; cursor: pointer;}
+.multiple .contentwrap div.detail { border:0; background-color:#fff; margin:10px 0 12px; }
+.multiple li div.detail	{ border: 1px solid #0bf; margin: 5px 0 0 0; text-indent:0; background-color: #DDD;}
+.multiple li.active	{ background-color:#fff; border-right: none; font-weight: bold;}
+.multiple li.active div.detail { background-color: #eee; }
+.multiple .contentwrap { display: none; width: 23em;margin: 0; margin-left: 22.9em; border: 1px solid #666; border-left: none; margin-top: 13px;}
+.multiple .contentwrap.active { display: block; }
+.multiple .contentwrap div.detail { position: absolute; bottom: 24px; width: 22.8em;}
+
+/* corrections in multiple annotation blocks */
+div.multiple ol li.minrcrctn,
+div.multiple ol li.frmlcrctn { background-image:url(../images/icon_correction.gif); background-position:5px 0.3em; background-repeat:no-repeat; }
+div.multiple li.minrcrctn div.detail,
+div.multiple li.frmlcrctn div.detail { border-color:#f00!important; text-indent:0; }
+div.multiple li.minrcrctn,
+div.multiple li.frmlcrctn { color:#f00 }
+/* Valid use of child selector to hide the follwing from IE6 due to its lack for support for chained classes. All backgrounds should display white in IE6 */
+div.multiple > ol#multilist > li.minrcrctn.active,
+div.multiple > ol#multilist > li.frmlcrctn.active,
+div.multiple > div#multidetail > div.minrcrctn,
+div.multiple > div#multidetail > div.frmlcrctn,
+div.multiple > div#multidetail > div.minrcrctn div.detail,
+div.multiple > div#multidetail > div.frmlcrctn div.detail { background-color:#fff4f0; }
+
+/* multiple annotation post detail styles */
+.dialog dt div.detail		{ border: none; background-color: transparent; padding: 0;}
+
+.none 					{ display: none; }
+
+/* --- page view --- */
+#citation		{ height: 12em; overflow: auto; border: 2px solid #ccc; padding: 10px; }
+#citation cite 	{ display: block; font-style: normal;/*background: url(../images/annotation_cite_bg.gif) no-repeat 5px;*/ }
+#annotation-box blockquote { margin: 0; }
+#annotation-box p { margin: 0; }
+
+div.author blockquote{ background: #FFF; }
+div.author hd	{ background-color: #069; }
+
+div.response h3	{ margin: .15em 0 .25em 5px; padding: 0;letter-spacing: normal; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 1em; font-weight: bold;}
+div.response	{ padding: 0; margin: -2px 0 0 15px!important; border: 2px solid #ccc; border-width: 2px 2px 0 0;  /*  background-color: #ccc; */}
+
+
+div.response div.response { border: none; margin: -2px 0 0 20px; border-top: 2px solid #ccc; }
+div.response blockquote	{ background: #F5F5F6 url(../images/response_blockquote_bg.gif) repeat-x bottom; margin: 0; padding: 5px 10px; font-style: normal; border: 1px solid #ccc; border-width: 1px 0 1px 2px;  }
+div.response .hd { border-left: 2px solid #ccc; padding: 10px; background-color: #fff;  }
+div.response .response .hd	{ background: url(../images/response_hd_bg.gif) repeat-x top; }
+div.response div.detail		{ padding-left: 5px; }
+/* h5 for pane posting titles */
+div.response h5	 { margin: 20px 5px 5px; padding: 0; font-size: 1.1em;}
+
+div.pane		{ position: relative; }
+div.pane fieldset { margin:0; padding:0; }
+div.response div.close a	{ position: absolute; float: none; top: 20px; right: 20px; color: #333;}
+
+div.response .pane 					{ border: 2px solid #ccc; border-width: 2px 0 2px 2px; padding: 0 20px 20px; margin: 0; background-repeat: repeat-x; background-position: top; color: #fff;}
+div.response .pane legend 			{ display: none; }
+
+/* apply class original to the original posting of either a discussio or annotation on the directory page */
+div.original	{ margin: 20px 0 5px 0!important;border-top-width: 1px;}
+div.original div { }
+div.original div.toolbar,
+div.original div.hd { background: url(../images/toolbar_bg.gif) repeat-x bottom; }
+div.original div.toolbar a { cursor: pointer; }
+div.original blockquote,
+div.original blockquote * { background: #fff; }
+div#discussionContainer div.citation { border-top:1px solid #ccc; font-size:smaller; color:#333; line-height:1.5em; padding:5px 0 2px; }
+
+div.posting	{ background-color: #666; background-image: url(../images/response_comment_bg.gif); }
+div.flag	{ background-color: #3C9544; background-image: url(../images/response_flag_bg.gif); }
+div#flagForm { display:block; background: #3C9544;}
+div#flagForm form,
+div#flagForm fieldset { background: #3C9544; }
+div#flagForm a.instructions,
+div#DiscussionPanel a.instructions { color: #fff; } /* for white text links on dark backgrounds -SWT */
+div.response div.posting form,
+div.response div.posting fieldset { background: #666; }
+textarea #responseArea .response{ margin-left: 0!important; }
+div#flagConfirm { display: none; }
+
+/*-------------- additional styles for notation, comment/response and rating forms
+NOTE: 
+div.response targets start/respond discussion forms only
+div.annotate targets rating and notation forms only
+div.posting targets all user input forms --------------------*/
+div.response div.instructions a,
+div.response div.instructions a:hover { color:#fff; text-decoration:underline; }
+div.annotate div.instructions,
+div.response div.instructions { border:1px solid #ccc; border-left:0; border-right:0; font-size:0.9em; margin:0 5px 1.5em; padding:5px 0; }
+div.response div.instructions { font-size:inherit; }
+div.annotate div.instructions ol,
+div.response div.instructions ol { margin:0; padding-left:15px; list-style-position:inside; }
+
+div.posting ul { margin:0; padding:0; }
+div.posting label,
+div.posting ul.rating { line-height:0.8em; }
+div.annotate div.posting textarea,
+div.annotate div.posting input.title  { margin:5px 0; width:23.7em; }
+div.response textarea,
+div.response input.title { width:33em; }
+div.posting td.coi { vertical-align:bottom; }
+div.posting td.coi textarea { height:5em; }
+div.posting td.coi ul li { list-style-type:none; }
+div.posting td.coi ul li:first-child { margin-bottom:1em; }
+div.posting td.coi ul li label { line-height:1.5em; }
+div.posting td.coi ul li > label { display:block; } /* hidden from IE6 */
+div.posting td.coi ul li label input { float:left; margin-right:0.5em; margin-bottom:1em; }
+div.response td { width:50%; }
+div.response td.gutter { width:1%; }
+div.response td.coi ul li label input { margin-bottom:0; }
+div.annotate div.instructions ol li { list-style-position:inside; }
+div.response table.layout { width:69em; margin:0 5px; }
+table.layout td.buttons { text-align:right; vertical-align:bottom; }
+.buttons input,
+div.contextActionContent form.buttons input { color:#333; margin:0 0 0 5px; padding:0 0.5em; }
+.buttons input.primary { font-weight:bold; }
+
+.toolbar			{ background: url(../images/toolbar_bg.gif) repeat-x 20px; padding: 5px; border: 1px solid #ccc; border-width: 0 0 2px 2px; margin: 0}
+.toolbar ul,
+.toolbar li			{ margin: 0; padding: 0; text-align: right;}
+.toolbar li			{ display: inline; margin: 0 10px; font-size: .9em; }
+
+ol.radio			{ margin: 0; padding: 0; }
+ol.radio li			{ width: 10em; position: relative;height: 2em; list-style-type: none; margin: 0; list-style-type: none;}
+ol.radio input		{ position: absolute; left: 0; }
+ol.radio label		{ font-weight: bold; position: absolute; left: 3em; }
+
+/* annotation and discussion thread view page */
+
+table.directory		{ width: 95%; }
+.directory td		{ background: url(../images/toolbar_bg.gif) repeat-x bottom; border-bottom: 1px solid #ccc; border-right: 1px solid #ccc;}
+.directory td.last	{ background: #ddd; padding-top: 0; padding-bottom: 0; font-size: .9em; border-width: 0; border-bottom: 5px solid #fff; color: #777;}
+.directory strong { color: #555; }
+.directory td.title	{ background: #eee; }
+.directory td.replies { width: 8em; }
+.directory td.replies,
+.directory td.info	{ font-size: .9em; color: #777;}
+img.pointer		{ margin: -5px 0 0 0; }
+
+a.bug,
+a:visited.bug	{ font-style: normal!important; }
+

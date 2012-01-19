@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ $HeadURL:
+  ~ $Id:
+  ~
+  ~ Copyright (c) 2006-2011 by Public Library of Science
+  ~
+  ~ http://plos.org
+  ~ http://ambraproject.org
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.topazproject.ambra.models" auto-import="false">
+  <import class="org.topazproject.otm.criterion.DetachedCriteria"/>
+  <import class="org.topazproject.otm.criterion.EQCriterion"/>
+
+  <class name="Aggregation" abstract="true">
+    <id name="id" type="URIType" column="aggregationUri" length="255">
+      <generator class="org.ambraproject.hibernate.AmbraIdGenerator" />
+    </id>
+
+    <property name="supersedes" type="org.ambraproject.hibernate.URIType" column="supersedesUri"/>
+    <property name="supersededBy" type="org.ambraproject.hibernate.URIType" column="supersededByUri"/>
+
+    <property name="title" type="string" column="title"/>
+    <property name="description" type="string" column="description"/>
+    <property name="created" type="date" column="created"/>
+
+    <list name="simpleCollection" table="AggregationSimpleCollection" cascade="all">
+      <key column="aggregationArticleUri" />
+      <list-index column="sortOrder"/>
+      <element type="URIType" column="uri" />
+    </list>
+
+    <list name="smartCollectionRules" table="AggregationDetachedCriteria" cascade="all">
+      <key column="aggregationUri" />
+      <list-index column="sortOrder"/>
+      <many-to-many class="org.topazproject.otm.criterion.DetachedCriteria" column="detachedCriteriaUri"/>
+    </list>
+
+    <union-subclass name="Journal" table="Journal" extends="org.topazproject.ambra.models.Aggregation">
+      <property name="key" column="journalKey"/>
+      <property name="eIssn" column="eIssn"/>
+      <property name="image" column="imageUri" type="org.ambraproject.hibernate.URIType"/>
+      <property name="currentIssue" column="currentIssueUri" type="org.ambraproject.hibernate.URIType"/>
+
+      <list name="volumes" table="JournalVolumeList" cascade="all">
+        <key column="aggregationUri"/>
+        <list-index column="sortOrder"/>
+        <element column="volumeUri" type="org.ambraproject.hibernate.URIType"/>
+      </list>
+    </union-subclass>
+
+    <union-subclass name="Volume" table="Volume" extends="org.topazproject.ambra.models.Aggregation">
+      <property name="displayName" type="string" column="displayName"/>
+      <property name="image" type="org.ambraproject.hibernate.URIType" column="imageUri"/>
+
+      <list name="issueList" table="VolumeIssueList" cascade="all">
+        <key column="aggregationUri"/>
+        <list-index column="sortOrder"/>
+        <element column="issueUri" type="org.ambraproject.hibernate.URIType"/>
+      </list>
+    </union-subclass>
+
+    <union-subclass name="Issue" table="Issue" extends="org.topazproject.ambra.models.Aggregation">
+      <property name="displayName" type="string" column="displayName"/>
+      <property name="respectOrder" type="boolean" column="respectOrder"/>
+      <property name="image" type="org.ambraproject.hibernate.URIType" column="imageUri"/>
+
+      <list name="articleList" table="IssueArticleList" cascade="all">
+        <key column="aggregationUri"/>
+        <list-index column="sortOrder"/>
+        <element column="articleUri" type="org.ambraproject.hibernate.URIType"/>
+      </list>
+    </union-subclass>
+
+
+  </class>
+
+  <!--
+    We only worry about the alias and the criterionList parts of the object
+    So that's all I store here.  Also all of these Criterion (abstract) are of type "EQCriterion" so
+    I don't worry about other classes
+
+    src: http://www.topazproject.org/trac/browser/head/topaz/core/src/main/java/org/topazproject/otm/criterion/DetachedCriteria.java
+    src: http://ambraproject.org/trac/browser/head/ambra/webapp/src/main/java/org/topazproject/ambra/journal/JournalCreator.java
+
+  -->
+  <class name="org.topazproject.otm.criterion.DetachedCriteria" table="DetachedCriteria">
+    <id name="criteriaId" type="org.ambraproject.hibernate.URIType" column="detachedCriteriaUri" >
+      <generator class="org.ambraproject.hibernate.AmbraIdGenerator" />
+    </id>
+    <property name="alias" column="alias"/>
+
+    <list name="criterionList" table="CriteriaList" cascade="all">
+      <key column="criteriaUri"></key>
+      <list-index column="sortOrder"></list-index>
+      <many-to-many class="org.topazproject.otm.criterion.EQCriterion" column="eqCriterionUri"/>
+    </list>
+  </class>
+
+  <class name="org.topazproject.otm.criterion.EQCriterion" table="Criteria">
+    <id name="criterionId" type="URIType" column="criteriaUri" >
+      <generator class="org.ambraproject.hibernate.AmbraIdGenerator" />
+    </id>
+    <!-- this value if of type object, but for our cases, it should always be a string -->
+    <property name="fieldName" column="fieldName"/>
+    <property name="value" column="value" type="string"/>
+  </class>
+</hibernate-mapping>

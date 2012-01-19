@@ -1,0 +1,55 @@
+<?xml version="1.1"?>
+<!DOCTYPE manifest SYSTEM "manifest.dtd">
+<manifest>
+  <articleBundle>
+    <article uri="info:doi/10.1371/journal.pgen.1000103" main-entry="pgen.1000103.xml">
+      <representation name="XML" entry="pgen.1000103.xml" />
+      <representation name="PDF" entry="pgen.1000103.pdf" />
+    </article>
+    <object uri="info:doi/10.1371/journal.pgen.1000103.s003">
+      <representation name="DOC" entry="pgen.1000103.s003.doc" />
+    </object>
+    <object uri="info:doi/10.1371/journal.pgen.1000103.s001">
+      <representation name="DOC" entry="pgen.1000103.s001.doc" />
+    </object>
+    <object uri="info:doi/10.1371/journal.pgen.1000103.s002">
+      <representation name="DOC" entry="pgen.1000103.s002.doc" />
+    </object>
+    <object uri="info:doi/10.1371/journal.pgen.1000103.g003">
+      <representation name="TIF" entry="pgen.1000103.g003.tif" />
+      <representation name="PNG_S" entry="pgen.1000103.g003.PNG_S" />
+      <representation name="PNG_M" entry="pgen.1000103.g003.PNG_M" />
+      <representation name="PNG_L" entry="pgen.1000103.g003.PNG_L" />
+    </object>
+    <object uri="info:doi/10.1371/journal.pgen.1000103.t002">
+      <representation name="TIF" entry="pgen.1000103.t002.tif" />
+      <representation name="PNG_S" entry="pgen.1000103.t002.PNG_S" />
+      <representation name="PNG_M" entry="pgen.1000103.t002.PNG_M" />
+      <representation name="PNG_L" entry="pgen.1000103.t002.PNG_L" />
+    </object>
+    <object uri="info:doi/10.1371/journal.pgen.1000103.g001">
+      <representation name="TIF" entry="pgen.1000103.g001.tif" />
+      <representation name="PNG_S" entry="pgen.1000103.g001.PNG_S" />
+      <representation name="PNG_M" entry="pgen.1000103.g001.PNG_M" />
+      <representation name="PNG_L" entry="pgen.1000103.g001.PNG_L" />
+    </object>
+    <object uri="info:doi/10.1371/journal.pgen.1000103.g002">
+      <representation name="TIF" entry="pgen.1000103.g002.tif" />
+      <representation name="PNG_S" entry="pgen.1000103.g002.PNG_S" />
+      <representation name="PNG_M" entry="pgen.1000103.g002.PNG_M" />
+      <representation name="PNG_L" entry="pgen.1000103.g002.PNG_L" />
+    </object>
+    <object uri="info:doi/10.1371/journal.pgen.1000103.t001">
+      <representation name="TIF" entry="pgen.1000103.t001.tif" />
+      <representation name="PNG_S" entry="pgen.1000103.t001.PNG_S" />
+      <representation name="PNG_M" entry="pgen.1000103.t001.PNG_M" />
+      <representation name="PNG_L" entry="pgen.1000103.t001.PNG_L" />
+    </object>
+    <object uri="info:doi/10.1371/journal.pgen.1000103.g004">
+      <representation name="TIF" entry="pgen.1000103.g004.tif" />
+      <representation name="PNG_S" entry="pgen.1000103.g004.PNG_S" />
+      <representation name="PNG_M" entry="pgen.1000103.g004.PNG_M" />
+      <representation name="PNG_L" entry="pgen.1000103.g004.PNG_L" />
+    </object>
+  </articleBundle>
+</manifest>

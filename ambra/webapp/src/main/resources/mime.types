@@ -1,0 +1,141 @@
+# This file maps mime types to file extensions when supp-info files are dowloaded by a user
+# In the case that multiple extensions are listed, ambra picks the first one
+
+application/astound			asn
+application/ccv				ccv
+application/envoy			evy
+application/eps eps
+application/fastman			lcc
+application/fractals			fif
+application/futuresplash		spl
+application/hdf				hdf
+application/iges			igs
+application/mac-binhex40		hqx
+application/mathematica			ma
+application/mbedlet			mbd
+application/mspowerpoint		ppz
+application/msword			doc DOC
+application/oda				oda
+application/pdf				pdf
+application/postscript	ps ai
+application/vis5d			v5d
+application/vnd.koan			skp
+application/vnd.mif			mif
+application/vnd.ms-excel		xls
+application/vnd.ms-powerpoint		ppt
+application/vnd.ms-project		mpp
+application/vnd.openxmlformats-officedocument.presentationml.presentation pptx
+application/vnd.openxmlformats-officedocument.spreadsheetml.sheet xlsx
+application/vnd.openxmlformats-officedocument.wordprocessingml.document docx
+application/vnd.svd			svd
+application/x-alpha-form		frm
+application/x-asap			asp
+application/x-bcpio			bcpio
+application/x-bzip  bz2 bz
+application/x-cpio			cpio
+application/x-csh			csh
+application/x-dvi			dvi
+application/x-gtar			gtar
+application/x-gzip  gz gzip
+application/x-latex			latex
+application/x-molsoft-icb               icb
+application/x-net-install		ins
+application/x-ns-proxy-autoconfig	pac
+application/x-oleobject			ods
+application/x-olescript			axs
+application/x-p3d			p3d
+application/x-pcn			pcn
+application/x-perl			pl
+application/x-pointplus			css
+application/x-rad-powermedia		rad
+application/x-rar-compressed    rar
+application/x-sh			sh
+application/x-shar			shar
+application/x-shockwave-flash		swf
+application/x-stuffit			sit sea
+application/x-tar			tar
+application/x-tcl			tcl
+application/x-tex			tex
+application/x-texinfo			texinfo texi
+application/x-troff			t tr roff
+application/x-troff-man			man
+application/x-troff-me			me
+application/x-troff-ms			ms
+application/x-ustar			ustar
+application/x-wais-source		src wsrc
+application/x-webbasic			wba
+application/zip				zip
+audio/basic				au
+audio/basic				au snd
+audio/echospeech			es
+audio/midi				midi mid rmi
+audio/voxware				vox
+audio/x-aifc				aifc
+audio/x-aiff				aif aiff
+audio/x-aiff				aif aiff aifc
+audio/x-mpeg				mpa abs mpega
+audio/x-mpeg				mpeg mpg mp2
+audio/x-mpeg-2				mp2a mpa2
+audio/x-mpeg3				mp3
+audio/x-ms-wma  wma
+audio/x-pn-realaudio		ram rm
+audio/x-realaudio ra
+audio/x-wav				wav
+drawing/x-dwf				dwf
+image/cgm				cgm
+image/fif				fif
+image/g3fax				g3f
+image/gif				gif GIF
+image/ief				ief
+image/jpeg				jpeg jpg jpe
+image/jpeg				jpeg jpg jpe JPG
+image/png					png
+image/rgb				rgb
+image/tiff				tif tiff
+image/vnd.dwg				dwg
+image/vnd.dxf				dxf
+image/vnd.svf				svf
+image/wavelet				wi
+image/x-cals				mil cal
+image/x-cmu-raster			ras
+image/x-cmx				cmx
+image/x-mgx-dsf				dsf
+image/x-ms-bmp				bmp
+image/x-photo-cd			pcd
+image/x-pict				pict
+image/x-png				png
+image/x-portable-anymap			pnm
+image/x-portable-bitmap			pbm
+image/x-portable-graymap		pgm
+image/x-portable-pixmap			ppm
+image/x-xbitmap				xbm
+image/x-xpixmap				xpm
+image/x-xwindowdump			xwd
+text/comma-separated-values csv
+text/css				css
+text/html				html htm HTML HTM
+text/javascript				js ls mocha
+text/plain				txt text TXT TEXT java c c++ pl cc h
+text/rtf				rtf
+text/xml  xml
+text/x-speech				talk
+video/mp4				mp4
+video/mpeg				mpeg mpg mpe
+video/mpeg-2				mpv2 mp2v
+video/quicktime				mov qt
+video/vdo				vdo
+video/vnd.vivo				viv
+video/x-m4v				m4v
+video/x-msvideo				avi
+video/x-sgi-movie			movie
+workbook/formulaone			vts
+x-conference/x-cooltalk			ice
+x-form/x-openscape			opp
+x-model/x-mesh				msh
+x-music/x-midi				mmid
+x-script/x-wfxclient			wfx
+x-world/x-3dmf				3dmf
+x-world/x-svr				svr
+x-world/x-vream				vrw
+x-world/x-vrml				wrl vrml
+x-world/x-wvr				wvr

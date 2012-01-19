@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Mulgara Semantic Store configuration file.
+
+Webapp specific embedded Mulgara, local:, config.
+-->
+
+<MulgaraConfig>
+  <!-- Not used, but required -->
+  <ServerName>server1</ServerName>
+
+  <!--
+    The path to persist data to, one of:
+
+    + . - current directory (directory from which the Mulgara JAR was run)
+    + temp - default system temporary directory
+    + <path> - user defined (OS dependant) path
+  -->
+  <PersistencePath>.</PersistencePath>
+
+  <!-- Maximum duration in seconds for transactions, a positive integer -->
+  <TransactionTimeout>604800</TransactionTimeout> <!-- one week -->
+
+  <!--
+    Database implementation to use, one of:
+
+    org.mulgara.resolver.Database
+    org.mulgara.store.xa.XADatabaseImpl
+      (Metaphasic transactional triple store)
+  <TripleStoreImplementation>org.mulgara.store.xa.XADatabaseImpl</TripleStoreImplementation>
+  -->
+  <TripleStoreImplementation>org.mulgara.resolver.Database</TripleStoreImplementation>
+
+  <!--
+    The Related Query Handler is the implementation of
+    org.mulgara.resolver.RelatedHandler.
+  -->
+  <RelatedQueryHandler
+    type="org.mulgara.resolver.RelatedQueryHandlerImpl"/>
+
+  <!--
+    Security adapter implementation.  If this element is omitted, the only
+    forbidden operations will be the modification or deletion of the system
+    model.
+  -->
+  <!--
+    <SecurityAdapterClass>com.mulgara.store.security.model.ModelSecurityAdapterFactory</SecurityAdapterClass>
+  -->
+
+  <!--
+    Implementations of the persistent and temporary node pools, string pools,
+    and resolvers.  The persistent resolver is used to manipulate the system
+    model.
+  -->
+  <PersistentNodePoolFactory type="org.mulgara.store.nodepool.xa.XANodePoolFactory" dir="xaNodePool"/>
+  <TemporaryNodePoolFactory  type="org.mulgara.store.nodepool.memory.MemoryNodePoolFactory"/>
+  <PersistentStringPoolFactory type="org.mulgara.store.stringpool.xa.XAStringPoolFactory" dir="xaStringPool"/>
+  <TemporaryStringPoolFactory type="org.mulgara.store.stringpool.memory.MemoryStringPoolFactory"/>
+  <PersistentResolverFactory type="org.mulgara.resolver.store.StatementStoreResolverFactory" dir="xaStatementStore"/>
+  <TemporaryResolverFactory type="org.mulgara.resolver.memory.MemoryResolverFactory" dir="tempStatementStore"/>
+
+  <!--
+    Implementations of a rule engine.
+  -->
+  <RuleLoader type="org.mulgara.krule.KruleLoader"/>
+
+  <!--
+    Implementations of the ContentHandler interface to use for resolving MIME
+    types.
+  -->
+  <DefaultContentHandler type="org.mulgara.content.rdfxml.RDFXMLContentHandler"/>
+  <!--
+  <DefaultContentHandler type="org.mulgara.content.rio.RDFXMLContentHandler"/>
+  -->
+  <ContentHandler type="org.mulgara.content.mp3.MP3ContentHandler"/>
+  <ContentHandler type="org.mulgara.content.mbox.MBoxContentHandler"/>
+  <ContentHandler type="org.mulgara.content.n3.N3ContentHandler"/>
+
+  <!--
+    Additional resolvers
+  -->
+  <ResolverFactory type="org.mulgara.resolver.file.FileResolverFactory"/>
+  <ResolverFactory type="org.mulgara.resolver.xsd.XSDResolverFactory"/>
+  <ResolverFactory type="org.mulgara.resolver.http.HttpResolverFactory"/>
+  <ResolverFactory type="org.mulgara.resolver.nodetype.NodeTypeResolverFactory"/>
+  <ResolverFactory type="org.mulgara.resolver.jar.JarResolverFactory"/>
+  <ResolverFactory type="org.mulgara.resolver.view.ViewResolverFactory"/>
+  <ResolverFactory type="org.mulgara.resolver.filesystem.FileSystemResolverFactory"/>
+  <ResolverFactory type="org.mulgara.resolver.prefix.PrefixResolverFactory"/>
+  <ResolverFactory type="org.mulgara.resolver.relational.RelationalResolverFactory"/>
+  <ResolverFactory type="org.topazproject.mulgara.resolver.FilterResolverFactory"/>
+  <ResolverFactory type="org.mulgara.resolver.distributed.DistributedResolverFactory"/>
+  <ResolverFactory type="org.mulgara.resolver.nullres.NullResolverFactory"/>
+  <ResolverFactory type="org.topazproject.mulgara.resolver.stringcompare.StringCompareResolverFactory"/>
+
+  <!-- iTQL script to run on startup -->
+  <StartupScript>foo.itql</StartupScript>
+
+  <Smtp></Smtp>
+</MulgaraConfig>

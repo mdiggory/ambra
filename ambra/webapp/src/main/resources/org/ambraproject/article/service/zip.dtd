@@ -1,0 +1,58 @@
+<!--
+  $HeadURL::                                                                            $
+  $Id$
+  
+  Copyright (c) 2006-2010 by Public Library of Science
+  http://plos.org
+  http://ambraproject.org
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+  http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!--
+  - This is the DTD for describing the entries in a zip archive. On ingest the zip archive
+  - is examined and document conforming to this DTD is generated; that document is then
+  - passed to the main stylesheet for processing.
+  -->
+
+<!ELEMENT ZipInfo (ZipEntry*) >
+<!ATTLIST ZipInfo
+    name           CDATA          #IMPLIED >
+
+<!ELEMENT ZipEntry (Comment?, Extra?) >
+<!ATTLIST ZipEntry
+    name           CDATA          #REQUIRED
+    isDirectory    (true | false) "false"
+    crc            CDATA          #IMPLIED
+    size           CDATA          #IMPLIED
+    compressedSize CDATA          #IMPLIED
+    time           CDATA          #IMPLIED >
+
+<!ELEMENT Comment (#PCDATA) >
+<!ELEMENT Extra   (#PCDATA) >
+
+<!-- Example:
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ZipInfo SYSTEM "zip.dtd">
+<ZipInfo name="foo.zip">
+  <ZipEntry name="README.txt"/>
+  <ZipEntry name="src" isDirectory="true">
+    <Extra>iFkCB8w@w9==</Extra>
+  </ZipEntry>
+  <ZipEntry name="src/java" isDirectory="true">
+    <Extra>iFkCB8w@w9==</Extra>
+  </ZipEntry>
+  <ZipEntry name="src/java/blah.java">
+    <Comment>A test file</Comment>
+  </ZipEntry>
+</ZipInfo>
+-->

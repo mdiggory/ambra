@@ -1,0 +1,6 @@
+#Properties for connecting the doi resolver to the ambra database.  Only relevant on a dev setup, since production
+#installs will use a container jndi datasource
+ambra.services.database.driver=com.mysql.jdbc.Driver
+ambra.services.database.url=jdbc:mysql://localhost/ambra
+ambra.services.database.username=root
+ambra.services.database.password=

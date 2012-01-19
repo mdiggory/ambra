@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  Copyright (c) 2006-2010 by Public Library of Science
+  http://plos.org
+  http://ambraproject.org
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<config>
+  <ambra>
+    <services>
+      <cas>
+        <db>
+        <!-- The following entries defnine how the java webapp talk to the database.
+             For example, talking to postgresql, you need the database name at the end of the url
+             The user and password are for the database as well. -->
+
+          <user>casuser</user>                         <!-- database user name -->
+          <password>caspass</password>                 <!-- database user password -->
+          <url>jdbc:postgresql://localhost/casdb</url> <!-- jdbc url - VERIFY DB NAME at end -->
+          <driver>org.postgresql.Driver</driver>       <!-- jdbc driver to use -->
+
+          <initialSize>2</initialSize> <!-- Initial number of db connections in pool -->
+          <maxActive>10</maxActive>    <!-- Maximum number of db connections in pool -->
+
+          <!-- Queries used by cas to get and set user data in database -->
+          <connectionValidationQuery>select 1</connectionValidationQuery>
+          <guidToUsernameSql>select loginname from plos_user where id=?</guidToUsernameSql>
+          <usernameToGuidSql>select id from plos_user where lower(loginname)=lower(?)</usernameToGuidSql>
+        </db>
+      </cas>
+    </services>
+  </ambra>
+</config>

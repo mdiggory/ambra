@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2006-2010 by Public Library of Science
+  http://plos.org
+  http://ambraproject.org
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<beans default-autowire="byName"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+  <util:list id="profaneWords">
+    <value>ass lick</value>
+    <value>asses</value>
+    <value>asshole</value>
+    <value>assholes</value>
+    <value>asskisser</value>
+    <value>asswipe</value>
+    <value>bastard</value>
+    <value>beastial</value>
+    <value>beastiality</value>
+    <value>beastility</value>
+    <value>belly whacker</value>
+    <value>bestiality</value>
+    <value>bitcher</value>
+    <value>bitchers</value>
+    <value>bitchin</value>
+    <value>bitching</value>
+    <value>blow job</value>
+    <value>blowjob</value>
+    <value>blowjobs</value>
+    <value>bonehead</value>
+    <value>boner</value>
+    <value>browntown</value>
+    <value>bucket cunt</value>
+    <value>bull shit</value>
+    <value>bullshit</value>
+    <value>bung hole</value>
+    <value>butt breath</value>
+    <value>butt fucker</value>
+    <value>butt hair</value>
+    <value>buttface</value>
+    <value>buttfuck</value>
+    <value>buttfucker</value>
+    <value>butthole</value>
+    <value>buttpicker</value>
+    <value>circle jerk</value>
+    <value>clit</value>
+    <value>cobia</value>
+    <value>cocksuck </value>
+    <value>cocksucked </value>
+    <value>cocksucker</value>
+    <value>cocksucking</value>
+    <value>cocksucks</value>
+    <value>cooter</value>
+    <value>cum</value>
+    <value>cummer</value>
+    <value>cumming</value>
+    <value>cums</value>
+    <value>cumshot</value>
+    <value>cunt</value>
+    <value>cuntlick</value>
+    <value>cuntlicker</value>
+    <value>cuntlicking</value>
+    <value>cunts</value>
+    <value>cyberfuc</value>
+    <value>cyberfuck</value>
+    <value>cyberfucked</value>
+    <value>cyberfucker</value>
+    <value>cyberfuckers</value>
+    <value>cyberfucking</value>
+    <value>dildo</value>
+    <value>dildos</value>
+    <value>dink</value>
+    <value>dinks</value>
+    <value>dipshit</value>
+    <value>douche bag</value>
+    <value>dumbass</value>
+    <value>fag</value>
+    <value>fagget</value>
+    <value>fagging</value>
+    <value>faggit</value>
+    <value>faggot</value>
+    <value>faggs</value>
+    <value>fagot</value>
+    <value>fagots</value>
+    <value>fags</value>
+    <value>fatass</value>
+    <value>fatso</value>
+    <value>fingerfuck</value>
+    <value>fingerfucked</value>
+    <value>fingerfucker</value>
+    <value>fingerfuckers</value>
+    <value>fingerfucking</value>
+    <value>fingerfucks</value>
+    <value>fistfuck</value>
+    <value>fistfucked</value>
+    <value>fistfucker</value>
+    <value>fistfuckers</value>
+    <value>fistfucking</value>
+    <value>fistfuckings</value>
+    <value>fistfucks</value>
+    <value>fuck</value>
+    <value>fucked</value>
+    <value>fucker</value>
+    <value>fuckers</value>
+    <value>fuckin</value>
+    <value>fucking</value>
+    <value>fuckings</value>
+    <value>fuckme</value>
+    <value>fucks</value>
+    <value>fuk</value>
+    <value>fuks</value>
+    <value>furburger</value>
+    <value>gangbang</value>
+    <value>gangbanged </value>
+    <value>gangbangs</value>
+    <value>gaysex</value>
+    <value>gazongers</value>
+    <value>goddamn</value>
+    <value>gook</value>
+    <value>guinne</value>
+    <value>hard on</value>
+    <value>hardcoresex</value>
+    <value>horniest</value>
+    <value>hotsex</value>
+    <value>hussy</value>
+    <value>jack off</value>
+    <value>jacking off</value>
+    <value>jackoff</value>
+    <value>jack off</value>
+    <value>jack-off</value>
+    <value>jap</value>
+    <value>jerk off</value>
+    <value>jerk-off</value>
+    <value>jism</value>
+    <value>jiz</value>
+    <value>jizm</value>
+    <value>jizz</value>
+    <value>kike</value>
+    <value>kondum</value>
+    <value>kondums</value>
+    <value>kraut</value>
+    <value>kum</value>
+    <value>kumming</value>
+    <value>kums</value>
+    <value>kunilingus</value>
+    <value>lesbo</value>
+    <value>mothafuck</value>
+    <value>mothafucka</value>
+    <value>mothafuckas</value>
+    <value>mothafuckaz</value>
+    <value>mothafucked</value>
+    <value>mothafucker</value>
+    <value>mothafuckers</value>
+    <value>mothafuckin</value>
+    <value>mothafucking</value>
+    <value>mothafuckings</value>
+    <value>mothafucks</value>
+    <value>motherfuck</value>
+    <value>motherfucked</value>
+    <value>motherfucker</value>
+    <value>motherfuckers</value>
+    <value>motherfuckin</value>
+    <value>motherfucking</value>
+    <value>motherfuckings</value>
+    <value>motherfucks</value>
+    <value>nigger</value>
+    <value>niggers</value>
+    <value>orgasim</value>
+    <value>orgasims</value>
+    <value>phonesex</value>
+    <value>phuk</value>
+    <value>phuked</value>
+    <value>phuking</value>
+    <value>phukked</value>
+    <value>phukking</value>
+    <value>phuks</value>
+    <value>phuq</value>
+    <value>pimp</value>
+    <value>pisser</value>
+    <value>pissers</value>
+    <value>pisses</value>
+    <value>pissin</value>
+    <value>pissoff</value>
+    <value>pornos</value>
+    <value>pussys</value>
+    <value>schlong</value>
+    <value>sheister</value>
+    <value>shit</value>
+    <value>shited</value>
+    <value>shitfull</value>
+    <value>shiting</value>
+    <value>shitings</value>
+    <value>shits</value>
+    <value>shitted</value>
+    <value>shitter</value>
+    <value>shitters</value>
+    <value>shitting</value>
+    <value>shittings</value>
+    <value>shitty</value>
+    <value>slut</value>
+    <value>sluts</value>
+    <value>twat</value>
+    <value>wetback</value>
+    <value>whore</value>
+    <value>wop</value>
+  </util:list>
+
+</beans>

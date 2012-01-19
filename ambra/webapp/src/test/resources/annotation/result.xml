@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article article-type="research-article"
+         dtd-version="2.0"
+         xml:lang="EN"
+         xmlns=""
+         xmlns:aml="http://topazproject.org/aml/"
+         xmlns:mml="http://www.w3.org/1998/Math/MathML"
+         xmlns:xlink="http://www.w3.org/1999/xlink">
+  <front>
+    <article-meta>
+      <abstract>
+        <p>Abstract <aml:annotated aml:first="true" aml:id="1">goes</aml:annotated> here.</p>
+      </abstract>
+    </article-meta>
+  </front>
+  <body>
+    <sec id="s1">
+      <title>Introduction</title>
+      <p>The quick brown <aml:annotated aml:first="true" aml:id="2">fox</aml:annotated> jumps over a lazy dog.</p>
+    </sec>
+  </body>
+  <aml:regions>
+    <aml:region aml:id="1" aml:numComments="0" aml:numFormalCorrections="0"
+                aml:numMinorCorrections="0" aml:numRetractions="1">
+      <aml:annotation aml:id="retrcation:3245"/>
+    </aml:region>
+    <aml:region aml:id="2" aml:numComments="0" aml:numFormalCorrections="1"
+                aml:numMinorCorrections="0" aml:numRetractions="0">
+      <aml:annotation aml:id="formalCorrection:1234"/>
+    </aml:region>
+  </aml:regions>
+  <aml:annotations xmlns:a="http://www.w3.org/2000/10/annotation-ns#"
+                   xmlns:d="http://purl.org/dc/elements/1.1/"
+                   xmlns:dt="http://purl.org/dc/terms/"
+                   xmlns:r="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                   xmlns:topaz="http://rdf.topazproject.org/RDF/">
+    <aml:annotation aml:id="formalCorrection:1234">
+      <r:type r:resource="http://rdf.topazproject.org/RDF/2008/01/annotationType#FormalCorrection"/>
+      <a:annotates r:resource="info:doi/10.1371/journal.pone.0002250"/>
+      <a:context>info:doi/10.1371/journal.pone.0002250#xpointer(string-range(%2farticle%5b1%5d%2fbody%5b1%5d%2fsec%5b1%5d%2fp%5b1%5d%2c+''%2c+17%2c+3)%5b1%5d)</a:context>
+      <d:creator r:resource="user:1"/>
+      <a:created>2009-03-22T08:00:00Z</a:created>
+      <a:body r:resource="AnnotationBlob:1"/>
+      <d:title>Formal Correction Title</d:title>
+      <topaz:state>0</topaz:state>
+    </aml:annotation>
+    <aml:annotation aml:id="retrcation:3245">
+      <r:type r:resource="http://rdf.topazproject.org/RDF/2008/01/annotationType#Retraction"/>
+      <a:annotates r:resource="info:doi/10.1371/journal.pone.0002250"/>
+      <a:context>info:doi/10.1371/journal.pone.0002250#xpointer(string-range(%2Farticle%5B1%5D%2Ffront%5B1%5D%2Farticle-meta%5B1%5D%2Fabstract%5B1%5D%2Fp%5B1%5D%2C+''%2C+10%2C+4)%5B1%5D)</a:context>
+      <d:creator r:resource="user:2"/>
+      <a:created>2008-12-01T08:00:00Z</a:created>
+      <a:body r:resource="AnnotationBlob:2"/>
+      <d:title>Retraction Title</d:title>
+      <topaz:state>0</topaz:state>
+    </aml:annotation>
+  </aml:annotations>
+</article>

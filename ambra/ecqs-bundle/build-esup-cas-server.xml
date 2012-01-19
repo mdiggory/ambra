@@ -1,0 +1,212 @@
+<!--
+  $HeadURL:: http://gandalf/svn/head/topaz/core/src/main/java/org/topazproject/otm/Abst#$
+  $Id: AbstractConnection.java 4807 2008-02-27 11:06:12Z ronald $
+  
+  Copyright (c) 2006-2010 by Public Library of Science
+  http://plos.org
+  http://ambraproject.org
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+  http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<project name="esup-cas-server" default="help" basedir=".">
+
+  <!-- properties file -->
+  <property file="properties/build.properties"/>
+
+  <property name="cas-server.compile.deprecation" value="true"/>
+  <property name="cas-server.compile.debug" value="true"/>
+  <property name="cas-server.compile.optimize" value="false"/>
+
+  <!-- ========================================================== 
+       Simple help
+  -->  
+  <target name="help" description="Simple help">
+    <echo message="Please refer to http://esup-casgeneric.sourceforge.net"/>
+  </target>
+  
+  <!-- ========================================================== 
+       Unzip esup-casgeneric package
+  -->  
+  <target name="unzip-esup-casgeneric">
+    <unzip src="packages/esup-casgeneric-${esup-casgeneric.version}-${esup-casgeneric.release}.zip"
+           dest="."/>
+  </target>
+  
+  <!-- ========================================================== 
+       Unzip cas-server package
+  -->  
+  <target name="unzip-cas-server">
+    <unzip src="packages/cas-server-${cas-server.version}.zip"
+           dest="."/>
+  </target>
+  
+  <!-- ========================================================== 
+       Customize CAS Generic Handler
+  -->  
+  <target name="customize-esup-casgeneric" depends="unzip-esup-casgeneric">
+    <!-- set a default value for the way authentication will be done -->
+    <property name="esup-casgeneric.auth" value="empty-password"/>
+    <condition property="esup-casgeneric.auth.exists">
+      <available file="custom/esup-casgeneric-auth/${esup-casgeneric.auth}" type="dir"/>
+    </condition>
+    <!-- check the corresponding folder exists -->
+    <fail message="custom/esup-casgeneric-auth/${esup-casgeneric.auth}/ folder was not found, can not customize." 
+          unless="esup-casgeneric.auth.exists"/>
+    <!-- copy authentication files -->
+    <copy todir="esup-casgeneric-${esup-casgeneric.version}-${esup-casgeneric.release}" overwrite="true">
+      <fileset dir="custom/esup-casgeneric-auth/${esup-casgeneric.auth}"/>
+      <filterchain>
+        <expandproperties/>
+      </filterchain>
+    </copy>
+    <!-- patch esup-casgeneric -->
+    <copy todir="esup-casgeneric-${esup-casgeneric.version}-${esup-casgeneric.release}">
+      <fileset dir="custom/esup-casgeneric-patch"/>
+      <filterchain>
+        <replacetokens>
+          <token key="CAS-SERVER_VERSION" value="${cas-server.version}"/>
+        </replacetokens>
+      </filterchain>
+    </copy>
+  </target>
+
+  <!-- ========================================================== 
+       Customize the CAS server
+  -->  
+  <target name="customize-cas-server" depends="unzip-cas-server">
+    <!-- set a default value for the ${cas-server.render} property --> 
+    <property name="cas-server.render" value="esup-portail.org"/>
+    <!-- check that the properties file corresponding to the rendering name exists -->
+    <condition property="cas-server.render.exists">
+      <available file="custom/cas-server-render/${cas-server.render}.properties" type="file"/>
+    </condition>
+    <fail message="custom/cas-server-render/${cas-server.render}.properties file was not found, can not customize." 
+          unless="cas-server.render.exists"/>
+    <!-- load the corresponding properties -->
+    <loadproperties srcfile="custom/cas-server-render/${cas-server.render}.properties"/>
+    <!-- set a default value for the language used (in case it 
+    is not defined in the properties file) -->
+    <property name="cas-server.lang" value="en"/>
+    <!-- copy cas-server-render/xxx/* but JSP files -->
+    <copy todir="cas-server-${cas-server.version}" failonerror="false">
+      <fileset dir="custom/cas-server-render/${cas-server.render}">
+        <exclude name="**/*.jsp"/>
+      </fileset>
+    </copy>
+    <!-- copy cas-server-render/xxx/ JSP files (expanding properties) -->
+    <copy todir="cas-server-${cas-server.version}" failonerror="false">
+      <fileset dir="custom/cas-server-render/${cas-server.render}">
+        <include name="**/*.jsp"/>
+      </fileset>
+      <filterchain>
+        <expandproperties/>
+      </filterchain>
+    </copy>
+    <!-- check that the language is defined -->
+    <condition property="cas-server.lang.exists">
+      <available file="custom/cas-server-lang/${cas-server.lang}" type="dir"/>
+    </condition>
+    <fail message="custom/cas-server-lang/${cas-server.lang}/ folder was not found, can not customize." 
+          unless="cas-server.lang.exists"/>
+    <!-- begin customizations made for cas-mod itself -->
+    <copy todir="cas-server-${cas-server.version}">
+      <fileset dir="custom/cas-server-patch">
+				<exclude name="**/*.jar"/>
+			</fileset>
+      <fileset dir="custom/cas-server-lang/common"/>
+      <fileset dir="custom/cas-server-lang/${cas-server.lang}"/>
+      <filterchain>
+        <expandproperties/>
+      </filterchain>
+    </copy>
+    <copy todir="cas-server-${cas-server.version}">
+      <fileset dir="custom/cas-server-patch">
+				<include name="**/*.jar"/>
+			</fileset>
+    </copy>
+    <!-- end customizations made for cas-mod itself -->
+  </target>
+  
+  <!-- ========================================================== 
+       Deploy esup-casgeneric into cas-server
+  -->  
+  <target name="deploy-esup-casgeneric" depends="customize-cas-server,customize-esup-casgeneric">
+    <ant dir="esup-casgeneric-${esup-casgeneric.version}-${esup-casgeneric.release}" target="deploy"/>
+  </target>
+  
+  <!-- ========================================================== 
+       Build classes and copy files to build/
+  -->  
+  <target name="build-cas-server" depends="deploy-esup-casgeneric">
+    <mkdir dir="build/WEB-INF/classes"/>
+    <javac srcdir="cas-server-${cas-server.version}/src" 
+           destdir="build/WEB-INF/classes" 
+           deprecation="${cas.compile.deprecation}" 
+           debug="${cas.compile.debug}" 
+           optimize="${cas.compile.optimize}">
+      <classpath>
+        <pathelement path="cas-server-${cas-server.version}/lib/servlet.jar"/>
+        <fileset dir="cas-server-${cas-server.version}/web/WEB-INF/lib" includes="*"/>
+      </classpath>
+    </javac> 
+    <!-- copy pages, jar files and configuration files -->
+    <copy todir="build">
+      <fileset dir="cas-server-${cas-server.version}/web"/>
+    </copy>
+  </target>
+  
+  <!-- ========================================================== 
+       Deploy the CAS server into Tomcat
+  -->  
+  <target name="deploy-cas-server" depends="build-cas-server">
+    <fail message="Please set ${cas-server.deploy.home} in properties/build.properties." unless="cas-server.deploy.home"/>
+    <mkdir dir="${cas-server.deploy.home}"/>
+    <copy todir="${cas-server.deploy.home}">
+      <fileset dir="build"/>
+    </copy>
+  </target>
+
+  <!-- ========================================================== 
+       Prepare, patch, customize, build and deploy into Tomcat
+  -->  
+  <target name="deploy" 
+          depends="deploy-cas-server" 
+          description="Prepare, patch, customize, build and deploy into Tomcat">
+    <echo>
+Yale ITS CAS server has been deployed in ${cas-server.deploy.home}.
+You can now add a new context to your servlet container.
+If you use Jakarta Tomcat, you may add the following line within the &lt;Host name="localhost"&gt; tag:
+&lt;Context path="" docBase="${cas-server.deploy.home}"/&gt;
+    </echo>
+  </target>
+
+  <!-- ========================================================== 
+       Undeploy everything
+  -->  
+  <target name="undeploy" 
+          description="Undeploy">
+    <delete dir="${cas-server.deploy.home}"/>
+  </target>
+
+  <!-- ========================================================== 
+       Clean everything
+  -->  
+  <target name="clean" 
+          description="Clean everything">
+    <delete dir="cas-server-${cas-server.version}"/>
+    <delete dir="esup-casgeneric-${esup-casgeneric.version}-${esup-casgeneric.release}"/>
+    <delete dir="build"/>
+  </target>
+
+</project>
+

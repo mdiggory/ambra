@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+    default-lazy-init="true">
+
+  <bean id="datasource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    <property name="url" value="jdbc:hsqldb:mem:testdb" />
+    <property name="driverClassName" value="org.hsqldb.jdbcDriver" />
+    <property name="username" value="sa" />
+    <property name="password" value="" />
+  </bean>
+
+  <bean id="sessionFactory" class="org.ambraproject.testutils.HibernateTestSessionFactory"
+      destroy-method="destroy" >
+    <property name="dataSource" ref="datasource"/>
+    <property name="schemaUpdate" value="true" />
+    <property name="mappingLocations">
+      <list>
+        <!--OLD HBMs-->
+        <value>hbm/CustomTypes.hbm.xml</value>
+        <value>hbm/RelatedArticle.hbm.xml</value>
+        <value>hbm/License.hbm.xml</value>
+
+        <value>hbm/UserProfile.hbm.xml</value>
+        <value>hbm/UserAccount.hbm.xml</value>
+        <value>hbm/UserRole.hbm.xml</value>
+        <value>hbm/UserPreferences.hbm.xml</value>
+        <value>hbm/UserPreference.hbm.xml</value>
+        <value>hbm/AuthenticationId.hbm.xml</value>
+
+        <value>hbm/Citation.hbm.xml</value>
+
+        <value>hbm/Annotation.hbm.xml</value>
+        <value>hbm/ByteArrayBlob.hbm.xml</value>
+        <value>hbm/RatingContent.hbm.xml</value>
+        <value>hbm/TrackbackContent.hbm.xml</value>
+        <value>hbm/RatingSummaryContent.hbm.xml</value>
+        <value>hbm/Reply.hbm.xml</value>
+
+        <value>hbm/Aggregations.hbm.xml</value>
+        <value>hbm/EditorialBoard.hbm.xml</value>
+        <value>hbm/CitedPerson.hbm.xml</value>
+        <value>hbm/ArticleContributor.hbm.xml</value>
+
+        <!--NEW HBMS-->
+
+        <value>classpath:org/ambraproject/models/*.hbm.xml</value>
+
+      </list>
+    </property>
+    <property name="hibernateProperties">
+      <props>
+        <prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
+      </props>
+    </property>
+  </bean>
+
+  <bean id="dummyDataStore" class="org.ambraproject.testutils.DummyHibernateDataStore">
+    <property name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+</beans>

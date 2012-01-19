@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  This file is the Ambra template for the Public Library of Science site. 
+-->
+<config>
+  <ambra>
+    <!-- virtual journal config -->
+    <virtualJournals>
+      <OverlayJournal>
+        <eIssn>1111-3333</eIssn>
+        <description>Overlay Journal</description>
+        <rules>
+          <host>.*overlay.*</host>
+          <plosJournal>OverlayJournal</plosJournal>
+        </rules>
+        <url>http://overlayjournal.example.org</url>
+        <!-- Atom feed overrides -->
+        <platform>
+          <feed>
+            <title>Overlay Journal</title>
+            <id>info:doi/10.1371/feed.ovrj</id>
+          </feed>
+        </platform>
+        <!-- Configuration keys for displaying recent articles tab widget on home page -->
+        <recentArticles>
+          <numDaysInPast>14</numDaysInPast>
+          <numArticlesToShow>5</numArticlesToShow>
+          <typeUriArticlesToShow>
+            <articleTypeUri>http://rdf.plos.org/RDF/articleType/Research%20Article</articleTypeUri>
+          </typeUriArticlesToShow>
+        </recentArticles>
+      </OverlayJournal>
+    </virtualJournals>
+
+    <freemarker>
+      <!--
+        # This section defines the various journals and the css and javascript files which should be
+        # included on each page as well as the page title.  The values within the <default> tag are used
+        # if any of the values are missing in the <page> definitions.  Note, that the title, css, and
+        # javascript level values are entirely replaced, they are not additive.  Override config files
+        # may define values for each of those three variables and they will supsercede values present
+        # in subsequent config values.  The lookup for values is as follows:
+        # 1. Page defined in journal
+        # 2. Default value defined in journal
+        # 3. Page defined in default journal
+        # 4. Default value in default journal
+        # To define an empty value for a certain page so that it doesn't use defaults, just put the
+        # element tag with no value, e.g. <javascript></javascript>
+      -->
+
+      <!-- Overlay Journal. Anything you want to override must be listed here -->
+      <journal>
+        <name>OverlayJournal</name>
+        <metaKeywords>Overlay Journal\, Secondary\, Generic\, Default</metaKeywords>
+        <metaDescription>This is an example second journal on Ambra.</metaDescription>
+        <articleTitlePrefix>Overlay Journal:</articleTitlePrefix>
+        <displayName>Overlay Journal</displayName>
+        <default>
+          <title>
+            Overlay Journal: Serving as an Example for the Ambra Configuration community
+          </title>
+        </default>
+        <page>
+          <name>/article/article_body.ftl</name>
+          <title>CODE_ARTICLE_TITLE</title>
+          <css>
+            <file>dojo.css</file>
+            <file>/css/star_rating.css</file>
+            <file>/css/rating.css</file>
+            <file>/css/screen.css</file>
+            <file>/css/iepc.css</file>
+          </css>
+          <javascript>
+            <file>/javascript/dojo/dojo/dojo.js</file>
+            <file>/javascript/dojo/dojo/ambra.js</file>
+            <file>/javascript/init_global.js</file>
+            <file>/javascript/init_article.js</file>
+          </javascript>
+        </page>
+      </journal>
+    </freemarker>
+  </ambra>
+</config>

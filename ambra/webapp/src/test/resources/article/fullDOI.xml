@@ -1,0 +1,758 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article
+    PUBLIC "-//NLM//DTD Journal Publishing DTD v2.0 20040830//EN"
+    "http://dtd.nlm.nih.gov/publishing/2.0/journalpublishing.dtd">
+<article xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"
+         article-type="research-article" dtd-version="2.0" xml:lang="EN">
+  <front>
+    <journal-meta>
+      <journal-id journal-id-type="nlm-ta">PLoS ONE</journal-id>
+      <journal-id journal-id-type="publisher-id">plos</journal-id>
+      <journal-id journal-id-type="pmc">plosone</journal-id>
+      <journal-title>PLoS ONE</journal-title>
+      <issn pub-type="epub">1932-6203</issn>
+      <publisher>
+        <publisher-name>Public Library of Science</publisher-name>
+        <publisher-loc>San Francisco, USA</publisher-loc>
+      </publisher>
+    </journal-meta>
+    <article-meta><self-uri>http://dx.plos.org/10.1371/journal.pone.0002250</self-uri>
+      <article-id pub-id-type="publisher-id">08-PONE-RA-03274R1</article-id>
+      <article-id pub-id-type="doi">http://dx.plos.org/10.1371/journal.pone.0002250</article-id>
+      <article-categories>
+        <subj-group subj-group-type="heading">
+          <subject>Research Article</subject>
+        </subj-group>
+        <subj-group subj-group-type="Discipline">
+          <subject>Cell Biology</subject>
+          <subject>Ecology</subject>
+          <subject>Evolutionary Biology</subject>
+          <subject>Genetics and Genomics</subject>
+          <subject>Microbiology</subject>
+          <subject>Molecular Biology</subject>
+          <subject>Plant Biology</subject>
+          <subject>Virology</subject>
+        </subj-group>
+      </article-categories>
+      <title-group>
+        <article-title>Title has
+          <italic>Italics</italic>
+        </article-title>
+        <alt-title alt-title-type="running-head">Marine Picoplankton Virus</alt-title>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author" xlink:type="simple">
+          <name name-style="western">
+            <surname>Derelle</surname>
+            <given-names>Hervé</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff2">
+            <sup>2</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author" xlink:type="simple">
+          <name name-style="western">
+            <surname>Escande</surname>
+            <given-names>Marie-Line</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff2">
+            <sup>2</sup>
+          </xref>
+        </contrib>
+      </contrib-group>
+      <aff id="aff1">
+        <label>1</label>
+        <addr-line>Université Lab with foreign character</addr-line>
+      </aff>
+      <aff id="aff2">
+        <label>2</label>
+        <addr-line>CNRS, UMR7628, Laboratoire Arago, Banyuls-sur-Mer, France</addr-line>
+      </aff>
+      <contrib-group>
+        <contrib contrib-type="editor" xlink:type="simple">
+          <name name-style="western">
+            <surname>Ward</surname>
+            <given-names>Naomi</given-names>
+          </name>
+          <role>Editor</role>
+          <xref ref-type="aff" rid="edit1"/>
+        </contrib>
+      </contrib-group>
+      <aff id="edit1">University of Wyoming, United States of America</aff>
+      <author-notes>
+        <corresp id="cor1">* E-mail:
+          <email xlink:type="simple">nigel.grimsley@obs-banyuls.fr</email>
+        </corresp>
+        <fn fn-type="con">
+          <p>Conceived and designed the experiments: HM NG ED. ... </p>
+        </fn>
+      </author-notes>
+      <pub-date pub-type="collection">
+        <year>2008</year>
+      </pub-date>
+      <pub-date pub-type="epub">
+        <day>28</day>
+        <month>5</month>
+        <year>2008</year>
+      </pub-date>
+      <volume>3</volume>
+      <issue>5</issue>
+      <elocation-id>e2250</elocation-id>
+      <history>
+        <date date-type="received">
+          <day>10</day>
+          <month>1</month>
+          <year>2008</year>
+        </date>
+        <date date-type="accepted">
+          <day>2</day>
+          <month>4</month>
+          <year>2008</year>
+        </date>
+      </history>
+      <copyright-statement>Derelle et al. This is an open-access article distributed under the terms of the Creative Commons Attribution License, which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.</copyright-statement>
+      <copyright-year>2008</copyright-year>
+      <abstract>
+        <p>AbstractText.</p>
+      </abstract>
+      <counts>
+        <page-count count="13"/>
+      </counts>
+    </article-meta>
+  </front>
+  <body>
+    <sec id="s1">
+      <title>Introduction</title>
+      <p>References<xref ref-type="bibr" rid="pone.0002250-Suttle1">
+        [1]</xref>,<xref ref-type="bibr" rid="pone.0002250-Suttle2">[2]</xref>, more references
+        <xref ref-type="bibr" rid="pone.0002250-Suttle2">2</xref>-<xref ref-type="bibr" rid="pone.0002250-Brussaard1">7</xref>.
+        Another one<xref ref-type="bibr" rid="pone.0002250-Weinbauer1">[8]</xref>.</p>
+      <p>Test with <italic>italics</italic> host-virus interactions.</p>
+      <p>Test with <italic>Italics <underline>underine</underline></italic></p>
+      <p>External link (<ext-link ext-link-type="uri"
+                   xlink:href="http://www.ncbi.nlm.nih.gov/ICTVdb/Ictv/fs_phyco.htm"
+                   xlink:type="simple">http://www.ncbi.nlm.nih.gov/ICTVdb/Ictv/fs_phyco.htm</ext-link>).</p>
+    </sec>
+    <sec id="s2">
+      <title>Results</title>
+      <sec id="s2a">
+        <title>Section A title</title>
+        <p>Section body with secondary reference (<xref
+              ref-type="fig" rid="pone-0002250-g001">Figure 1B</xref>, see the<xref ref-type="sec"
+              rid="s4">materials and methods [M&amp;M] section</xref>).</p>
+        <fig id="pone-0002250-g001" position="float">
+          <object-id pub-id-type="doi">10.1371/journal.pone.0002250.g001</object-id>
+          <label>Figure 1</label>
+          <caption>
+            <title>Caption title</title>
+            <p>Caption text</p>
+          </caption>
+          <graphic xlink:href="info:doi/10.1371/journal.pone.0002250.g001" alt-version="no"
+                   mimetype="image" position="float" xlink:type="simple"/>
+        </fig>
+        <p>Superscriopt 10<sup>8</sup></p>
+      </sec>
+      <sec id="s2b">
+        <title>Section B Title</title>
+        <p>Table reference (<xref ref-type="table" rid="pone-0002250-t001">Table 1</xref>).</p>
+        <table-wrap id="pone-0002250-t001" position="float">
+          <object-id pub-id-type="doi">10.1371/journal.pone.0002250.t001</object-id>
+          <label>Table 1</label>
+          <caption>
+            <title>Table Caption Title</title>
+          </caption>
+          <graphic id="pone-0002250-t001-1" xlink:href="info:doi/10.1371/journal.pone.0002250.t001"
+                   alt-version="no" mimetype="image" position="float" xlink:type="simple"/>
+          <table alternate-form-of="pone-0002250-t001-1">
+            <colgroup span="1">
+              <col align="left" span="1"/>
+              <col align="center" span="1"/>
+              <col align="center" span="1"/>
+              <col align="center" span="1"/>
+              <col align="center" span="1"/>
+              <col align="center" span="1"/>
+            </colgroup>
+            <thead>
+              <tr>
+                <td align="left" rowspan="1" colspan="1">Species</td>
+                <td align="left" rowspan="1" colspan="1">Class</td>
+                <td align="left" rowspan="1" colspan="1">Clade<xref ref-type="bibr"
+                                                                    rid="pone.0002250-Rodriguez1">
+                  [17]</xref>,
+                  <xref ref-type="bibr" rid="pone.0002250-Guillou1">[42]</xref>
+                </td>
+                <td align="left" rowspan="1" colspan="1">Strain
+                  <xref ref-type="table-fn" rid="nt102">a</xref>
+                </td>
+                <td align="left" rowspan="1" colspan="1">Lysis by OtV5</td>
+                <td align="left" rowspan="1" colspan="1">Reference</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td align="left" rowspan="1" colspan="1">
+                  <italic>Ostreococcus tauri</italic>
+                </td>
+                <td align="left" rowspan="1" colspan="1">Prasinophyceae</td>
+                <td align="left" rowspan="1" colspan="1">C</td>
+                <td align="left" rowspan="1" colspan="1">RCC745</td>
+                <td align="left" rowspan="1" colspan="1">+</td>
+                <td align="left" rowspan="1" colspan="1">
+                  <xref ref-type="bibr" rid="pone.0002250-Courties1">[10]</xref>
+                </td>
+              </tr>
+              <tr>
+                <td align="left" rowspan="1" colspan="1">
+                  <italic>Synechococcus sp</italic>
+                </td>
+                <td align="left" rowspan="1" colspan="1">Chroococcales</td>
+                <td align="left" rowspan="1" colspan="1"/>
+                <td align="left" rowspan="1" colspan="1"/>
+                <td align="left" rowspan="1" colspan="1">-</td>
+                <td align="left" rowspan="1" colspan="1">G. Vétion, pers. comm.</td>
+              </tr>
+              <tr>
+                <td align="left" rowspan="1" colspan="1">
+                  <italic>Micromonas pusilla</italic>
+                </td>
+                <td align="left" rowspan="1" colspan="1">Prasinophyceae</td>
+                <td align="left" rowspan="1" colspan="1">A</td>
+                <td align="left" rowspan="1" colspan="1">RCC827</td>
+                <td align="left" rowspan="1" colspan="1">-</td>
+                <td align="left" rowspan="1" colspan="1"><xref ref-type="bibr"
+                  rid="pone.0002250-Vaulot1">[15]</xref>,<xref ref-type="bibr"
+                  rid="pone.0002250-Fuller1">[90]</xref>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table-wrap-foot>
+            <fn id="nt101">
+              <label>*</label>
+              <p>Table footer</p>
+            </fn>
+            <fn id="nt102">
+              <label>a</label>
+              <p>Table footer 2</p>
+            </fn>
+          </table-wrap-foot>
+        </table-wrap>
+      </sec>
+      <sec id="s2c">
+        <title>Section C Title</title>
+        <p>Funky characters (6.4×10<sup>6</sup>±0.5×10<sup>6</sup>cells/ml)</p>
+      </sec>
+    </sec>
+    <sec id="s3">
+      <title>Discussion</title>
+      <p>Discussion body</p>
+    </sec>
+    <sec id="s4">
+      <title>Materials and Methods</title>
+      <sec id="s4a">
+        <title>Section 4A title</title>
+        <p>Section body</p>
+      </sec>
+      <sec id="s4b">
+        <title>Section 4B title</title>
+        <p>Section body</p>
+        <sec id="s4b1">
+          <title>Section 4B1 Title</title>
+          <p>Section body</p>
+        </sec>
+      </sec>
+    </sec>
+    <sec id="s5">
+      <title>Supporting Information</title>
+      <supplementary-material id="pone.0002250.s001" mimetype="application/x-excel"
+                              xlink:href="info:doi/10.1371/journal.pone.0002250.s001"
+                              position="float" xlink:type="simple">
+        <label>Table S1</label>
+        <caption>
+          <p>Table S1 Caption</p>
+          <p>(0.19 MB XLS)</p>
+        </caption>
+      </supplementary-material>
+    </sec>
+  </body>
+  <back>
+    <ack>
+      <p>Acknowledge</p>
+    </ack>
+    <ref-list>
+      <title>References</title>
+      <ref id="pone.0002250-Suttle1">
+        <label>1</label>
+        <citation citation-type="journal" xlink:type="simple">
+          <person-group person-group-type="author">
+            <name name-style="western">
+              <surname>Suttle</surname>
+              <given-names>CA</given-names>
+            </name>
+          </person-group>
+          <year>2005</year>
+          <article-title>Viruses in the sea.</article-title>
+          <source>Nature</source>
+          <volume>437</volume>
+          <fpage>356</fpage>
+          <lpage>361</lpage>
+        </citation>
+      </ref>
+      <ref id="pone.0002250-Suttle2">
+        <label>2</label>
+        <citation citation-type="journal" xlink:type="simple">
+          <person-group person-group-type="author">
+            <name name-style="western">
+              <surname>Bratbak</surname>
+              <given-names>G</given-names>
+            </name>
+            <name name-style="western">
+              <surname>Wilson</surname>
+              <given-names>W</given-names>
+            </name>
+            <name name-style="western">
+              <surname>Heldal</surname>
+              <given-names>M</given-names>
+            </name>
+          </person-group>
+          <year>1996</year>
+          <article-title>Viral control of <italic>Emiliania huxleyi</italic> blooms?</article-title>
+          <source>J Mar Systems</source>
+          <volume>9</volume>
+          <fpage>75</fpage>
+          <lpage>81</lpage>
+        </citation>
+      </ref>
+      <ref id="pone.0002250-Derelle1">
+        <label>9</label>
+        <citation citation-type="journal" xlink:type="simple">
+          <person-group person-group-type="author">
+            <name name-style="western">
+              <surname>Derelle</surname>
+              <given-names>E</given-names>
+            </name>
+            <name name-style="western">
+              <surname>Ferraz</surname>
+              <given-names>C</given-names>
+            </name>
+            <name name-style="western">
+              <surname>Rombauts</surname>
+              <given-names>S</given-names>
+            </name>
+            <name name-style="western">
+              <surname>Rouze</surname>
+              <given-names>P</given-names>
+            </name>
+            <name name-style="western">
+              <surname>Worden</surname>
+              <given-names>AZ</given-names>
+            </name>
+            <etal/>
+          </person-group>
+          <year>2006</year>
+          <article-title>Genome analysis of the smallest free-living eukaryote
+            <italic>Ostreococcus tauri</italic>
+            unveils many unique features.
+          </article-title>
+          <source>Proc Natl Acad Sci USA</source>
+          <volume>103</volume>
+          <fpage>11647</fpage>
+          <lpage>11652</lpage>
+        </citation>
+      </ref>
+    </ref-list>
+    <fn-group>
+      <fn fn-type="conflict">
+        <p>The authors have declared that no competing interests exist.</p>
+      </fn>
+      <fn fn-type="financial-disclosure">
+        <p>Financial disclosure text</p>
+      </fn>
+    </fn-group>
+  </back>
+</article>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article
+    PUBLIC "-//NLM//DTD Journal Publishing DTD v2.0 20040830//EN"
+    "http://dtd.nlm.nih.gov/publishing/2.0/journalpublishing.dtd">
+<article xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"
+         article-type="research-article" dtd-version="2.0" xml:lang="EN">
+  <front>
+    <journal-meta>
+      <journal-id journal-id-type="nlm-ta">PLoS ONE</journal-id>
+      <journal-id journal-id-type="publisher-id">plos</journal-id>
+      <journal-id journal-id-type="pmc">plosone</journal-id>
+      <journal-title>PLoS ONE</journal-title>
+      <issn pub-type="epub">1932-6203</issn>
+      <publisher>
+        <publisher-name>Public Library of Science</publisher-name>
+        <publisher-loc>San Francisco, USA</publisher-loc>
+      </publisher>
+    </journal-meta>
+    <article-meta><self-uri>http://dx.plos.org/10.1371/journal.pone.0002250</self-uri>
+      <article-id pub-id-type="publisher-id">08-PONE-RA-03274R1</article-id>
+      <article-id pub-id-type="doi">http://dx.plos.org/10.1371/journal.pone.0002250</article-id>
+      <article-categories>
+        <subj-group subj-group-type="heading">
+          <subject>Research Article</subject>
+        </subj-group>
+        <subj-group subj-group-type="Discipline">
+          <subject>Cell Biology</subject>
+          <subject>Ecology</subject>
+          <subject>Evolutionary Biology</subject>
+          <subject>Genetics and Genomics</subject>
+          <subject>Microbiology</subject>
+          <subject>Molecular Biology</subject>
+          <subject>Plant Biology</subject>
+          <subject>Virology</subject>
+        </subj-group>
+      </article-categories>
+      <title-group>
+        <article-title>Title has
+          <italic>Italics</italic>
+        </article-title>
+        <alt-title alt-title-type="running-head">Marine Picoplankton Virus</alt-title>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author" xlink:type="simple">
+          <name name-style="western">
+            <surname>Derelle</surname>
+            <given-names>HervÃ©</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff2">
+            <sup>2</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author" xlink:type="simple">
+          <name name-style="western">
+            <surname>Escande</surname>
+            <given-names>Marie-Line</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff2">
+            <sup>2</sup>
+          </xref>
+        </contrib>
+      </contrib-group>
+      <aff id="aff1">
+        <label>1</label>
+        <addr-line>UniversitÃ© Lab with foreign character</addr-line>
+      </aff>
+      <aff id="aff2">
+        <label>2</label>
+        <addr-line>CNRS, UMR7628, Laboratoire Arago, Banyuls-sur-Mer, France</addr-line>
+      </aff>
+      <contrib-group>
+        <contrib contrib-type="editor" xlink:type="simple">
+          <name name-style="western">
+            <surname>Ward</surname>
+            <given-names>Naomi</given-names>
+          </name>
+          <role>Editor</role>
+          <xref ref-type="aff" rid="edit1"/>
+        </contrib>
+      </contrib-group>
+      <aff id="edit1">University of Wyoming, United States of America</aff>
+      <author-notes>
+        <corresp id="cor1">* E-mail:
+          <email xlink:type="simple">nigel.grimsley@obs-banyuls.fr</email>
+        </corresp>
+        <fn fn-type="con">
+          <p>Conceived and designed the experiments: HM NG ED. ... </p>
+        </fn>
+      </author-notes>
+      <pub-date pub-type="collection">
+        <year>2008</year>
+      </pub-date>
+      <pub-date pub-type="epub">
+        <day>28</day>
+        <month>5</month>
+        <year>2008</year>
+      </pub-date>
+      <volume>3</volume>
+      <issue>5</issue>
+      <elocation-id>e2250</elocation-id>
+      <history>
+        <date date-type="received">
+          <day>10</day>
+          <month>1</month>
+          <year>2008</year>
+        </date>
+        <date date-type="accepted">
+          <day>2</day>
+          <month>4</month>
+          <year>2008</year>
+        </date>
+      </history>
+      <copyright-statement>Derelle et al. This is an open-access article distributed under the terms of the Creative Commons Attribution License, which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.</copyright-statement>
+      <copyright-year>2008</copyright-year>
+      <abstract>
+        <p>AbstractText.</p>
+      </abstract>
+      <counts>
+        <page-count count="13"/>
+      </counts>
+    </article-meta>
+  </front>
+  <body>
+    <sec id="s1">
+      <title>Introduction</title>
+      <p>References<xref ref-type="bibr" rid="pone.0002250-Suttle1">
+        [1]</xref>,<xref ref-type="bibr" rid="pone.0002250-Suttle2">[2]</xref>, more references
+        <xref ref-type="bibr" rid="pone.0002250-Suttle2">2</xref>â€“<xref ref-type="bibr" rid="pone.0002250-Brussaard1">7</xref>.
+        Another one<xref ref-type="bibr" rid="pone.0002250-Weinbauer1">[8]</xref>.</p>
+      <p>Test with <italic>italics</italic> host-virus interactions.</p>
+      <p>Test with <italic>Italics <underline>underine</underline></italic></p>
+      <p>External link (<ext-link ext-link-type="uri"
+                   xlink:href="http://www.ncbi.nlm.nih.gov/ICTVdb/Ictv/fs_phyco.htm"
+                   xlink:type="simple">http://www.ncbi.nlm.nih.gov/ICTVdb/Ictv/fs_phyco.htm</ext-link>).</p>
+    </sec>
+    <sec id="s2">
+      <title>Results</title>
+      <sec id="s2a">
+        <title>Section A title</title>
+        <p>Section body with secondary reference (<xref
+              ref-type="fig" rid="pone-0002250-g001">Figure 1B</xref>, see the<xref ref-type="sec"
+              rid="s4">materials and methods [M&amp;M] section</xref>).</p>
+        <fig id="pone-0002250-g001" position="float">
+          <object-id pub-id-type="doi">10.1371/journal.pone.0002250.g001</object-id>
+          <label>Figure 1</label>
+          <caption>
+            <title>Caption title</title>
+            <p>Caption text</p>
+          </caption>
+          <graphic xlink:href="info:doi/10.1371/journal.pone.0002250.g001" alt-version="no"
+                   mimetype="image" position="float" xlink:type="simple"/>
+        </fig>
+        <p>Superscriopt 10<sup>8</sup></p>
+      </sec>
+      <sec id="s2b">
+        <title>Section B Title</title>
+        <p>Table reference (<xref ref-type="table" rid="pone-0002250-t001">Table 1</xref>).</p>
+        <table-wrap id="pone-0002250-t001" position="float">
+          <object-id pub-id-type="doi">10.1371/journal.pone.0002250.t001</object-id>
+          <label>Table 1</label>
+          <caption>
+            <title>Table Caption Title</title>
+          </caption>
+          <graphic id="pone-0002250-t001-1" xlink:href="info:doi/10.1371/journal.pone.0002250.t001"
+                   alt-version="no" mimetype="image" position="float" xlink:type="simple"/>
+          <table alternate-form-of="pone-0002250-t001-1">
+            <colgroup span="1">
+              <col align="left" span="1"/>
+              <col align="center" span="1"/>
+              <col align="center" span="1"/>
+              <col align="center" span="1"/>
+              <col align="center" span="1"/>
+              <col align="center" span="1"/>
+            </colgroup>
+            <thead>
+              <tr>
+                <td align="left" rowspan="1" colspan="1">Species</td>
+                <td align="left" rowspan="1" colspan="1">Class</td>
+                <td align="left" rowspan="1" colspan="1">Clade<xref ref-type="bibr"
+                                                                    rid="pone.0002250-Rodriguez1">
+                  [17]</xref>,
+                  <xref ref-type="bibr" rid="pone.0002250-Guillou1">[42]</xref>
+                </td>
+                <td align="left" rowspan="1" colspan="1">Strain
+                  <xref ref-type="table-fn" rid="nt102">a</xref>
+                </td>
+                <td align="left" rowspan="1" colspan="1">Lysis by OtV5</td>
+                <td align="left" rowspan="1" colspan="1">Reference</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td align="left" rowspan="1" colspan="1">
+                  <italic>Ostreococcus tauri</italic>
+                </td>
+                <td align="left" rowspan="1" colspan="1">Prasinophyceae</td>
+                <td align="left" rowspan="1" colspan="1">C</td>
+                <td align="left" rowspan="1" colspan="1">RCC745</td>
+                <td align="left" rowspan="1" colspan="1">+</td>
+                <td align="left" rowspan="1" colspan="1">
+                  <xref ref-type="bibr" rid="pone.0002250-Courties1">[10]</xref>
+                </td>
+              </tr>
+              <tr>
+                <td align="left" rowspan="1" colspan="1">
+                  <italic>Synechococcus sp</italic>
+                </td>
+                <td align="left" rowspan="1" colspan="1">Chroococcales</td>
+                <td align="left" rowspan="1" colspan="1"/>
+                <td align="left" rowspan="1" colspan="1"/>
+                <td align="left" rowspan="1" colspan="1">-</td>
+                <td align="left" rowspan="1" colspan="1">G. VÃ©tion, pers. comm.</td>
+              </tr>
+              <tr>
+                <td align="left" rowspan="1" colspan="1">
+                  <italic>Micromonas pusilla</italic>
+                </td>
+                <td align="left" rowspan="1" colspan="1">Prasinophyceae</td>
+                <td align="left" rowspan="1" colspan="1">A</td>
+                <td align="left" rowspan="1" colspan="1">RCC827</td>
+                <td align="left" rowspan="1" colspan="1">-</td>
+                <td align="left" rowspan="1" colspan="1"><xref ref-type="bibr"
+                  rid="pone.0002250-Vaulot1">[15]</xref>,<xref ref-type="bibr"
+                  rid="pone.0002250-Fuller1">[90]</xref>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table-wrap-foot>
+            <fn id="nt101">
+              <label>*</label>
+              <p>Table footer</p>
+            </fn>
+            <fn id="nt102">
+              <label>a</label>
+              <p>Table footer 2</p>
+            </fn>
+          </table-wrap-foot>
+        </table-wrap>
+      </sec>
+      <sec id="s2c">
+        <title>Section C Title</title>
+        <p>Funky characters (6.4Ã—10<sup>6</sup>Â±0.5Ã—10<sup>6</sup>cells/ml)</p>
+      </sec>
+    </sec>
+    <sec id="s3">
+      <title>Discussion</title>
+      <p>Discussion body</p>
+    </sec>
+    <sec id="s4">
+      <title>Materials and Methods</title>
+      <sec id="s4a">
+        <title>Section 4A title</title>
+        <p>Section body</p>
+      </sec>
+      <sec id="s4b">
+        <title>Section 4B title</title>
+        <p>Section body</p>
+        <sec id="s4b1">
+          <title>Section 4B1 Title</title>
+          <p>Section body</p>
+        </sec>
+      </sec>
+    </sec>
+    <sec id="s5">
+      <title>Supporting Information</title>
+      <supplementary-material id="pone.0002250.s001" mimetype="application/x-excel"
+                              xlink:href="info:doi/10.1371/journal.pone.0002250.s001"
+                              position="float" xlink:type="simple">
+        <label>Table S1</label>
+        <caption>
+          <p>Table S1 Caption</p>
+          <p>(0.19 MB XLS)</p>
+        </caption>
+      </supplementary-material>
+    </sec>
+  </body>
+  <back>
+    <ack>
+      <p>Acknowledge</p>
+    </ack>
+    <ref-list>
+      <title>References</title>
+      <ref id="pone.0002250-Suttle1">
+        <label>1</label>
+        <citation citation-type="journal" xlink:type="simple">
+          <person-group person-group-type="author">
+            <name name-style="western">
+              <surname>Suttle</surname>
+              <given-names>CA</given-names>
+            </name>
+          </person-group>
+          <year>2005</year>
+          <article-title>Viruses in the sea.</article-title>
+          <source>Nature</source>
+          <volume>437</volume>
+          <fpage>356</fpage>
+          <lpage>361</lpage>
+        </citation>
+      </ref>
+      <ref id="pone.0002250-Suttle2">
+        <label>2</label>
+        <citation citation-type="journal" xlink:type="simple">
+          <person-group person-group-type="author">
+            <name name-style="western">
+              <surname>Bratbak</surname>
+              <given-names>G</given-names>
+            </name>
+            <name name-style="western">
+              <surname>Wilson</surname>
+              <given-names>W</given-names>
+            </name>
+            <name name-style="western">
+              <surname>Heldal</surname>
+              <given-names>M</given-names>
+            </name>
+          </person-group>
+          <year>1996</year>
+          <article-title>Viral control of <italic>Emiliania huxleyi</italic> blooms?</article-title>
+          <source>J Mar Systems</source>
+          <volume>9</volume>
+          <fpage>75</fpage>
+          <lpage>81</lpage>
+        </citation>
+      </ref>
+      <ref id="pone.0002250-Derelle1">
+        <label>9</label>
+        <citation citation-type="journal" xlink:type="simple">
+          <person-group person-group-type="author">
+            <name name-style="western">
+              <surname>Derelle</surname>
+              <given-names>E</given-names>
+            </name>
+            <name name-style="western">
+              <surname>Ferraz</surname>
+              <given-names>C</given-names>
+            </name>
+            <name name-style="western">
+              <surname>Rombauts</surname>
+              <given-names>S</given-names>
+            </name>
+            <name name-style="western">
+              <surname>Rouze</surname>
+              <given-names>P</given-names>
+            </name>
+            <name name-style="western">
+              <surname>Worden</surname>
+              <given-names>AZ</given-names>
+            </name>
+            <etal/>
+          </person-group>
+          <year>2006</year>
+          <article-title>Genome analysis of the smallest free-living eukaryote
+            <italic>Ostreococcus tauri</italic>
+            unveils many unique features.
+          </article-title>
+          <source>Proc Natl Acad Sci USA</source>
+          <volume>103</volume>
+          <fpage>11647</fpage>
+          <lpage>11652</lpage>
+        </citation>
+      </ref>
+    </ref-list>
+    <fn-group>
+      <fn fn-type="conflict">
+        <p>The authors have declared that no competing interests exist.</p>
+      </fn>
+      <fn fn-type="financial-disclosure">
+        <p>Financial disclosure text</p>
+      </fn>
+    </fn-group>
+  </back>
+</article>

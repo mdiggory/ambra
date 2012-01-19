@@ -1,0 +1,586 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article
+  PUBLIC "-//NLM//DTD Journal Publishing DTD v2.0 20040830//EN" "http://dtd.nlm.nih.gov/publishing/2.0/journalpublishing.dtd">
+<article xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" article-type="research-article" dtd-version="2.0" xml:lang="EN">
+<front>
+<journal-meta>
+<journal-id journal-id-type="publisher">ppat</journal-id>
+<journal-id journal-id-type="allenpress-id">plpa</journal-id>
+<journal-id journal-id-type="nlm-ta">PLoS Pathog</journal-id>
+<journal-id journal-id-type="pmc">plospath</journal-id>
+<journal-title>PLoS Pathogens</journal-title>
+<issn pub-type="ppub">1553-7366</issn>
+<issn pub-type="epub">1553-7374</issn>
+<publisher>
+<publisher-name>Public Library of Science</publisher-name>
+<publisher-loc>San Francisco, USA</publisher-loc></publisher>
+</journal-meta>
+<article-meta>
+<article-id pub-id-type="publisher-id">07-PLPA-RA-0619R3</article-id>
+<article-id pub-id-type="doi">10.1371/journal.ppat.1000011</article-id>
+<article-categories><subj-group subj-group-type="heading"><subject>Research Article</subject></subj-group><subj-group subj-group-type="Discipline"><subject>Genetics and Genomics/Genomics</subject><subject>Infectious Diseases/Gastrointestinal Infections</subject><subject>Infectious Diseases/Viral Infections</subject><subject>Virology</subject><subject>Virology/Diagnosis</subject></subj-group></article-categories>
+<title-group>
+<article-title>Metagenomic Analysis of Human Diarrhea: Viral Detection and Discovery</article-title>
+<alt-title alt-title-type="running-head">Viral Diarrhea Metagenomics</alt-title>
+</title-group>
+<contrib-group>
+<contrib contrib-type="author" equal-contrib="yes" xlink:type="simple"><name name-style="western"><surname>Finkbeiner</surname><given-names>Stacy R.</given-names></name><xref ref-type="aff" rid="aff1"><sup>1</sup></xref><xref ref-type="aff" rid="aff2"><sup>2</sup></xref></contrib>
+<contrib contrib-type="author" equal-contrib="yes" xlink:type="simple"><name name-style="western"><surname>Allred</surname><given-names>Adam F.</given-names></name><xref ref-type="aff" rid="aff1"><sup>1</sup></xref><xref ref-type="aff" rid="aff2"><sup>2</sup></xref></contrib>
+<contrib contrib-type="author" xlink:type="simple"><name name-style="western"><surname>Tarr</surname><given-names>Phillip I.</given-names></name><xref ref-type="aff" rid="aff3"><sup>3</sup></xref></contrib>
+<contrib contrib-type="author" xlink:type="simple"><name name-style="western"><surname>Klein</surname><given-names>Eileen J.</given-names></name><xref ref-type="aff" rid="aff4"><sup>4</sup></xref></contrib>
+<contrib contrib-type="author" xlink:type="simple"><name name-style="western"><surname>Kirkwood</surname><given-names>Carl D.</given-names></name><xref ref-type="aff" rid="aff5"><sup>5</sup></xref></contrib>
+<contrib contrib-type="author" xlink:type="simple"><name name-style="western"><surname>Wang</surname><given-names>David</given-names></name><xref ref-type="aff" rid="aff1"><sup>1</sup></xref><xref ref-type="aff" rid="aff2"><sup>2</sup></xref><xref ref-type="corresp" rid="cor1"><sup>*</sup></xref></contrib>
+</contrib-group>
+<aff id="aff1"><label>1</label><addr-line>Departments of Molecular Microbiology and Pathology &amp; Immunology, Washington University School of Medicine, St. Louis, Missouri, United States of America</addr-line>       </aff>
+<aff id="aff2"><label>2</label><addr-line>Department of Pathology &amp; Immunology, Washington University School of Medicine, St. Louis, Missouri, United States of America</addr-line>       </aff>
+<aff id="aff3"><label>3</label><addr-line>Department of Pediatrics, Washington University School of Medicine, St. Louis, Missouri, United States of America</addr-line>       </aff>
+<aff id="aff4"><label>4</label><addr-line>Department of Emergency Medicine, Children's Hospital and Regional Medical Center, Seattle, Washington, United States of America</addr-line>       </aff>
+<aff id="aff5"><label>5</label><addr-line>Enteric Virus Research Group, Murdoch Childrens Research Institute, Royal Children's Hospital, Victoria, Australia</addr-line>       </aff>
+<contrib-group>
+<contrib contrib-type="editor" xlink:type="simple"><name name-style="western"><surname>Holmes</surname><given-names>Edward C.</given-names></name>
+<role>Editor</role>
+<xref ref-type="aff" rid="edit1"/></contrib>
+</contrib-group>
+<aff id="edit1">The Pennsylvania State University, United States of America</aff>
+<author-notes>
+<corresp id="cor1">* E-mail: <email xlink:type="simple">davewang@borcim.wustl.edu</email></corresp>
+<fn fn-type="con"><p>Conceived and designed the experiments: DW. Performed the experiments: SF. Analyzed the data: SF AA DW. Contributed reagents/materials/analysis tools: PT EK CK. Wrote the paper: SF DW.</p></fn>
+</author-notes>
+<pub-date pub-type="collection"><month>2</month><year>2008</year></pub-date>
+<pub-date pub-type="epub"><day>29</day><month>2</month><year>2008</year></pub-date>
+<volume>4</volume>
+<issue>2</issue>
+<elocation-id>e1000011</elocation-id>
+<history>
+<date date-type="received"><day>10</day><month>9</month><year>2007</year></date>
+<date date-type="accepted"><day>22</day><month>1</month><year>2008</year></date>
+</history>
+<copyright-statement>Finkbeiner et al. This is an open-access article distributed under the terms of the Creative Commons Attribution License, which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.</copyright-statement>
+<copyright-year>2008</copyright-year>
+<abstract>
+<p>Worldwide, approximately 1.8 million children die from diarrhea annually, and millions more suffer multiple episodes of nonfatal diarrhea. On average, in up to 40% of cases, no etiologic agent can be identified. The advent of metagenomic sequencing has enabled systematic and unbiased characterization of microbial populations; thus, metagenomic approaches have the potential to define the spectrum of viruses, including novel viruses, present in stool during episodes of acute diarrhea. The detection of novel or unexpected viruses would then enable investigations to assess whether these agents play a causal role in human diarrhea. In this study, we characterized the eukaryotic viral communities present in diarrhea specimens from 12 children by employing a strategy of “micro-mass sequencing” that entails minimal starting sample quantity (&lt;100 mg stool), minimal sample purification, and limited sequencing (384 reads per sample). Using this methodology we detected known enteric viruses as well as multiple sequences from putatively novel viruses with only limited sequence similarity to viruses in GenBank.</p>
+</abstract>
+<abstract abstract-type="summary"><title>Author Summary</title>
+<p>Diarrhea is one of the leading infectious causes of death worldwide with an estimated 1.8 million deaths annually, primarily in young children in developing countries. There are many known causes of diarrhea; however, the causes of ∼40% of the cases are still unknown. One possibility is that viruses that we currently do not know about are responsible for these cases. Thus, we used an experimental strategy termed “micro-mass sequencing” to systematically identify viruses present in stool from a number of patients suffering from diarrhea. Sequences from a number of novel viruses were detected, some which differed quite significantly from any previously described virus. These new viruses may or may not be responsible for causing diarrhea. Future studies will specifically address the potential of these viruses to cause human disease. One implication of this study is that there are likely to be many more unknown viruses that can be identified in this fashion. Furthermore, by studying these viruses, we will come to a more complete understanding of the role viruses play in diarrhea. Ultimately, this may lead to the development of therapeutics and/or vaccines that decrease the disease burden of diarrhea.</p>
+</abstract>
+<counts><page-count count="9"/></counts></article-meta>
+</front>
+<body><sec id="s1">
+<title>Introduction</title>
+<p>While traditional sequencing approaches are designed to characterize genomes of a single species of interest, metagenomic approaches, such as mass sequencing, transcend species boundaries allowing one to explore the makeup of microbial communities. Such methods provide a holistic look at microbial diversity within a given sample, completely bypassing the need for culturing <xref ref-type="bibr" rid="ppat.1000011-Breitbart1">[1]</xref>–<xref ref-type="bibr" rid="ppat.1000011-Hallam1">[5]</xref>. Previous efforts in this field have explored the structure of virus communities in ecosystems as diverse as the ocean <xref ref-type="bibr" rid="ppat.1000011-Breitbart1">[1]</xref>,<xref ref-type="bibr" rid="ppat.1000011-Culley1">[6]</xref> and the human gut <xref ref-type="bibr" rid="ppat.1000011-Breitbart2">[7]</xref>,<xref ref-type="bibr" rid="ppat.1000011-Zhang1">[8]</xref>. To date, the reported metagenomic studies of human stool have been limited to analysis of 4 specimens collected from 3 healthy patients <xref ref-type="bibr" rid="ppat.1000011-Breitbart2">[7]</xref>,<xref ref-type="bibr" rid="ppat.1000011-Zhang1">[8]</xref>. To our knowledge, no metagenomic investigation of the viral diversity found in human diarrhea has previously been described. Human diarrhea is the third leading cause of infectious deaths worldwide and is responsible for ∼1.8 million deaths in children under age five each year <xref ref-type="bibr" rid="ppat.1000011-1">[9]</xref>. Bacteria, protozoa and viruses have all been implicated as causal agents. Chief among the known etiologic agents are rotaviruses, noroviruses, astroviruses, and adenoviruses <xref ref-type="bibr" rid="ppat.1000011-Dennehy1">[10]</xref> However, it is estimated that on average up to 40% of diarrhea cases are of unknown etiology, suggesting that unrecognized infectious agents, including viruses, remain to be discovered <xref ref-type="bibr" rid="ppat.1000011-Denno1">[11]</xref>–<xref ref-type="bibr" rid="ppat.1000011-ChikhiBrachet1">[15]</xref>. Mass sequencing affords an opportunity to explore the viral diversity (including both known and novel viruses) present in stool during acute episodes of diarrhea in a systematic and unbiased fashion, thereby laying the foundation for future studies aimed at assessing whether any novel or unexpected viruses detected play a causal role in human diarrhea.</p>
+<p>In this study, mass sequencing was applied to explore specifically the viral communities present in pediatric patients suffering from diarrhea. We anticipated that the viral communities would vary significantly from specimen to specimen and that it would be desirable to sample broadly from multiple patients to obtain an overall perspective on the diversity of viruses that might be present. Toward this end, a simple yet robust experimental strategy was developed that circumvented certain technical and economic limitations of conventional mass sequencing. In both previous viral metagenomic studies of the human gut, large quantities of fecal matter (∼500 g) were collected from adults and then extensively purified to enrich for viral particles <xref ref-type="bibr" rid="ppat.1000011-Breitbart2">[7]</xref>,<xref ref-type="bibr" rid="ppat.1000011-Zhang1">[8]</xref>. In contrast, pediatric samples provide considerably smaller volumes of stool; therefore, our strategy was designed to minimize the number of physical purification steps so that as little as 30 mg of archived fecal matter could be analyzed. Here we present data generated by performing what we refer to as ‘micro-mass sequencing’ of several hundred sequence reads per sample from 12 different patients with acute diarrhea. This analysis provides evidence for the detection of known enteric viruses, viral co-infections, and novel viruses.</p>
+</sec><sec id="s2">
+<title>Results</title>
+<sec id="s2a">
+<title>Aggregate library analysis</title>
+<p>Metagenomic analysis was carried out on fecal samples collected from 12 distinct pediatric patients suffering from acute diarrhea. Patient characteristics are shown in <xref ref-type="table" rid="ppat-1000011-t001">Table 1</xref>. A sequence independent PCR strategy was employed to amplify the extracted nucleic acids from each sample <xref ref-type="bibr" rid="ppat.1000011-Wang1">[16]</xref>. 384 clones were sequenced for each sample library. Because the goal of this project was to define the diversity of viruses present in the clinical specimens regardless of their relative abundance, nearly identical sequence reads were clustered to generate a set of non-redundant sequence reads. Unique, high quality sequence reads were then classified into broad taxonomic groups based on the taxonomy of the most frequent top scoring BLAST matches for each sequence. A total of 4,608 sequences were generated, of which 3,169 passed through a quality filter and 2,013 of those contained unique sequence information. Of the unique sequences passing through the filter, 1,457 (72%) could be identified by similarity to sequences in the Genbank nr database based on tBLASTx (E-value ≤10<sup>−5</sup>) alignments. The remaining 556 (28%) sequences had no significant similarity to any sequences in the nr database and were therefore categorized as being of ‘unknown’ origin. The 1,457 identifiable sequences were further classified into categories based on their proposed origin (<xref ref-type="supplementary-material" rid="ppat.1000011.s001">Fig. S1</xref>). 519 (35.6%) were most similar to eukaryotic viruses, 25 (1.7%) to phage, 857 (58.8%) to bacteria, 3 (0.2%) to fungi, and 20 (1.4%) to human sequences. The remaining 33 (2.3%) were most similar to sequences that did not fall into the other previous categories and were consequently labeled as ‘other’. For example, some of the sequences had significant hits to mouse, fish, and plant genomes.</p>
+<table-wrap id="ppat-1000011-t001" position="float"><object-id pub-id-type="doi">10.1371/journal.ppat.1000011.t001</object-id><label>Table 1</label><caption>
+<title>Sample information.</title>
+</caption><graphic id="ppat-1000011-t001-1" xlink:href="info:doi/10.1371/journal.ppat.1000011.t001" alt-version="no" mimetype="image" position="float" xlink:type="simple"/>
+<table alternate-form-of="ppat-1000011-t001-1"><colgroup span="1"><col align="left" span="1"/><col align="center" span="1"/><col align="center" span="1"/><col align="center" span="1"/><col align="center" span="1"/><col align="center" span="1"/></colgroup>
+<thead>
+<tr>
+<td align="left" rowspan="1" colspan="1">Sample</td>
+<td align="left" rowspan="1" colspan="1">Year Collected</td>
+<td align="left" rowspan="1" colspan="1">Age of Patient</td>
+<td align="left" rowspan="1" colspan="1"># of High Quality Sequence Reads</td>
+<td align="left" rowspan="1" colspan="1"># of Unique Reads</td>
+<td align="left" rowspan="1" colspan="1">Average Unique Read Length (bp)</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" rowspan="1" colspan="1">D01</td>
+<td align="left" rowspan="1" colspan="1">2005</td>
+<td align="left" rowspan="1" colspan="1">14 mo</td>
+<td align="left" rowspan="1" colspan="1">365</td>
+<td align="left" rowspan="1" colspan="1">166</td>
+<td align="left" rowspan="1" colspan="1">526</td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">D02</td>
+<td align="left" rowspan="1" colspan="1">1998</td>
+<td align="left" rowspan="1" colspan="1">10 mo</td>
+<td align="left" rowspan="1" colspan="1">193</td>
+<td align="left" rowspan="1" colspan="1">87</td>
+<td align="left" rowspan="1" colspan="1">536</td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">D03</td>
+<td align="left" rowspan="1" colspan="1">1984</td>
+<td align="left" rowspan="1" colspan="1">NA</td>
+<td align="left" rowspan="1" colspan="1">302</td>
+<td align="left" rowspan="1" colspan="1">281</td>
+<td align="left" rowspan="1" colspan="1">506</td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">D04</td>
+<td align="left" rowspan="1" colspan="1">1984</td>
+<td align="left" rowspan="1" colspan="1">4 mo</td>
+<td align="left" rowspan="1" colspan="1">311</td>
+<td align="left" rowspan="1" colspan="1">154</td>
+<td align="left" rowspan="1" colspan="1">626</td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">D05</td>
+<td align="left" rowspan="1" colspan="1">1980</td>
+<td align="left" rowspan="1" colspan="1">NA</td>
+<td align="left" rowspan="1" colspan="1">243</td>
+<td align="left" rowspan="1" colspan="1">168</td>
+<td align="left" rowspan="1" colspan="1">563</td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">D06</td>
+<td align="left" rowspan="1" colspan="1">2003</td>
+<td align="left" rowspan="1" colspan="1">11 mo</td>
+<td align="left" rowspan="1" colspan="1">153</td>
+<td align="left" rowspan="1" colspan="1">132</td>
+<td align="left" rowspan="1" colspan="1">393</td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">D07</td>
+<td align="left" rowspan="1" colspan="1">1999</td>
+<td align="left" rowspan="1" colspan="1">23 mo</td>
+<td align="left" rowspan="1" colspan="1">352</td>
+<td align="left" rowspan="1" colspan="1">186</td>
+<td align="left" rowspan="1" colspan="1">617</td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">D08</td>
+<td align="left" rowspan="1" colspan="1">1999</td>
+<td align="left" rowspan="1" colspan="1">35 mo</td>
+<td align="left" rowspan="1" colspan="1">302</td>
+<td align="left" rowspan="1" colspan="1">167</td>
+<td align="left" rowspan="1" colspan="1">255</td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">D09</td>
+<td align="left" rowspan="1" colspan="1">1981</td>
+<td align="left" rowspan="1" colspan="1">NA</td>
+<td align="left" rowspan="1" colspan="1">302</td>
+<td align="left" rowspan="1" colspan="1">294</td>
+<td align="left" rowspan="1" colspan="1">491</td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">D10</td>
+<td align="left" rowspan="1" colspan="1">1983</td>
+<td align="left" rowspan="1" colspan="1">20 mo</td>
+<td align="left" rowspan="1" colspan="1">195</td>
+<td align="left" rowspan="1" colspan="1">146</td>
+<td align="left" rowspan="1" colspan="1">447</td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">D11</td>
+<td align="left" rowspan="1" colspan="1">1978</td>
+<td align="left" rowspan="1" colspan="1">NA</td>
+<td align="left" rowspan="1" colspan="1">253</td>
+<td align="left" rowspan="1" colspan="1">103</td>
+<td align="left" rowspan="1" colspan="1">367</td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">D12</td>
+<td align="left" rowspan="1" colspan="1">2005</td>
+<td align="left" rowspan="1" colspan="1">8 mo</td>
+<td align="left" rowspan="1" colspan="1">198</td>
+<td align="left" rowspan="1" colspan="1">129</td>
+<td align="left" rowspan="1" colspan="1">300</td>
+</tr>
+</tbody>
+</table>
+</table-wrap></sec><sec id="s2b">
+<title>Individual library statistics</title>
+<p>384 clones were sequenced for each individual sample. The proportion of high quality sequences for each sample varied between 40% and 95% of the total clones (<xref ref-type="table" rid="ppat-1000011-t001">Table 1</xref>). The percentages of unique sequences per sample ranged from 41% to 97% of the high quality reads (<xref ref-type="table" rid="ppat-1000011-t001">Table 1</xref>). The average length of the unique, high quality sequences ranged from 255 to 626 bp. Viral sequences constituted between 0–100% of the reads in each library (<xref ref-type="fig" rid="ppat-1000011-g001">Fig. 1</xref>). Some libraries (e.g., D01 and D05) were predominantly composed of viral sequences (64% and 95% respectively), whereas others consisted largely of bacterial (e.g., D08 and D12) or unassigned (e.g., D03 and D07) sequences. Based on the initial BLAST classification criteria, sequences with similarity to viruses from 7 different viral families and three unclassified genera (picobirnavirus, anellovirus and mimivirus) were detected in the 12 different samples (<xref ref-type="fig" rid="ppat-1000011-g001">Fig. 1</xref>). Five of the samples (D03, D05, D06, D08, and D12) contained sequences from at least two different virus families known to infect humans.</p>
+<fig id="ppat-1000011-g001" position="float"><object-id pub-id-type="doi">10.1371/journal.ppat.1000011.g001</object-id><label>Figure 1</label><caption>
+<title>Categorization of sequence reads based on best tBLASTX scores (E-value: &lt;10<sup>−5</sup>).</title>
+<p>Pies on the left side of each box depict the categorization of sequences from individual samples by phylotype: viral (V); phage (P); bacterial (B); human (H); fungal (F); other (O); and unassigned (U). Pies on the right side of each box depict further characterization of viral sequences by viral families/taxa: <italic>Reoviridae</italic> (Reo); <italic>Caliciviridae</italic> (Calici); <italic>Astroviridae</italic> (Astro); anellovirus (Anello); picobirnavirus (Picobirna); <italic>Picornaviridae</italic> (Picorna); mimivirus (Mimi); <italic>Nodaviridae</italic> (Noda); <italic>Adenoviridae</italic> (Adeno); <italic>Parvoviridae</italic> (Parvo). Numbers in parentheses indicate the number of sequence reads in each category.</p>
+</caption><graphic xlink:href="info:doi/10.1371/journal.ppat.1000011.g001" alt-version="no" mimetype="image" position="float" xlink:type="simple"/></fig></sec><sec id="s2c">
+<title>Detection of known viruses</title>
+<p>The first specimen analyzed was a positive control stool specimen that had tested positive for rotavirus (D01) by enzyme immunoassay. It was our expectation that this sample would yield sequences derived from the infecting rotavirus. In this library, 107 non-redundant sequence reads were identified as viral in origin, almost all of which possessed ≥90% amino acid (aa) BLAST identity to known rotavirus sequences in Genbank. The sequence data included cloned fragments from all 11 RNA segments of the rotavirus genome.</p>
+<p>An additional 11 stool specimens were then selected that had tested negative in conventional PCR and enzyme immunoassays for the known diarrhea viruses (rotaviruses, caliciviruses, astroviruses, and adenoviruses). Despite such screening, sequences derived from the canonical enteric viruses were detected in a number of samples. For example, calicivirus sequences were detected in D02 and D06, astrovirus sequences in D04, and adenoviruses were detected in D05 and D12. Almost all individual sequence reads in these cases possessed &gt;90% aa identity to existing viral sequences in Genbank.</p>
+<p>Adeno-associated virus (AAV), a member of the <italic>Parvoviridae</italic> family, was detected in two samples, D11 and D12. These viruses are known to infect the gastrointestinal tract, but are not thought to be enteric pathogens. For productive infections or reactivation from a latent state, AAV requires co-infection with a helper virus that is most commonly an adenovirus or less typically, a herpesvirus <xref ref-type="bibr" rid="ppat.1000011-Berns1">[17]</xref>. In D12, adenovirus sequences were detected. No additional viruses were detected in D11.</p>
+</sec><sec id="s2d">
+<title>Detection of novel virus sequences</title>
+<p>In many of the libraries, individual sequence reads were detected that possessed ≤ 90% aa identity to their highest scoring BLAST hit (representative sequences are listed in <xref ref-type="table" rid="ppat-1000011-t002">Table 2</xref>) suggesting that these sequences might be derived from novel viruses. In part because BLAST alignments are based on local sequence comparisons, BLAST is not an optimal method for making taxonomic assignments. In order to more accurately and precisely assess the relationship of these sequences to known viruses, we generated phylogenetic trees using the maximum parsimony method <xref ref-type="bibr" rid="ppat.1000011-Swofford1">[18]</xref>. In cases where more than one sequence read hit the same region of a genome, only one representative sequence read is listed in <xref ref-type="table" rid="ppat-1000011-t002">Table 2</xref> and phylogenetic trees are shown for only these representative sequences (<xref ref-type="fig" rid="ppat-1000011-g002">Fig. 2</xref>–<xref ref-type="fig" rid="ppat-1000011-g003">3</xref> and <xref ref-type="supplementary-material" rid="ppat.1000011.s002">Fig. S2</xref>, <xref ref-type="supplementary-material" rid="ppat.1000011.s003">S3</xref>, <xref ref-type="supplementary-material" rid="ppat.1000011.s004">S4</xref>, and <xref ref-type="supplementary-material" rid="ppat.1000011.s005">S5</xref>). Phylogenetic analysis revealed that many of the sequences were divergent from known sequences on the order that approximated a distinct subtype or genotype (<xref ref-type="supplementary-material" rid="ppat.1000011.s002">Fig. S2</xref>, <xref ref-type="supplementary-material" rid="ppat.1000011.s003">S3</xref>, <xref ref-type="supplementary-material" rid="ppat.1000011.s004">S4</xref>, and <xref ref-type="supplementary-material" rid="ppat.1000011.s005">S5</xref>). This included two libraries with picobirnaviruses (D03, D10) (<xref ref-type="supplementary-material" rid="ppat.1000011.s002">Fig. S2</xref>), two with picornaviruses (D03, D06) (<xref ref-type="supplementary-material" rid="ppat.1000011.s003">Fig. S3</xref>), two with anelloviruses (D06, D08) (<xref ref-type="supplementary-material" rid="ppat.1000011.s004">Fig. S4</xref>), and one with a norovirus (D06) (<xref ref-type="supplementary-material" rid="ppat.1000011.s005">Fig. S5</xref>).</p>
+<fig id="ppat-1000011-g002" position="float"><object-id pub-id-type="doi">10.1371/journal.ppat.1000011.g002</object-id><label>Figure 2</label><caption>
+<title>Phylogenetic analysis of highly divergent astrovirus-like sequence reads.</title>
+<p>Maximum parsimony phylogenetic trees were generated by comparing the translated amino acid sequence of individual sequence reads to the corresponding sequences from known astroviruses. 1,000 replicates were generated with bootstrap values over 700 shown. A) Representative sequence read mapping to astrovirus serine protease ORF (Accession number ET065575); B) Representative sequence read mapping to astrovirus RNA polymerase (Accession number ET065582).</p>
+</caption><graphic xlink:href="info:doi/10.1371/journal.ppat.1000011.g002" alt-version="no" mimetype="image" position="float" xlink:type="simple"/></fig><fig id="ppat-1000011-g003" position="float"><object-id pub-id-type="doi">10.1371/journal.ppat.1000011.g003</object-id><label>Figure 3</label><caption>
+<title>Phylogenetic analysis of a highly divergent nodavirus-like sequence read.</title>
+<p>Maximum parsimony phylogenetic trees were generated by comparing the translated amino acid sequence of one sequence read (Accession number ET066010) to the corresponding RNA polymerase sequences of nodaviruses. 1,000 replicates were generated with bootstrap values over 700 shown.</p>
+</caption><graphic xlink:href="info:doi/10.1371/journal.ppat.1000011.g003" alt-version="no" mimetype="image" position="float" xlink:type="simple"/></fig><table-wrap id="ppat-1000011-t002" position="float"><object-id pub-id-type="doi">10.1371/journal.ppat.1000011.t002</object-id><label>Table 2</label><caption>
+<title>Selected sequence reads with limited BLAST identity to known viruses.</title>
+</caption><graphic id="ppat-1000011-t002-2" xlink:href="info:doi/10.1371/journal.ppat.1000011.t002" alt-version="no" mimetype="image" position="float" xlink:type="simple"/>
+<table alternate-form-of="ppat-1000011-t002-2"><colgroup span="1"><col align="left" span="1"/><col align="center" span="1"/><col align="center" span="1"/><col align="center" span="1"/><col align="center" span="1"/></colgroup>
+<thead>
+<tr>
+<td align="left" rowspan="1" colspan="1">Sample</td>
+<td align="left" rowspan="1" colspan="1">Sequence Read Accession #</td>
+<td align="left" rowspan="1" colspan="1">Identity to Top Hit</td>
+<td align="left" rowspan="1" colspan="1">Top Hit (Accession #)</td>
+<td align="left" rowspan="1" colspan="1">Virus Family/Taxa</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" rowspan="1" colspan="1">D03</td>
+<td align="left" rowspan="1" colspan="1">ET065742</td>
+<td align="left" rowspan="1" colspan="1">78%</td>
+<td align="left" rowspan="1" colspan="1">Human picobirnavirus strain 1-CHN-97 (AF246939)</td>
+<td align="left" rowspan="1" colspan="1">Picobirnavirus</td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">D03</td>
+<td align="left" rowspan="1" colspan="1">ET065743</td>
+<td align="left" rowspan="1" colspan="1">90%</td>
+<td align="left" rowspan="1" colspan="1">Human coxsackievirus A19 (AF499641)</td>
+<td align="left" rowspan="1" colspan="1">Picornaviridae</td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">D06</td>
+<td align="left" rowspan="1" colspan="1">ET067042</td>
+<td align="left" rowspan="1" colspan="1">74%</td>
+<td align="left" rowspan="1" colspan="1">Human enterovirus 91 (AY697476)</td>
+<td align="left" rowspan="1" colspan="1">Picornaviridae</td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">D06</td>
+<td align="left" rowspan="1" colspan="1">ET067045</td>
+<td align="left" rowspan="1" colspan="1">66%</td>
+<td align="left" rowspan="1" colspan="1">TTV-like mini virus (AB026931)</td>
+<td align="left" rowspan="1" colspan="1">Anellovirus</td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">D06</td>
+<td align="left" rowspan="1" colspan="1">ET067040</td>
+<td align="left" rowspan="1" colspan="1">79%</td>
+<td align="left" rowspan="1" colspan="1">Snow Mountain virus (AY134748.1)</td>
+<td align="left" rowspan="1" colspan="1">Caliciviridae</td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">D06</td>
+<td align="left" rowspan="1" colspan="1">ET067041</td>
+<td align="left" rowspan="1" colspan="1">88%</td>
+<td align="left" rowspan="1" colspan="1">Norovirus C14 (AY845056.1)</td>
+<td align="left" rowspan="1" colspan="1">Caliciviridae</td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">D08</td>
+<td align="left" rowspan="1" colspan="1">ET065575</td>
+<td align="left" rowspan="1" colspan="1">57%</td>
+<td align="left" rowspan="1" colspan="1">Human astrovirus 4 (AY720891)</td>
+<td align="left" rowspan="1" colspan="1">Astroviridae</td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">D08</td>
+<td align="left" rowspan="1" colspan="1">ET065582</td>
+<td align="left" rowspan="1" colspan="1">67%</td>
+<td align="left" rowspan="1" colspan="1">Human astrovirus 5 (DQ028633)</td>
+<td align="left" rowspan="1" colspan="1">Astroviridae</td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">D08</td>
+<td align="left" rowspan="1" colspan="1">ET065578</td>
+<td align="left" rowspan="1" colspan="1">45%</td>
+<td align="left" rowspan="1" colspan="1">TT virus (AB041963)</td>
+<td align="left" rowspan="1" colspan="1">Anellovirus</td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">D09</td>
+<td align="left" rowspan="1" colspan="1">ET066010</td>
+<td align="left" rowspan="1" colspan="1">35%</td>
+<td align="left" rowspan="1" colspan="1">Epinephelus septemfasciatus nervous necrosis virus (AM085331)</td>
+<td align="left" rowspan="1" colspan="1">Nodaviridae</td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">D10</td>
+<td align="left" rowspan="1" colspan="1">ET066456</td>
+<td align="left" rowspan="1" colspan="1">81%</td>
+<td align="left" rowspan="1" colspan="1">Human picobirnavirus 2-GA-91 (AF245701)</td>
+<td align="left" rowspan="1" colspan="1">Picobirnavirus</td>
+</tr>
+</tbody>
+</table>
+</table-wrap>
+<p>In several instances, much more highly divergent sequences were detected that suggested that novel virus species might be present. The library generated for sample D08 included 7 unique sequence reads derived from two loci that displayed 52–67% aa identity to human astroviruses. Phylogenetic analysis of the individual sequence reads suggested that a novel astrovirus was present in D08 (<xref ref-type="fig" rid="ppat-1000011-g002">Fig. 2</xref>). These sequence reads were assembled into two contigs, one of ∼800 bp that mapped to ORF1a and one of ∼500 bp that mapped to ORF1b. RT-PCR and subsequent sequencing of the amplicon confirmed the presence of the contigs in the original RNA extract as well as the contig assemblies (data not shown). Phylogenetic analysis of the two contigs yielded trees essentially identical to those generated from the individual sequence reads (data not shown).</p>
+<p>In sample D09, we detected one sequence read which exhibited limited similarity to viruses in the family <italic>Nodaviridae</italic> (<xref ref-type="table" rid="ppat-1000011-t002">Table 2</xref>). RT-PCR of this sample using primers designed from the sequence read confirmed the presence of a 229 bp fragment in the original RNA extract (data not shown). Phylogenetic analysis of the sequence of the RT-PCR product demonstrated that the nodavirus in sample D09 was highly divergent from other known nodaviruses (<xref ref-type="fig" rid="ppat-1000011-g003">Fig. 3</xref>).</p>
+<p>Finally, one sample, D03, contained five sequence reads that, based on the top tBLASTX hits, contained 47% to 52% aa identity to endonuclease genes in the amoeba-infecting virus <italic>Acanthamoeba polyphaga</italic> mimivirus. These sequences also possessed approximately similar levels of sequence identity to a number of bacterial genomes and phage genomes containing putative endonuclease proteins. Phylogenetic analysis comparing the sequence reads to the top scoring BLAST hits (<xref ref-type="supplementary-material" rid="ppat.1000011.s006">Fig. S6</xref>) did not conclusively clarify the origin of these sequences. Further experimentation will be required to unambiguously determine if these sequences are derived from a mimi-like virus, phage, or a bacterial species.</p>
+</sec><sec id="s2e">
+<title>Unassigned sequences</title>
+<p>Some sequences in the libraries had no significant hits to any sequences in the Genbank nr database. Samples D03 and D07 had a large abundance of these ‘unassigned’ reads. Relaxing E-value thresholds for designating various sequence categories resulted in the ability to classify a greater number of these unassigned sequences; however, many of these classifications likely represent artifactual alignments. Viral assignments remained largely unaffected, even when E-value thresholds as permissive as 10 were applied.</p>
+</sec></sec><sec id="s3">
+<title>Discussion</title>
+<p>We examined the diversity of viral communities in stools from 12 children with diarrhea using a strategy we describe as ‘micro-mass sequencing’. This strategy, which entails crude purification of fecal suspensions, nucleic acid purification, random PCR amplification, and cloning and sequencing of several hundred colonies, effectively detected known enteric viruses, viral co-infections, and novel viruses. In most traditional metagenomic studies, large sample volumes are subjected to multiple stages of filtration and purification before sequencing. For example, in previous metagenomic studies of the gut, 500 g of fecal samples were initially collected for the analyses. Because clinical pediatric diarrhea specimens are much more limited in volume, we chose to both minimally purify the samples and to employ a random PCR amplification strategy. These combined steps enabled us to rapidly generate sequencing libraries from small quantities of archived stools (30–100 mg). Furthermore, we wished to sample broadly from multiple patients because of the large number of viruses known or suspected to be associated with diarrhea. Therefore, rather than sequence few specimens in great depth as has been done previously (10,000 sequences per sample) <xref ref-type="bibr" rid="ppat.1000011-Zhang1">[8]</xref>, we focused on sequencing fewer clones (384 per sample) from more samples (12 specimens).</p>
+<p>Our analysis detected viruses, bacteria, host, phage and other sequences (<xref ref-type="fig" rid="ppat-1000011-g001">Fig. 1</xref>). The presence of non-viral sequences in the libraries was not surprising as only minimal efforts were made to enrich for viral sequences. In fact, the goal of this strategy was to manipulate the specimens as little as possible in the interest of simplicity. Even so, in a few libraries, 100% of the sequence reads were of viral origin. Additional processing, such as treating the specimens with DNase, reduced the background signal and increased the percentage of viral reads in some instances (data not shown).</p>
+<p>Viral sequences were detected in all but one sample. Interestingly, a number of DNA viruses (bacteriophages, adenoviruses, and adeno-associated viruses) were detected in our analysis, despite our use of a methodology focused on purification of RNA. While it is possible that RNA transcripts from these viruses were purified <xref ref-type="bibr" rid="ppat.1000011-Xing1">[19]</xref>, it is more likely that viral DNA was co-purified with RNA, as is common in other RNA purification methods <xref ref-type="bibr" rid="ppat.1000011-Mannhalter1">[20]</xref>. PCR analysis of samples D05 and D11 in the absence of reverse transcription, yielded positive results for adenovirus and adeno-associated virus, respectively, indicating that viral DNA was present in the RNA preparations (data not shown).</p>
+<p>Analysis of this initial cohort of 12 specimens yielded a wealth of original findings. In contrast to previous metagenomic studies of stool <xref ref-type="bibr" rid="ppat.1000011-Zhang1">[8]</xref>, a number of known human viruses were detected in these clinical specimens. These included common enteric pathogens such as rotavirus, adenovirus, calicivirus, and astrovirus. In addition, putatively benign adeno-associated viruses (AAV) were also detected which are not generally associated with human diarrhea. Aside from one sample known to contain rotavirus, we intended to analyze the viral communities present in samples that were not infected by known enteric pathogens in order to identify viruses that might be responsible for the unexplained cases of diarrhea. The fact that micro-mass sequencing detected these canonical viruses in some of the specimens, despite conventional diagnostic testing by EIA and PCR, underscores the sensitivity limits of conventional diagnostics.</p>
+<sec id="s3a">
+<title>Detection of novel viruses</title>
+<p>Sequences were detected in this study from at least 9 putatively novel viruses. For 7 of these sequences, the degree of divergence observed based on phylogenetic analysis suggested that they might represent novel virus subtypes or genotypes of picobirnavirus, enterovirus, TT virus and norovirus (<xref ref-type="supplementary-material" rid="ppat.1000011.s002">Fig. S2</xref>, <xref ref-type="supplementary-material" rid="ppat.1000011.s003">S3</xref>, <xref ref-type="supplementary-material" rid="ppat.1000011.s004">S4</xref>, and <xref ref-type="supplementary-material" rid="ppat.1000011.s005">S5</xref>). Picobirnaviruses belong to an unclassified genus of double stranded RNA viruses and have been detected in fecal matter from human and other animals both with and without diarrhea <xref ref-type="bibr" rid="ppat.1000011-Gallimore1">[21]</xref>. Only a limited number of picobirnavirus sequences have been previously described in the literature and thus the identification of two novel picobirnaviruses significantly expands the known diversity of this taxonomic group, underscoring the unrecognized viral diversity inhabiting the human body.</p>
+<p>Sequences representing a divergent norovirus were detected in sample D06 (<xref ref-type="supplementary-material" rid="ppat.1000011.s005">Fig. S5</xref>). Phylogenetic analysis of individual sequence reads that mapped to the RNA polymerase and the NS4 regions of human norovirus suggested that these sequences were derived from a novel or unsequenced member of norovirus genogroup 2. In the initial screening by conventional PCR, this sample tested negative for norovirus. Upon closer examination, four mutations were observed in one of the PCR primer binding sites, which plausibly hindered the PCR screening assay <xref ref-type="bibr" rid="ppat.1000011-Kirkwood1">[14]</xref>.</p>
+<p>In two samples, much more highly divergent sequences were detected. In D08, phylogenetic analysis of 7 unique sequence reads strongly suggested that a novel astrovirus species was present (<xref ref-type="fig" rid="ppat-1000011-g002">Fig. 2</xref>). The observed sequence variation between these sequence reads and the known astrovirus genomes greatly exceeds the variation that exists between the 8 known serotypes of human astrovirus, suggesting that this virus is not simply another serotype of the known astroviruses. Astroviruses are non-enveloped, single stranded, positive sense RNA viruses that account for up to 10% of sporadic diarrhea cases <xref ref-type="bibr" rid="ppat.1000011-Glass1">[22]</xref>. Infections with astroviruses most frequently cause watery diarrhea lasting 2–4 days, and, less commonly vomiting, headache, fever, abdominal pain, and anorexia in children under the age of 2, the elderly, and immunocompromised individuals <xref ref-type="bibr" rid="ppat.1000011-Moser1">[23]</xref>. The detection of this genetically distinct astrovirus raises the question as to whether or not this is an authentic human virus, and if so, whether or not it is a causal agent of human diarrhea.</p>
+<p>Another novel sequence detected appeared by phylogenetic analysis to belong to the family <italic>Nodaviridae</italic>. Nodaviruses are small single-stranded, positive sense, bipartite RNA viruses, divided into two genera, the alphanodaviruses (insect viruses) and the betanodaviruses (fish viruses). Currently, none of the established family members are known to naturally infect mammals although experimental manipulation of the viral genome has enabled viral replication in a wide array of organisms including mammals <xref ref-type="bibr" rid="ppat.1000011-Friesen1">[24]</xref>. While it is tempting to speculate that this might represent the first instance of human infection with a nodavirus, further experimentation such as serological analysis is required to definitively answer this question. Another plausible explanation is that the virus may be present simply as a result of consumption of fish infected by the virus. A prior report describing the presence of plant virus RNAs in human stool has similarly been attributed to dietary exposure <xref ref-type="bibr" rid="ppat.1000011-Zhang1">[8]</xref>. Incidentally, some fish genomic sequences were detected in this particular sequence library (D09 “other” bin) supporting the possibility of dietary exposure. However, the potential piscine origin of this virus would not necessarily preclude its role as an etiologic agent of human disease.</p>
+<p>The micro-mass sequencing approach, like any other experimental methodology capable of detecting novel viruses (such as culture or degenerate PCR), cannot of course by itself determine whether the newly detected agent is pathogenic. However, this strategy can generate novel, testable hypotheses such as “Are these novel viruses involved in the etiology of human diarrhea?” and “What is the true host of these viruses?” that could not be asked in the absence of the knowledge that these viruses existed.</p>
+</sec><sec id="s3b">
+<title>Unassigned reads</title>
+<p>556 out of the 2013 (28%) unique high quality sequences were binned as unassigned by the BLAST criteria. Of these, 23 were identified as containing repetitive elements or low-complexity sequence by RepeatMasker <xref ref-type="bibr" rid="ppat.1000011-Smit1">[25]</xref>,<xref ref-type="bibr" rid="ppat.1000011-Jurka1">[26]</xref> thus explaining the lack of meaningful BLAST alignments. The origin of the remaining 533 sequences that were unassigned is uncertain, but they could be derived from unannotated host genome, novel or unsequenced microbes, or dietary sources which have not been sequenced. However, it is also possible that some of these sequences could represent viruses that have no appreciable similarity to sequences of currently known viruses. Extracting more telling information from these sequences is a challenging problem that will require the development of new computational measures capable of detecting more distant evolutionary relationships than is possible with existing methods. In addition, as more genome sequences from diverse organisms and other genomic/metagenomic projects become available, sequence similarity based methods may identify a greater fraction of these currently unassigned sequences.</p>
+</sec><sec id="s3c">
+<title>Diagnostic applications and implications</title>
+<p>Our data suggest that micro-mass sequencing might be of great diagnostic utility for a number of reasons. First, viruses escaping detection in conventional assays were detected by micro-mass sequencing. In theory, the sensitivity of this strategy is limited only by the depth of sequencing. As demonstrated here, even shallow sequencing performed better than conventional diagnostics in some instances. In addition, the unbiased nature of the method enabled detection of viruses not conventionally tested for. Moreover, co-infections were detected in multiple samples. Furthermore, for multi-segmented viruses such as rotaviruses, reassortment of segments between species is a major mechanism of viral evolution that can lead to the emergence of more virulent strains <xref ref-type="bibr" rid="ppat.1000011-IturrizaGomara1">[27]</xref>. Complete genome sequencing of all segments simultaneously would yield completely unambiguous identification of the viral genotype. In contrast to typical PCR or antibody based assays that target a single segment or protein, micro mass sequencing detected all 11 genomic RNA segments of rotavirus. In terms of technical practicality, samples were only minimally manipulated relative to traditional metagenomic sequencing <xref ref-type="bibr" rid="ppat.1000011-Breitbart1">[1]</xref>,<xref ref-type="bibr" rid="ppat.1000011-Venter1">[3]</xref>,<xref ref-type="bibr" rid="ppat.1000011-Culley1">[6]</xref>,<xref ref-type="bibr" rid="ppat.1000011-Zhang1">[8]</xref>, thereby avoiding the time, labor, and use of specialized equipment required to concentrate the specimens, rendering this methodology potentially amenable to use in diagnostic laboratories. As sequencing costs diminish and efficiencies improve, mass sequencing could become a powerful diagnostic tool.</p>
+<p>In summary, we have shown that micro-mass sequencing can define the diversity of viral communities found in fecal samples from diarrhea patients. Both known viruses and novel viruses were detected by sequencing only a few hundred colonies from each sample library. These studies will serve as the springboard for further interrogations of the roles of these diverse viruses in the gastrointestinal tract. Finally, our detection of multiple novel viruses in this initial, limited exploration of a dozen samples suggests that broader sampling of patient specimens is likely to be highly fruitful in terms of identification of additional novel viruses.</p>
+</sec></sec><sec id="s4">
+<title>Materials and Methods</title>
+<sec id="s4a">
+<title>Clinical archived stool specimens</title>
+<sec id="s4a1">
+<title>Melbourne Cohort</title>
+<p>Stool samples were collected from children under the age of 5 who were admitted to the Royal Children's Hospital, Melbourne, Victoria, Australia with acute diarrhea between 1978 and 1999.</p>
+</sec><sec id="s4a2">
+<title>Seattle Cohort</title>
+<p>Stool samples were collected between 2003–2005 at the Emergency Department of the Children's Hospital and Regional Medical Center in Seattle, Washington, USA as part of a prospective study attempting to discern the cause of unexplained pediatric diarrhea.</p>
+</sec></sec><sec id="s4b">
+<title>Diagnostic testing of stool specimens for known microbial diarrheagenic agents</title>
+<sec id="s4b1">
+<title>Melbourne Cohort</title>
+<p>Specimens were tested by routine enzyme immunoassays (EIA) and culture assays for rotaviruses, adenoviruses, and common bacterial and parasitic pathogens as previously described <xref ref-type="bibr" rid="ppat.1000011-Kirkwood1">[14]</xref>. RT-PCR assays were used to screen specimens for the presence of caliciviruses and astroviruses <xref ref-type="bibr" rid="ppat.1000011-Kirkwood1">[14]</xref>,<xref ref-type="bibr" rid="ppat.1000011-Mustafa1">[28]</xref>.</p>
+</sec><sec id="s4b2">
+<title>Seattle Cohort</title>
+<p>Specimens were tested for the presence of a number of bacterial species (<italic>Campylobacter jejuni</italic>, <italic>Escherichia coli</italic> O157∶H7 and non-O157∶H7 Shiga toxin-producing <italic>E. coli</italic>, <italic>Salmonella</italic>, <italic>Shigella</italic>, and <italic>Yersinia</italic>) following standard culture assays, <italic>Clostridium difficile</italic> toxin by a cytotoxicity assay, parasites by microscopy and antigen testing <xref ref-type="bibr" rid="ppat.1000011-Klein1">[29]</xref>. Additionally, samples were tested by EIA for rotaviruses, adenoviruses, noroviruses 1 &amp; 2, and astroviruses (Meridian Biosciences, DAKO). This study was approved by the institutional review boards of the CHRMC and of Washington University.</p>
+</sec></sec><sec id="s4c">
+<title>Library construction and mass sequencing</title>
+<p>Chips of frozen archived fecal specimens (∼30–150 mg) were resuspended in 6 volumes of PBS. A subset of the archived specimens had been previously diluted and were further diluted 1∶1 in PBS. The stool suspensions were centrifuged (9,700×g, 10 minutes) and supernatants were harvested and then passed through 0.45 µm filters. RNA was extracted from 100 µL of the filtrates using RNA-Bee (Tel Test, Inc., Friendswood, Texas) according to manufacturers instructions. Approximately, 100–300 nanograms of RNA from each sample was randomly amplified following the Round AB protocol as previously described <xref ref-type="bibr" rid="ppat.1000011-Wang1">[16]</xref>. The amplified nucleic acid was cloned into pCR4 using the TOPO cloning kit (Invitrogen, Carlsbad, CA), and transformed into Top10 bacteria. Positive colonies were subcloned into 384 well plates, DNA was purified using magnetic bead isolation, and followed by sequencing using standard Big Dye terminator (v3.1) sequencing chemistry and the universal primer M13 reverse. Reactions were ethanol precipitated and resuspended in 25 uL of water prior to loading onto the ABI 3730xl sequencer.</p>
+</sec><sec id="s4d">
+<title>Analysis of sequence reads</title>
+<p>Sequence traces were subjected to quality assessment and base-calling using Phred <xref ref-type="bibr" rid="ppat.1000011-Ewing1">[30]</xref>,<xref ref-type="bibr" rid="ppat.1000011-Ewing2">[31]</xref>. Lucy <xref ref-type="bibr" rid="ppat.1000011-Chou1">[32]</xref> was used to trim vector and low quality sequences. Default parameters were used except that high quality sequences identified by Lucy were allowed to be as short as 75 nucleotides. To define the set of reads with unique sequence content in each library, sequences that passed the quality filter were clustered using BLASTClust from the 2.2.15 version of NCBI BLAST to eliminate redundancy. Sequences were clustered based on 98% identity over 98% sequence length, and the longest sequence from each cluster was aligned to the NCBI nr database using the tBLASTx algorithm <xref ref-type="bibr" rid="ppat.1000011-Altschul1">[33]</xref>. An E-value cutoff of 1e-5 was applied. Sequences were phylotyped as human, bacterial, phage, viral, or other based on the identity of the best BLAST hit. Sequences without any hits having an E-value of 1e-5 or better were placed in the “Unassigned” category. All eukaryotic viral sequences were further classified into viral families in similar fashion. Trimmed, high quality sequences that were not found by RepeatMasker to contain repetitive or low-complexity sequence have been deposited in Genbank (Accession numbers ET065304 through ET067293).</p>
+</sec><sec id="s4e">
+<title>Phylogenetic analysis</title>
+<p>ClustalX (1.83) was used to perform multiple sequence alignments of the protein sequences associated with select sequence reads. Available nucleotide or protein sequences from known viruses were obtained from Genbank for inclusion in the phylogenetic trees. Selected sequences from Genbank included those with the greatest similarity to the sequence read in question based on the BLAST alignments as well as representative sequences from all major taxa within the relevant virus family. The protein alignments created by ClustalX were input into PAUP <xref ref-type="bibr" rid="ppat.1000011-Swofford1">[18]</xref>, and maximum parsimony analysis was performed using the default settings with 1,000 replicates.</p>
+<p>Astrovirus trees: Human astrovirus 1 (NC_001943); Human astrovirus 2 (L13745); Human astrovirus 3 (AAD17224); Human astrovirus 4 (DQ070852); Human astrovirus 5 (DQ028633); Human astrovirus 6 (CAA86616); Human astrovirus 7 (AAK31913); Human astrovirus 8 (AF260508); Turkey astrovirus 1 (Y15936); Turkey astrovirus 2 (NC_005790); Turkey astrovirus 3 (AY769616); Chicken astrovirus (NC_003790); Ovine astrovirus (NC_002469); and Mink astrovirus (NC_004579).</p>
+<p>Nodavirus tree: Striped Jack Nervous Necrosis virus (Q9QAZ8); Macrobrachium rosenbergii nodavirus (Q6XNL5); Black Beetle virus (YP_053043.1); Flockhouse virus (NP_689444.1); Epinephelus tauvina nervous necrosis virus (NC_004136.1); Nodamura virus (NC_002691.1); Boolarra virus (NC_004145.1); Pariacoto virus (NC_003692.1); and Redspotted grouper nervous necrosis virus (NC_008041.1).</p>
+<p>Picornavirus trees: Human coxsackievirus A1 (AAQ02675.1), Human coxsackievirus A18 (AAQ04836.1), Human coxsackievirus A19 (AAQ02681.1), Human coxsackievirus A21 (AAQ04838.1), Human coxsackievirus A24 (ABD97876.1), Human poliovirus 1 (CAD23059.1), Human coxsackievirus A2 (AAR38840.1), Human coxsackievirus A4 (AAR38842.1), Human coxsackievirus A5 (AAR38843.1), Human coxsackievirus A16 (AAV70120.1), Human enterovirus 89 (AAW30683.1), Human enterovirus 91 (AAW30700.1), Human enterovirus 90 (BAD95475.1), Human enterovirus 71 (CAL36654.1), Echovirus 1 strain Farouk (AAC63944.2), Human coxsackievirus B2 (AAD19874.1), Human enterovirus 86 (AAX47040.1), Human coxsackievirus B5 (AAF21971.1), Human echovirus 29 (AAQ73089.1), Human enterovirus 68 (AAR98503.1), Human enterovirus 70 (BAA18891.1), Bovine enterovirus (NP_045756.1), Porcine enterovirus A (NP_653145.1), Porcine enterovirus B (NP_758520.1), Simian enterovirus A (NP_653149.1), Human rhinovirus A (ABF51203.1), Human rhinovirus B (NP_041009.1).</p>
+<p>Picobirnavirus trees: Human picobirnavirus strain 1-CHN-97 (AF246939.1), Human picobirnavirus strain 4-GA-91 (AF246940.1), Human picobirnavirus strain Hy005102 (NC_007027.1), Human picobirnavirus strain 2-GA-91 (AF245701.1), Human picobirnavirus strain 1-GA-91 (AF246612.1), Porcine picobirnavirus 2 (EU104360.1).</p>
+<p>Anellovirus trees: TGP96 Torque teno virus (AB041962), Pt-TTV8-II Torque teno virus (AB041963), CBD231 TTV-like mini virus (AB026930), Mf-TTV9 Torque teno virus (AB041959), Mf-TTV3 Torque teno virus (AB041958), KC009/G4 Torque teno virus (AB038621), TA278/G1 Torque teno virus (AB008394), Pt-TTV6 Torque teno virus (AB041957), TUS01/G3 Torque teno virus (AB017613), PMV/G2 Torque teno virus (AF261761), JT33F/G5 Torque teno virus (AB064606), MD1-073 Torque teno midi virus (AB290918), MD2-013Torque teno midi virus (AB290919), Tbc-TTV14 Torque teno virus (AB057358), Sd-TTV31 Torque teno virus (AB076001), Fc-TTV4 Torque teno virus (AB076003), Cf-TTV10 Torque teno virus (AB076002), So-TTV2 Torque teno virus (AB041960), At-TTV3 Torque teno virus (AB041961).</p>
+<p>Calicivirus trees: Camberwell (AAD33960.1), MD-2004 (ABG49508.1), Carlow(ABD73935.1), Snow Mountain virus (AAN08111.1), Mc37 (AAS47823.1), Hawaii(AAB97767.2), Norwalk(AAB50465.1), Southampton (AAA92983.1), Chiba(BAB18266.1), Hesse(AAC64602.1), BoJena-DEU-98 (CAA09480.1), Murine (AAO63098.2), SU17(BAC11827.1), Dumfries (AAM95184.2), SU25-JPN(BAC11830.1), SU1-JPN(BAC11815.1), Desert Shield (AAA16284.1), Melksham (CAA57461.1), Toronto-24 (AAA18929.1), Sw918 (BAB83515.1), OH-QW101 (AAX32876.1).</p>
+<p>Endonuclease-like sequences for D03 tree (mimvirus-like sequences): <italic>Bacteroides caccae</italic> (ZP_01959575.1), <italic>Acanthamoeba</italic> mimivirus (YP_142599.1), <italic>Eubacterium dolichum</italic> (ZP_02077753.1), <italic>Staphylococcus</italic> phage K (YP_024462.1), <italic>Lactobacillus</italic> phage LP65 (YP_164778.1), <italic>Lactococcus</italic> phage bIL170 (NP_047162.1), <italic>Lactococcus</italic> phage r1t (NP_695069.1), <italic>Burkholderia vietnamiensis</italic> G4 (YP_001119011.1), <italic>Streptococcus pyogenes</italic> (NP_607538.1), <italic>Tetrahymena thermophila</italic> (XP_001029162.1), <italic>Bacteroides vulgatus</italic> (YP_001300673.1)</p>
+</sec></sec><sec id="s5">
+<title>Supporting Information</title>
+<supplementary-material id="ppat.1000011.s001" mimetype="image/tiff" xlink:href="info:doi/10.1371/journal.ppat.1000011.s001" position="float" xlink:type="simple"><label>Figure S1</label><caption>
+<p>Composite analysis of all sequences. Sequences from all 12 libraries were categorized based on the best tBLASTX scores (E-value: &lt;1e-5) as viral, phage, bacterial, human, fungal, other, or unassigned. Numbers in parenthesis represent the number of sequences in each category.</p>
+<p>(0.21 MB TIF)</p>
+</caption></supplementary-material><supplementary-material id="ppat.1000011.s002" mimetype="image/tiff" xlink:href="info:doi/10.1371/journal.ppat.1000011.s002" position="float" xlink:type="simple"><label>Figure S2</label><caption>
+<p>Phylogenetic analysis of picobirnavirus-like sequence reads. Phylogenetic trees were generated by comparing the translated amino acid sequence of individual sequence reads to members of the unclassified taxa picobirnavirus. The trees were created using the maximum parsimony method with 1,000 replicates. Bootstrap values over 700 are shown.</p>
+<p>(0.43 MB TIF)</p>
+</caption></supplementary-material><supplementary-material id="ppat.1000011.s003" mimetype="image/tiff" xlink:href="info:doi/10.1371/journal.ppat.1000011.s003" position="float" xlink:type="simple"><label>Figure S3</label><caption>
+<p>Phylogenetic analysis of Picornaviridae-like sequence reads. Phylogenetic trees were generated by comparing the translated amino acid sequence of individual sequence reads to members of the Picornaviridae family. The trees were created using the maximum parsimony method with 1,000 replicates. Bootstrap values over 700 are shown. CVA = Coxsakievirus A, CVB = Coxsackievirus B, BEV = Bovine Enterovirus, EV = Enterovirus, HRVA = Human Rhinovirus A, HRVB = Human Rhinovirus B, PEV = Porcine Enterovirus, PV = Poliovirus, SEVA = Simian Enterovirus A.</p>
+<p>(0.66 MB TIF)</p>
+</caption></supplementary-material><supplementary-material id="ppat.1000011.s004" mimetype="image/tiff" xlink:href="info:doi/10.1371/journal.ppat.1000011.s004" position="float" xlink:type="simple"><label>Figure S4</label><caption>
+<p>Phylogenetic analysis of anellovirus-like sequence reads. Phylogenetic trees were generated by comparing the translated amino acid sequence of individual sequence reads to anelloviruses. The trees were created using the maximum parsimony method with 1,000 replicates. Bootstrap values over 700 are shown.</p>
+<p>(0.37 MB TIF)</p>
+</caption></supplementary-material><supplementary-material id="ppat.1000011.s005" mimetype="image/tiff" xlink:href="info:doi/10.1371/journal.ppat.1000011.s005" position="float" xlink:type="simple"><label>Figure S5</label><caption>
+<p>Phylogenetic analysis of Caliciviridae-like sequence reads. Phylogenetic trees were generated by comparing the translated amino acid sequence of individual sequence reads to the A) NS4 (3A-like) protein or B) NS7 (RNAP) protein of caliciviruses. The trees were created using the maximum parsimony method with 1,000 replicates. Bootstrap values over 700 are shown.</p>
+<p>(0.58 MB TIF)</p>
+</caption></supplementary-material><supplementary-material id="ppat.1000011.s006" mimetype="image/tiff" xlink:href="info:doi/10.1371/journal.ppat.1000011.s006" position="float" xlink:type="simple"><label>Figure S6</label><caption>
+<p>Phylogenetic analysis of endonuclease-like sequence reads. Phylogenetic trees were generated by comparing the translated amino acid sequence of two individual sequence reads to endonuclease sequences derived from mimivirus, phage, and bacterial species representing some of the top scoring BLAST hits. The trees were created using the maximum parsimony method with 1,000 replicates. Bootstrap values over 700 are shown.</p>
+<p>(0.54 MB TIF)</p>
+</caption></supplementary-material></sec></body>
+<back>
+<ack>
+<p>We would like to thank Henry Huang for helpful advice regarding the phylogenetic analysis.</p>
+</ack>
+<ref-list>
+<title>References</title>
+<ref id="ppat.1000011-Breitbart1"><label>1</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Breitbart</surname><given-names>M</given-names></name>
+<name name-style="western"><surname>Salamon</surname><given-names>P</given-names></name>
+<name name-style="western"><surname>Andresen</surname><given-names>B</given-names></name>
+<name name-style="western"><surname>Mahaffy</surname><given-names>JM</given-names></name>
+<name name-style="western"><surname>Segall</surname><given-names>AM</given-names></name>
+<etal/></person-group>             <year>2002</year>             <article-title>Genomic analysis of uncultured marine viral communities.</article-title>             <source>Proc Natl Acad Sci U S A</source>             <volume>99</volume>             <fpage>14250</fpage>             <lpage>14255</lpage>          </citation></ref>
+<ref id="ppat.1000011-Tyson1"><label>2</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Tyson</surname><given-names>GW</given-names></name>
+<name name-style="western"><surname>Chapman</surname><given-names>J</given-names></name>
+<name name-style="western"><surname>Hugenholtz</surname><given-names>P</given-names></name>
+<name name-style="western"><surname>Allen</surname><given-names>EE</given-names></name>
+<name name-style="western"><surname>Ram</surname><given-names>RJ</given-names></name>
+<etal/></person-group>             <year>2004</year>             <article-title>Community structure and metabolism through reconstruction of microbial genomes from the environment.</article-title>             <source>Nature</source>             <volume>428</volume>             <fpage>37</fpage>             <lpage>43</lpage>          </citation></ref>
+<ref id="ppat.1000011-Venter1"><label>3</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Venter</surname><given-names>JC</given-names></name>
+<name name-style="western"><surname>Remington</surname><given-names>K</given-names></name>
+<name name-style="western"><surname>Heidelberg</surname><given-names>JF</given-names></name>
+<name name-style="western"><surname>Halpern</surname><given-names>AL</given-names></name>
+<name name-style="western"><surname>Rusch</surname><given-names>D</given-names></name>
+<etal/></person-group>             <year>2004</year>             <article-title>Environmental genome shotgun sequencing of the Sargasso Sea.</article-title>             <source>Science</source>             <volume>304</volume>             <fpage>66</fpage>             <lpage>74</lpage>          </citation></ref>
+<ref id="ppat.1000011-Tringe1"><label>4</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Tringe</surname><given-names>SG</given-names></name>
+<name name-style="western"><surname>von Mering</surname><given-names>C</given-names></name>
+<name name-style="western"><surname>Kobayashi</surname><given-names>A</given-names></name>
+<name name-style="western"><surname>Salamov</surname><given-names>AA</given-names></name>
+<name name-style="western"><surname>Chen</surname><given-names>K</given-names></name>
+<etal/></person-group>             <year>2005</year>             <article-title>Comparative metagenomics of microbial communities.</article-title>             <source>Science</source>             <volume>308</volume>             <fpage>554</fpage>             <lpage>557</lpage>          </citation></ref>
+<ref id="ppat.1000011-Hallam1"><label>5</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Hallam</surname><given-names>SJ</given-names></name>
+<name name-style="western"><surname>Putnam</surname><given-names>N</given-names></name>
+<name name-style="western"><surname>Preston</surname><given-names>CM</given-names></name>
+<name name-style="western"><surname>Detter</surname><given-names>JC</given-names></name>
+<name name-style="western"><surname>Rokhsar</surname><given-names>D</given-names></name>
+<etal/></person-group>             <year>2004</year>             <article-title>Reverse methanogenesis: testing the hypothesis with environmental genomics.</article-title>             <source>Science</source>             <volume>305</volume>             <fpage>1457</fpage>             <lpage>1462</lpage>          </citation></ref>
+<ref id="ppat.1000011-Culley1"><label>6</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Culley</surname><given-names>AI</given-names></name>
+<name name-style="western"><surname>Lang</surname><given-names>AS</given-names></name>
+<name name-style="western"><surname>Suttle</surname><given-names>CA</given-names></name>
+</person-group>             <year>2006</year>             <article-title>Metagenomic analysis of coastal RNA virus communities.</article-title>             <source>Science</source>             <volume>312</volume>             <fpage>1795</fpage>             <lpage>1798</lpage>          </citation></ref>
+<ref id="ppat.1000011-Breitbart2"><label>7</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Breitbart</surname><given-names>M</given-names></name>
+<name name-style="western"><surname>Hewson</surname><given-names>I</given-names></name>
+<name name-style="western"><surname>Felts</surname><given-names>B</given-names></name>
+<name name-style="western"><surname>Mahaffy</surname><given-names>JM</given-names></name>
+<name name-style="western"><surname>Nulton</surname><given-names>J</given-names></name>
+<etal/></person-group>             <year>2003</year>             <article-title>Metagenomic analyses of an uncultured viral community from human feces.</article-title>             <source>J Bacteriol</source>             <volume>185</volume>             <fpage>6220</fpage>             <lpage>6223</lpage>          </citation></ref>
+<ref id="ppat.1000011-Zhang1"><label>8</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Zhang</surname><given-names>T</given-names></name>
+<name name-style="western"><surname>Breitbart</surname><given-names>M</given-names></name>
+<name name-style="western"><surname>Lee</surname><given-names>WH</given-names></name>
+<name name-style="western"><surname>Run</surname><given-names>JQ</given-names></name>
+<name name-style="western"><surname>Wei</surname><given-names>CL</given-names></name>
+<etal/></person-group>             <year>2006</year>             <article-title>RNA viral community in human feces: prevalence of plant pathogenic viruses.</article-title>             <source>PLoS Biol</source>             <volume>4</volume>             <fpage>e3</fpage>          </citation></ref>
+<ref id="ppat.1000011-1"><label>9</label><citation citation-type="book" xlink:type="simple">             <year>2004</year>             <article-title>World Health Report.</article-title>             <comment>World Health Organization</comment>          </citation></ref>
+<ref id="ppat.1000011-Dennehy1"><label>10</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Dennehy</surname><given-names>PH</given-names></name>
+</person-group>             <year>2005</year>             <article-title>Acute diarrheal disease in children: epidemiology, prevention, and treatment.</article-title>             <source>Infect Dis Clin North Am</source>             <volume>19</volume>             <fpage>585</fpage>             <lpage>602</lpage>          </citation></ref>
+<ref id="ppat.1000011-Denno1"><label>11</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Denno</surname><given-names>DM</given-names></name>
+<name name-style="western"><surname>Klein</surname><given-names>EJ</given-names></name>
+<name name-style="western"><surname>Young</surname><given-names>VB</given-names></name>
+<name name-style="western"><surname>Fox</surname><given-names>JG</given-names></name>
+<name name-style="western"><surname>Wang</surname><given-names>D</given-names></name>
+<etal/></person-group>             <year>2007</year>             <article-title>Explaining unexplained diarrhea and associating risks and infections.</article-title>             <source>Anim Health Res Rev</source>             <volume>8</volume>             <fpage>69</fpage>             <lpage>80</lpage>          </citation></ref>
+<ref id="ppat.1000011-Kapikan1"><label>12</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Kapikan</surname><given-names>A</given-names></name>
+</person-group>             <year>1993</year>             <article-title>Viral Gastroenteritis.</article-title>             <source>The Journal of the American Medical Association</source>             <volume>269</volume>             <fpage>627</fpage>             <lpage>630</lpage>          </citation></ref>
+<ref id="ppat.1000011-Bon1"><label>13</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Bon</surname><given-names>F</given-names></name>
+<name name-style="western"><surname>Fascia</surname><given-names>P</given-names></name>
+<name name-style="western"><surname>Dauvergne</surname><given-names>M</given-names></name>
+<name name-style="western"><surname>Tenenbaum</surname><given-names>D</given-names></name>
+<name name-style="western"><surname>Planson</surname><given-names>H</given-names></name>
+<etal/></person-group>             <year>1999</year>             <article-title>Prevalence of group A rotavirus, human calicivirus, astrovirus, and adenovirus type 40 and 41 infections among children with acute gastroenteritis in Dijon, France.</article-title>             <source>J Clin Microbiol</source>             <volume>37</volume>             <fpage>3055</fpage>             <lpage>3058</lpage>          </citation></ref>
+<ref id="ppat.1000011-Kirkwood1"><label>14</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Kirkwood</surname><given-names>CD</given-names></name>
+<name name-style="western"><surname>Clark</surname><given-names>R</given-names></name>
+<name name-style="western"><surname>Bogdanovic-Sakran</surname><given-names>N</given-names></name>
+<name name-style="western"><surname>Bishop</surname><given-names>RF</given-names></name>
+</person-group>             <year>2005</year>             <article-title>A 5-year study of the prevalence and genetic diversity of human caliciviruses associated with sporadic cases of acute gastroenteritis in young children admitted to hospital in Melbourne, Australia (1998–2002).</article-title>             <source>J Med Virol</source>             <volume>77</volume>             <fpage>96</fpage>             <lpage>101</lpage>          </citation></ref>
+<ref id="ppat.1000011-ChikhiBrachet1"><label>15</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Chikhi-Brachet</surname><given-names>R</given-names></name>
+<name name-style="western"><surname>Bon</surname><given-names>F</given-names></name>
+<name name-style="western"><surname>Toubiana</surname><given-names>L</given-names></name>
+<name name-style="western"><surname>Pothier</surname><given-names>P</given-names></name>
+<name name-style="western"><surname>Nicolas</surname><given-names>JC</given-names></name>
+<etal/></person-group>             <year>2002</year>             <article-title>Virus diversity in a winter epidemic of acute diarrhea in France.</article-title>             <source>J Clin Microbiol</source>             <volume>40</volume>             <fpage>4266</fpage>             <lpage>4272</lpage>          </citation></ref>
+<ref id="ppat.1000011-Wang1"><label>16</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Wang</surname><given-names>D</given-names></name>
+<name name-style="western"><surname>Urisman</surname><given-names>A</given-names></name>
+<name name-style="western"><surname>Liu</surname><given-names>YT</given-names></name>
+<name name-style="western"><surname>Springer</surname><given-names>M</given-names></name>
+<name name-style="western"><surname>Ksiazek</surname><given-names>TG</given-names></name>
+<etal/></person-group>             <year>2003</year>             <article-title>Viral discovery and sequence recovery using DNA microarrays.</article-title>             <source>PLoS Biol</source>             <volume>1</volume>             <fpage>E2</fpage>          </citation></ref>
+<ref id="ppat.1000011-Berns1"><label>17</label><citation citation-type="book" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Berns</surname><given-names>KP</given-names></name>
+<name name-style="western"><surname/><given-names>CR</given-names></name>
+</person-group>             <year>2007</year>             <article-title>Parvoviridae.</article-title>             <person-group person-group-type="editor">
+<name name-style="western"><surname>Knipe</surname><given-names>DH</given-names></name>
+<name name-style="western"><surname/><given-names>PM</given-names></name>
+</person-group>             <source>Fields Virology. 5th ed</source>             <publisher-name>Lippincott Williams &amp; Wilkins</publisher-name>             <fpage>2437</fpage>             <lpage>2477</lpage>          </citation></ref>
+<ref id="ppat.1000011-Swofford1"><label>18</label><citation citation-type="book" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Swofford</surname><given-names>DL</given-names></name>
+</person-group>             <year>1998</year>             <source>PAUP*. Phylogenetic Analysis Using Parsimony (*and Other Methods)</source>             <publisher-loc>Sunderland, Massachusettes</publisher-loc>             <publisher-name>Sinauer Associates</publisher-name>          </citation></ref>
+<ref id="ppat.1000011-Xing1"><label>19</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Xing</surname><given-names>L</given-names></name>
+<name name-style="western"><surname>Tikoo</surname><given-names>SK</given-names></name>
+</person-group>             <year>2004</year>             <article-title>Viral RNAs detected in virions of porcine adenovirus type 3.</article-title>             <source>Virology</source>             <volume>321</volume>             <fpage>372</fpage>             <lpage>382</lpage>          </citation></ref>
+<ref id="ppat.1000011-Mannhalter1"><label>20</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Mannhalter</surname><given-names>C</given-names></name>
+<name name-style="western"><surname>Koizar</surname><given-names>D</given-names></name>
+<name name-style="western"><surname>Mitterbauer</surname><given-names>G</given-names></name>
+</person-group>             <year>2000</year>             <article-title>Evaluation of RNA isolation methods and reference genes for RT-PCR analyses of rare target RNA.</article-title>             <source>Clin Chem Lab Med</source>             <volume>38</volume>             <fpage>171</fpage>             <lpage>177</lpage>          </citation></ref>
+<ref id="ppat.1000011-Gallimore1"><label>21</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Gallimore</surname><given-names>CI</given-names></name>
+<name name-style="western"><surname>Appleton</surname><given-names>H</given-names></name>
+<name name-style="western"><surname>Lewis</surname><given-names>D</given-names></name>
+<name name-style="western"><surname>Green</surname><given-names>J</given-names></name>
+<name name-style="western"><surname>Brown</surname><given-names>DW</given-names></name>
+</person-group>             <year>1995</year>             <article-title>Detection and characterisation of bisegmented double-stranded RNA viruses (picobirnaviruses) in human faecal specimens.</article-title>             <source>J Med Virol</source>             <volume>45</volume>             <fpage>135</fpage>             <lpage>140</lpage>          </citation></ref>
+<ref id="ppat.1000011-Glass1"><label>22</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Glass</surname><given-names>RI</given-names></name>
+<name name-style="western"><surname>Noel</surname><given-names>J</given-names></name>
+<name name-style="western"><surname>Mitchell</surname><given-names>D</given-names></name>
+<name name-style="western"><surname>Herrmann</surname><given-names>JE</given-names></name>
+<name name-style="western"><surname>Blacklow</surname><given-names>NR</given-names></name>
+<etal/></person-group>             <year>1996</year>             <article-title>The changing epidemiology of astrovirus-associated gastroenteritis: a review.</article-title>             <source>Arch Virol Suppl</source>             <volume>12</volume>             <fpage>287</fpage>             <lpage>300</lpage>          </citation></ref>
+<ref id="ppat.1000011-Moser1"><label>23</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Moser</surname><given-names>LA</given-names></name>
+<name name-style="western"><surname>Schultz-Cherry</surname><given-names>S</given-names></name>
+</person-group>             <year>2005</year>             <article-title>Pathogenesis of astrovirus infection.</article-title>             <source>Viral Immunol</source>             <volume>18</volume>             <fpage>4</fpage>             <lpage>10</lpage>          </citation></ref>
+<ref id="ppat.1000011-Friesen1"><label>24</label><citation citation-type="book" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Friesen</surname><given-names>P</given-names></name>
+</person-group>             <year>2007</year>             <article-title>Insect Viruses.</article-title>             <person-group person-group-type="editor">
+<name name-style="western"><surname>Knipe</surname><given-names>DH</given-names></name>
+<name name-style="western"><surname/><given-names>PM</given-names></name>
+</person-group>             <source>Fields Virology. 5th ed</source>             <publisher-name>Lippincott Williams &amp; Wilkins</publisher-name>             <fpage>725</fpage>             <lpage>727</lpage>          </citation></ref>
+<ref id="ppat.1000011-Smit1"><label>25</label><citation citation-type="book" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Smit</surname><given-names>A</given-names></name>
+<name name-style="western"><surname>Hubley</surname><given-names>R</given-names></name>
+<name name-style="western"><surname>Green</surname><given-names>P</given-names></name>
+</person-group>             <year>1996–2004</year>             <source>RepeatMasker Open-3.0</source>          </citation></ref>
+<ref id="ppat.1000011-Jurka1"><label>26</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Jurka</surname><given-names>J</given-names></name>
+<name name-style="western"><surname>Kapitonov</surname><given-names>VV</given-names></name>
+<name name-style="western"><surname>Pavlicek</surname><given-names>A</given-names></name>
+<name name-style="western"><surname>Klonowski</surname><given-names>P</given-names></name>
+<name name-style="western"><surname>Kohany</surname><given-names>O</given-names></name>
+<etal/></person-group>             <year>2005</year>             <article-title>Repbase Update, a database of eukaryotic repetitive elements.</article-title>             <source>Cytogenet Genome Res</source>             <volume>110</volume>             <fpage>462</fpage>             <lpage>467</lpage>          </citation></ref>
+<ref id="ppat.1000011-IturrizaGomara1"><label>27</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Iturriza-Gomara</surname><given-names>M</given-names></name>
+<name name-style="western"><surname>Isherwood</surname><given-names>B</given-names></name>
+<name name-style="western"><surname>Desselberger</surname><given-names>U</given-names></name>
+<name name-style="western"><surname>Gray</surname><given-names>J</given-names></name>
+</person-group>             <year>2001</year>             <article-title>Reassortment in vivo: driving force for diversity of human rotavirus strains isolated in the United Kingdom between 1995 and 1999.</article-title>             <source>J Virol</source>             <volume>75</volume>             <fpage>3696</fpage>             <lpage>3705</lpage>          </citation></ref>
+<ref id="ppat.1000011-Mustafa1"><label>28</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Mustafa</surname><given-names>H</given-names></name>
+<name name-style="western"><surname>Palombo</surname><given-names>EA</given-names></name>
+<name name-style="western"><surname>Bishop</surname><given-names>RF</given-names></name>
+</person-group>             <year>1998</year>             <article-title>Improved sensitivity of astrovirus-specific RT-PCR following culture of stool samples in CaCo-2 cells.</article-title>             <source>J Clin Virol</source>             <volume>11</volume>             <fpage>103</fpage>             <lpage>107</lpage>          </citation></ref>
+<ref id="ppat.1000011-Klein1"><label>29</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Klein</surname><given-names>EJ</given-names></name>
+<name name-style="western"><surname>Boster</surname><given-names>DR</given-names></name>
+<name name-style="western"><surname>Stapp</surname><given-names>JR</given-names></name>
+<name name-style="western"><surname>Wells</surname><given-names>JG</given-names></name>
+<name name-style="western"><surname>Qin</surname><given-names>X</given-names></name>
+<etal/></person-group>             <year>2006</year>             <article-title>Diarrhea Etiology in a Children's Hospital Emergency Department: A Prospective Cohort Study.</article-title>             <source>Clin Infect Dis</source>             <volume>43</volume>             <fpage>807</fpage>             <lpage>813</lpage>          </citation></ref>
+<ref id="ppat.1000011-Ewing1"><label>30</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Ewing</surname><given-names>B</given-names></name>
+<name name-style="western"><surname>Hillier</surname><given-names>L</given-names></name>
+<name name-style="western"><surname>Wendl</surname><given-names>MC</given-names></name>
+<name name-style="western"><surname>Green</surname><given-names>P</given-names></name>
+</person-group>             <year>1998</year>             <article-title>Base-calling of automated sequencer traces using phred. I. Accuracy assessment.</article-title>             <source>Genome Res</source>             <volume>8</volume>             <fpage>175</fpage>             <lpage>185</lpage>          </citation></ref>
+<ref id="ppat.1000011-Ewing2"><label>31</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Ewing</surname><given-names>B</given-names></name>
+<name name-style="western"><surname>Green</surname><given-names>P</given-names></name>
+</person-group>             <year>1998</year>             <article-title>Base-calling of automated sequencer traces using phred. II. Error probabilities.</article-title>             <source>Genome Res</source>             <volume>8</volume>             <fpage>186</fpage>             <lpage>194</lpage>          </citation></ref>
+<ref id="ppat.1000011-Chou1"><label>32</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Chou</surname><given-names>HH</given-names></name>
+<name name-style="western"><surname>Holmes</surname><given-names>MH</given-names></name>
+</person-group>             <year>2001</year>             <article-title>DNA sequence quality trimming and vector removal.</article-title>             <source>Bioinformatics</source>             <volume>17</volume>             <fpage>1093</fpage>             <lpage>1104</lpage>          </citation></ref>
+<ref id="ppat.1000011-Altschul1"><label>33</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Altschul</surname><given-names>SF</given-names></name>
+<name name-style="western"><surname>Madden</surname><given-names>TL</given-names></name>
+<name name-style="western"><surname>Schaffer</surname><given-names>AA</given-names></name>
+<name name-style="western"><surname>Zhang</surname><given-names>J</given-names></name>
+<name name-style="western"><surname>Zhang</surname><given-names>Z</given-names></name>
+<etal/></person-group>             <year>1997</year>             <article-title>Gapped BLAST and PSI-BLAST: a new generation of protein database search programs.</article-title>             <source>Nucleic Acids Res</source>             <volume>25</volume>             <fpage>3389</fpage>             <lpage>3402</lpage>          </citation></ref>
+</ref-list>
+<fn-group>
+<fn fn-type="conflict"><p>The authors have declared that no competing interests exist.</p></fn>
+<fn fn-type="financial-disclosure"><p>This work was supported in part by the Pilot Sequencing Program sponsored by the Center for Genome Sciences at Washington University (DW), an NHMRC RD Wright Research Fellowship (CK), USDA Grant NRI 2002-35212-12335 (PT), and by the Food Safety Research Response Network, a Coordinated Agricultural Project, funded through the National Research Initiative of the USDA Cooperative State Research, Education and Extension Service, grant number ##2005-35212-15287.</p></fn>
+</fn-group>
+</back>
+</article>

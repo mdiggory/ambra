@@ -1,0 +1,76 @@
+/*
+ * $HeadURL::                                                                            $
+ * $Id$
+ *
+ * Copyright (c) 2006-2010 by Public Library of Science
+ * http://plos.org
+ * http://ambraproject.org
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#ratingAverages { display: none; }
+
+.rating { width:100px; height:15px; left: 8em; top: -1.25em;/* these positions are required for the rating/edit rating forms */ font-weight: normal; overflow:hidden; }
+ol.ratingAvgs ul.single { left:0!important; } /*for single ratings for non-research articles*/
+span.inline-rating ul.rating { left:0; top:0; } /* This is specifically for the overall rating at the top of the View All Ratings page. Applies to all browsers except IE7 - see below. */
+*:first-child+html span.inline-rating ul.rating { left: 8em; top: -1.25em; } /* IE7 only hack */
+
+.rating,
+.rating a:hover,
+.rating a:active,
+.rating a:focus,
+.rating .current-rating { background-image: url(../images/rating.gif);	line-height: 15px;	height: 15px; }
+.rating .current-rating { background-position: left bottom; display: block; }
+.rating .average-rating { left: -20px; }
+.rating .overall-rating { left: -20px; padding-left: 0; }
+.rating .single-rating  { left: -20px; padding-left: 0; }
+.rating .pct0 { width: 0%;	}
+.rating .pct10 { width: 10%;	}
+.rating .pct20 { width: 20%;	}
+.rating .pct30 { width: 30%;	}
+.rating .pct40 { width: 40%;	}
+.rating .pct50 { width: 50%;	}
+.rating .pct60 { width: 60%;	}
+.rating .pct70 { width: 70%;	}
+.rating .pct80 { width: 80%;	}
+.rating .pct90 { width: 90%;	}
+.rating .pct100 { width: 100%;	}
+span.inlineRatingEnd { position:relative; left:0!important; top:0!important; /* "!important" declarations needed for IE6 */ }
+*:first-child+html span.inlineRatingEnd { left:8em; top:-1.25em; background:none; background-color:transparent; } /* IE7 only hack */
+
+/* apply class original to the original posting of either a discussio or annotation on the directory page */
+div.ratingComment	{ margin: 20px 0 5px 0!important; border-top-width: 1px; margin-top:20px!important; }
+div.ratingComment div.hd { background: url(../images/toolbar_bg.gif) repeat-x bottom; }
+div.ratingComment div.toolbar a { cursor: pointer; }
+div.ratingComment div.ratingDetail	{ background: #fff; margin: 0; padding: 5px 10px 0 10px; font-style: normal; border: 1px solid #ccc; border-width: 1px 0 1px 2px;  }
+
+div.hd ol.ratingAvgs { margin: 0 }
+div.hd ol.ratingAvgs li { padding-left: 0; }
+div.hd ol.ratingAvgs label { font-size: 90%; }
+div.hd ol.ratingAvgs li ul { top: -17px; left: 20px; }
+div.hd span.detail { padding-left: 5px; font-weight: normal; font-size: 95%; }
+div.hd span.detail a { font-weight: bold; }
+
+div.ratingDetail ol.ratingAvgs li { padding-left: 0; }
+div.ratingDetail ol.ratingAvgs label { font-size: 90%; }
+div.ratingDetail ol.ratingAvgs li ul { top: -17px; left: 7em; }
+div.ratingDetail blockquote { background: none!important; border: 0!important; padding: 0!important; margin: 0!important; }
+
+div.rsep { margin-top: 10px;  margin-right: -5px; padding: 0; border: none; background: #fff; }
+
+/* Special for the inline overall rating appearing in the right-hand column widget */
+.inline-rating-rhc { float:left; position:static; } 
+.inline-rating-rhc .current-rating { float:none; position:static; }
+.inline-rating-rhc .overall-rating { margin-left:0; }
+.inline-rating-rhc .single-rating { margin-left:0; }

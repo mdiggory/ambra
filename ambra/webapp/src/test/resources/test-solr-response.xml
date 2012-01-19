@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+
+<lst name="responseHeader">
+ <int name="status">0</int>
+ <int name="QTime">160</int>
+</lst>
+<result name="response" numFound="36646" start="0">
+ <doc>
+  <str name="id">10.1371/journal.pcbi.0010001</str>
+
+  <str name="title_display">Ab Initio Prediction of Transcription Factor Targets Using Structural Knowledge</str>
+ </doc>
+ <doc>
+  <str name="id">10.1371/journal.pcbi.0010002</str>
+  <str name="title_display">What Makes Ribosome-Mediated Transcriptional Attenuation Sensitive to Amino Acid Limitation?</str>
+ </doc>
+ <doc>
+
+  <str name="id">10.1371/journal.pcbi.0010003</str>
+  <str name="title_display">Predicting Functional Gene Links from Phylogenetic-Statistical Analyses of Whole Genomes</str>
+ </doc>
+ <doc>
+  <str name="id">10.1371/journal.pcbi.0010004</str>
+  <str name="title_display">&lt;i&gt;PLoS Computational Biology:&lt;/i&gt; A New Community Journal</str>
+
+ </doc>
+ <doc>
+  <str name="id">10.1371/journal.pcbi.0010005</str>
+  <str name="title_display">An Open Forum for Computational Biology</str>
+ </doc>
+ <doc>
+  <str name="id">10.1371/journal.pcbi.0010006</str>
+
+  <str name="title_display">“Antedisciplinary” Science</str>
+ </doc>
+ <doc>
+  <str name="id">10.1371/journal.pcbi.0010007</str>
+  <str name="title_display">Susceptibility to Superhelically Driven DNA Duplex Destabilization: A Highly Conserved Property of Yeast Replication Origins</str>
+ </doc>
+ <doc>
+
+  <str name="id">10.1371/journal.pcbi.0010008</str>
+  <str name="title_display">Combinatorial Pattern Discovery Approach for the Folding Trajectory Analysis of a &lt;i&gt;β&lt;/i&gt;-Hairpin</str>
+ </doc>
+ <doc>
+  <str name="id">10.1371/journal.pcbi.0010009</str>
+
+  <str name="title_display">Improving the Precision of the Structure–Function Relationship by Considering Phylogenetic Context</str>
+ </doc>
+ <doc>
+  <str name="id">10.1371/journal.pcbi.0010010</str>
+  <str name="title_display">Extraction of Transcript Diversity from Scientific Literature</str>
+ </doc>
+</result>
+<lst name="facet_counts">
+
+ <lst name="facet_queries"/>
+ <lst name="facet_fields"/>
+ <lst name="facet_dates"/>
+</lst>
+<lst name="highlighting">
+ <lst name="10.1371/journal.pcbi.0010001"/>
+ <lst name="10.1371/journal.pcbi.0010002"/>
+ <lst name="10.1371/journal.pcbi.0010003"/>
+ <lst name="10.1371/journal.pcbi.0010004"/>
+ <lst name="10.1371/journal.pcbi.0010005"/>
+
+ <lst name="10.1371/journal.pcbi.0010006"/>
+ <lst name="10.1371/journal.pcbi.0010007"/>
+ <lst name="10.1371/journal.pcbi.0010008"/>
+ <lst name="10.1371/journal.pcbi.0010009"/>
+ <lst name="10.1371/journal.pcbi.0010010"/>
+</lst>
+</response>

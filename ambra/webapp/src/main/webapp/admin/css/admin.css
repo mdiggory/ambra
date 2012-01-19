@@ -1,0 +1,80 @@
+/*
+ * $HeadURL::                                                                            $
+ * $Id$
+ *
+ * Copyright (c) 2006-2010 by Public Library of Science
+ * http://plos.org
+ * http://ambraproject.org
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/* 	-------------------------------------------------------------
+
+  GLOBAL STYLE SHEET FOR : Ambra Admin
+  CREATED ON  : 11-09-2009
+  CREATED BY  : JOE OSOWSKI
+  
+  ------------------------------------------------------------- */
+
+html { }
+body { }
+h3,
+fieldset { border-bottom:2px groove #e1e1e1; }
+h3 { border-bottom:2px groove #e1e1e1; padding-bottom:0.25em; }
+hr { border:1px solid #ccc; }
+fieldset { margin:25px 0; padding:15px 10px; }
+
+div#messages { margin:0; padding:0; border-bottom:1px solid #333; }
+
+table { margin:5px 0; border-collapse:collapse; font-size:0.9em; text-align:left; }
+th { color:#666; }
+th,
+td { border:1px solid #666; padding:0.25em 0.5em; }
+th a { font-weight:normal; }
+td input { vertical-align:middle; }
+td img { padding-right:0.25em; vertical-align:-1px; }
+td,
+input { font-family: Verdana,Arial,Helvetica,sans-serif; }
+table.syndications span.published { margin-right:0.75em }
+
+input { font-size:0.8em; }
+
+div.btnwrap { float: left; }
+div.forceIngest { margin:1em 0; }
+
+form { margin:0; padding:0; }
+form:after { content:"."; display:block; height:0; clear:both; visibility:hidden; }
+
+ul.messages,
+ul.syndHist,
+ul.ingestible { margin:0.5em 0 0 0; padding:0; }
+ul.messages { margin-left:12px; }
+ul.syndHist { margin:0; }
+ul.messages li,
+ul.syndHist li { list-style-type:none; margin:0 0 0.5em 0; }
+ul.ingestible li { list-style-type:none; line-height:1.5em; }
+ul.ingestible li input { vertical-align:middle; }
+ul.messages li.error,
+ul.syndHist li.error { padding-left:20px; color: red; background:url(../../images/icon_error.gif) no-repeat 0 0 }
+ul.messages li.success,
+ul.syndHist li.success { padding-left:20px; color: green; background:url(../../images/icon_success.png) no-repeat 0 2px }
+ul.syndHist li.inprogress { padding-left:20px; color: gray; background:url(../../images/icon_time.png) no-repeat 0 2px }
+
+fieldset.syndicationHistory span.published, table.syndications span.published { padding-left: 20px; color: green; background:url(../../images/icon_success.png) no-repeat 0 2px }
+fieldset.syndicationHistory span.success, table.syndications span.success { padding-left: 20px; color: green; background:url(../../images/icon_success.png) no-repeat 0 2px }
+fieldset.syndicationHistory span.pending, table.syndications span.pending { padding-left: 20px; color: gray; background:url(../../images/icon_time.png) no-repeat 0 2px }
+fieldset.syndicationHistory span.inprogress, table.syndications span.inprogress { padding-left: 20px; color: gray; background:url(../../images/icon_time.png) no-repeat 0 2px }
+fieldset.syndicationHistory span.failure, table.syndications span.failure { padding-left: 20px; color: red; background:url(../../images/icon_error.gif) no-repeat 0 0 }
+
+
+

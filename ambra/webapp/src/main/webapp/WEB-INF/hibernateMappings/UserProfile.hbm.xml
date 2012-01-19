@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ $HeadURL:
+  ~ $Id:
+  ~
+  ~ Copyright (c) 2006-2011 by Public Library of Science
+  ~
+  ~ http://plos.org
+  ~ http://ambraproject.org
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="org.topazproject.ambra.models" auto-import="false">
+  <class name="UserProfile" table="UserProfile">
+    <id name="id" type="org.ambraproject.hibernate.URIType" column="userProfileUri" >
+      <generator class="org.ambraproject.hibernate.AmbraIdGenerator" />
+    </id>
+
+    <!--FoafPerson properties-->
+    <property name="realName" type="string" column="realName" />
+    <property name="givenNames" type="string" column="givenNames" />
+    <property name="surnames" type="string" column="surName" />
+    <property name="title" type="string" column="title" />
+    <property name="gender" type="string" column="gender" />
+    <property name="email" type="org.ambraproject.hibernate.URIType" column="email" />
+    <property name="homePage" type="org.ambraproject.hibernate.URIType" column="homePage" />
+    <property name="weblog" type="org.ambraproject.hibernate.URIType" column="weblog" />
+    <property name="publications" type="org.ambraproject.hibernate.URIType" column="publications" />
+
+    <set name="interests" table="Interests" cascade="all">
+      <key column="personUri" />
+      <element column="interest" type="org.ambraproject.hibernate.URIType" />
+    </set>
+
+    <!--USerProfile properties-->
+    <property name="displayName" type="string" column="displayName" />
+    <property name="suffix" type="string" column="suffix" />
+    <property name="positionType" type="string" column="positionType" />
+    <property name="organizationName" type="string" column="organizationName" />
+    <property name="organizationType" type="string" column="organizationType" />
+    <property name="organizationVisibility" type="boolean" column="organizationVisibility" />
+    <property name="postalAddress" type="string" column="postalAddress" />
+    <property name="city" type="string" column="city" />
+    <property name="country" type="string" column="country" />
+    <property name="biography" type="string" column="biography" />
+    <property name="biographyText" type="string" column="biographyText" />
+    <property name="interestsText" type="string" column="interestsText" />
+    <property name="researchAreasText" type="string" column="researchAreasText" />
+
+
+  </class>
+</hibernate-mapping>

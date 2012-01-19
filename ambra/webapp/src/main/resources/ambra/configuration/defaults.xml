@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  $HeadURL::                                                                                     $
+  $Id$
+
+  Copyright (c) 2007-2010 by Public Library of Science
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  This file contains most of the defaults for the ambra webapp. However, there may be additional
+  defaults in the conf-helper library's global-defaults.xml. Additionally, if in dev mode, some
+  of these values may be overridden by settings in defaults-dev.xml. Finally, look for overrides
+  in /etc/ambra/ambra.xml.
+
+  See also libs/conf-helper/src/main/resources/globa-defaults.xml
+-->
+<config>
+  <ambra>
+    <network>
+      <hosts>
+        <!-- Set hosts.default to FQHN (not localhost) if installing all components on one host
+          (or to webhead FQHN for multiple host installation) -->
+        <default>localhost</default>
+        <mailhost>localhost</mailhost>
+        <!-- For multibox install, change the following entires to the appropriate FQHNs -->
+        <cas>${ambra.network.hosts.default}</cas>
+        <registration>${ambra.network.hosts.cas}</registration>
+        <fedora>${ambra.network.hosts.default}</fedora>
+        <mulgara>${ambra.network.hosts.default}</mulgara>
+        <ambra>${ambra.network.hosts.default}</ambra>
+      </hosts>
+    </network>
+    <platform>
+      <host>${ambra.network.hosts.default}:${ambra.network.ports.default}</host>
+      <port>
+        <http>${ambra.network.ports.default}</http>
+        <https>${ambra.network.ports.ambra-ssl}</https>
+        <doi>${ambra.network.ports.default}</doi>
+      </port>
+      <appContext></appContext><!-- web application context; leave empty if deployed in root directory  -->
+      <guid-prefix>info:doi/0.0/</guid-prefix>
+      <resourceSubDir/><!-- used only if web resources like images/css are deployed in a separate directory; rarely used  -->
+
+      <!-- The DOI url prefix to use for this server -->
+      <doiUrlPrefix>http://dx.doi.org/</doiUrlPrefix>
+
+      <!-- Action for retrieving an article where doi is appended to this string -->
+      <articleAction>article/</articleAction>
+
+      <!-- common display constants -->
+      <name>Ambra</name>
+      <email>
+        <general>webmaster@example.org</general>
+        <feedback>webmaster@example.org</feedback>
+        <autoingest>webmaster@example.org</autoingest>
+        <errors>webmaster@example.org</errors>
+      </email>
+      <copyright>
+        This work is licensed under a Creative Commons Attribution-Share Alike 3.0 License\,
+        http://creativecommons.org/licenses/by-sa/3.0/
+      </copyright>
+      <webserverUrl>http://${ambra.network.hosts.default}:${ambra.network.ports.default}${ambra.platform.appContext}/</webserverUrl>
+      <!--
+      These settings control how we cache freemarker templates.
+      For more information, check out the following web page:
+      http://fmpp.sourceforge.net/freemarker/pgui_config_templateloading.html
+      -->
+      <template_cache>
+        <strong>350</strong>
+        <soft>100</soft>
+        <update_delay>600</update_delay>
+      </template_cache>
+
+      <!--
+        This is the competing interest start date
+        Any comments made before this date will not display
+        "I have no competing interest" text
+        This must be in the dd/mm/yyyy format
+      -->
+      <cisStartDate>3/20/2009</cisStartDate>
+      <freemarker>
+        <!--
+          Any settings defined here are cached in the configuration and are
+          Readible by freemarker by the freemarker_config.get("exampleSetting1") method. 
+         -->
+        <exampleSetting1></exampleSetting1>
+        <exampleSetting2></exampleSetting2>
+        <exampleSetting3></exampleSetting3>
+      </freemarker>
+    </platform>
+
+    <!-- virtual journal config -->
+    <virtualJournals>
+      <!-- Location of journal template files -->
+      <templateDir>/usr/local/ambra/templates</templateDir>
+      <!-- config for default journal -->
+      <default>AmbraJournal</default>
+      <!-- comma separated list of virtual journal names -->
+      <journals>AmbraJournal,OverlayJournal</journals>
+    </virtualJournals>
+
+    <services>
+      <database>
+        <driver>com.mysql.jdbc.Driver</driver>
+        <url>jdbc:mysql://localhost/ambra</url>
+        <username></username>
+        <password></password>
+      </database>
+
+      <ingest>
+        <xsl>org/ambraproject/article/service/pmc2obj.xslt</xsl>
+      </ingest>
+
+      <filestore>
+        <basedir>/usr/local/ambra_blobs/</basedir>
+      </filestore>
+      <browse>
+        <sortOptions>
+          <option displayName="Date\, newest first">publication_date desc\, id desc</option>
+          <option displayName="Date\, oldest first">publication_date asc\, id desc</option>
+          <option displayName="Most views\, last 30 days">counter_total_month desc\, id desc</option>
+          <option displayName="Most views\, all time">counter_total_all desc\, id desc</option>
+          <option displayName="Most cited\, all time">alm_scopusCiteCount desc\, id desc</option>
+        </sortOptions>
+      </browse>
+      <search>
+        <!-- Settings for Solr search
+        <articleIndexingQueue>activemq:plos.solr.article.index?transacted=false</articleIndexingQueue>
+        <articleDeleteQueue>activemq:plos.solr.article.delete?transacted=false</articleDeleteQueue>
+        <indexingMailReceiver>admin@plos.org</indexingMailReceiver>
+        <timeout>10000</timeout>
+        <server>
+          <url>http://solrhost:8080/solr/</url>
+        </server>
+        -->
+
+        <pageSize>10</pageSize><!-- Number of results per page -->
+
+
+        <pageSizes>
+          <size>10</size>
+          <size>25</size>
+          <size>50</size>
+        </pageSizes>
+
+        <highlightFields>
+          <field>everything</field>
+          <field>title</field>
+          <field>author</field>
+          <field>body</field>
+          <field>subject</field>
+          <field>id</field>
+          <field>article_type</field>
+          <field>affiliate</field>
+          <field>competing_interest</field>
+          <field>editor</field>
+          <field>elocation_id</field>
+          <field>financial_disclosure</field>
+          <field>issue</field>
+          <field>volume</field>
+        </highlightFields>
+
+        <!-- Defined sorts -->
+        <!-- Escape commas as the configuration will attempt to turn the string into a collection otherwise -->
+        <sortOptions>
+          <option displayName="Relevance">score desc\, publication_date desc\, id desc</option>
+          <option displayName="Date\, newest first">publication_date desc\, score desc\, id desc</option>
+          <option displayName="Date\, oldest first">publication_date asc\, score desc\, id desc</option>
+          <option displayName="Most cited\, all time">alm_scopusCiteCount desc\, id desc</option>
+        </sortOptions>
+
+        <!-- Fields that are supported for keyword counts -->
+        <keywordFields>
+          <field displayName="Abstract">abstract</field>
+          <field displayName="Body">body</field>
+          <field displayName="Conclusions">conclusions</field>
+          <field displayName="Introduction">introduction</field>
+          <field displayName="Materials and Methods">materials_and_methods</field>
+          <field displayName="References">reference</field>
+          <field displayName="Results and Discussion">results_and_discussions</field>
+          <field displayName="Supporting Information">supporting_information</field>
+          <field displayName="Title">title</field>
+        </keywordFields>
+      </search>
+
+      <!-- URLs to access the CAS Single Signon Server.
+        login: the login page
+        logout: the logout page
+        proxy-receptor: the URL for getting a proxy ticket using a PGT
+        proxy-validate: the URL to validate/authenticate proxy and regular tickets
+      -->      Time
+      <cas>
+        <url>
+          <base>https://${ambra.network.hosts.cas}:${ambra.network.ports.cas-ssl}/cas</base>
+          <login>${ambra.services.cas.url.base}/login</login>
+          <logout>${ambra.services.cas.url.base}/logout</logout>
+          <proxy-receptor>${ambra.services.cas.url.base}/proxy</proxy-receptor>
+          <proxy-validate>${ambra.services.cas.url.base}/proxyValidate</proxy-validate>
+        </url>
+      </cas>
+
+      <!-- defaults for generating an Atom Feed -->
+      <feed>
+        <title>Ambra Journal</title>
+        <tagline>Publishing science\, accelerating research</tagline>
+        <icon>images/favicon.ico</icon>
+        <id>${ambra.platform.guid-prefix}feed.ambr</id><!-- Unique id. Should change for different criteria -->
+        <extended><!-- Configuration of extended atom feeds -->
+          <prefix>ambra</prefix><!-- namespace prefix for custom elements -->
+          <namespace>http://www.ambraproject.org/atom/ns#ambra</namespace><!-- custom element namespace -->
+        </extended>
+        <basePath>/article/</basePath><!-- Path to feeds after journal context -->
+        <defaultFile>feed</defaultFile><!-- Default feed if none other specified -->
+        <categoryPrefix>feed?category=</categoryPrefix><!-- File prefix for a specific category -->
+        <defaultName>New Articles</defaultName><!-- Name of default feed (prefixed by journal) -->
+        <defaultDuration>3</defaultDuration><!-- Default duraiton in months -->
+      </feed>
+
+      <registration>
+        <appContext>/ambra-registration</appContext><!-- app context for registration -->
+        <url>
+          <base>
+            https://${ambra.network.hosts.cas}:${ambra.network.ports.cas-ssl}${ambra.services.registration.appContext}
+          </base>
+          <!-- properties below are used by pub app to determine where to send the user for certain actions -->
+          <registration>${ambra.services.registration.url.base}/register.action</registration>
+          <change-password>${ambra.services.registration.url.base}/changePassword.action</change-password>
+          <change-email>${ambra.services.registration.url.base}/changeEmail.action</change-email>
+        </url>
+      </registration>
+
+      <documentManagement>
+        <ingestSourceDir>
+          /var/spool/ambra/ingestion-queue
+        </ingestSourceDir>
+        <ingestDestinationDir>
+          /var/spool/ambra/ingested
+        </ingestDestinationDir>
+        <auto_ingestSourceDir>
+          /var/spool/ambra/auto-ingest-queue
+        </auto_ingestSourceDir>
+        <documentPrefix>${ambra.platform.guid-prefix}journal.</documentPrefix>
+      </documentManagement>
+
+      <!-- crossref information - set parameters and sendToXref to true to turn on -->
+      <crossref>
+        <plos>
+          <doiurl>http://${ambra.network.hosts.default}:${ambra.network.ports.doi}/ambra-doi-resolver/</doiurl><!-- URL where your URIs can be found -->
+          <email>webmaster@example.org</email><!-- email address to send info to -->
+        </plos>
+        <login>crossref-username</login><!-- crossref login -->
+        <password>crossref-password</password><!-- crossref password -->
+        <area>test</area><!-- set to "live" to activate, "test" for dev -->
+        <sendToXref>false</sendToXref><!-- Set to true to turn on crossref posting -->
+        <post>
+          <url>
+            http://doi.crossref.org/servlet/deposit?operation=doMDUpload&amp;login_id=${ambra.services.crossref.login}&amp;login_passwd=${ambra.services.crossref.password}&amp;area=${ambra.services.crossref.area}
+          </url>
+        </post>
+        <query>
+          <url>
+            http://doi.crossref.org/servlet/query?usr=${ambra.services.crossref.login}&amp;pwd=${ambra.services.crossref.password}&amp;format=piped&amp;type=a&amp;qdata=
+          </url>
+        </query>
+        <guestquery>
+          <url>http://www.crossref.org/guestquery/</url>
+        </guestquery>
+        <xsl>crossref.xsl</xsl>
+      </crossref>
+
+      <pubget>
+        <url>http://pubget.com/widgetizer/links_hash</url>
+      </pubget>
+
+      <!-- FIXME: failover:tcp://address:port of ActiveMQ broker -->
+      <activemq>tcp://${ambra.network.hosts.default}:61616</activemq>
+
+    </services>
+
+    <!-- Define defaults for spring - must be redone soon -->
+    <spring>
+      <server>
+        <ambra>${ambra.network.hosts.ambra}:${ambra.network.ports.ambra}</ambra>
+        <mulgara>${ambra.network.hosts.mulgara}</mulgara>
+      </server>
+      <homesite>${ambra.network.hosts.default}</homesite>
+    </spring>
+
+    <articleTypeList>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Research%20Article</typeUri>
+        <typeHeading>Research Article</typeHeading>
+        <typeHeadingPlural>Research Articles</typeHeadingPlural>
+        <typeCode>research_article</typeCode>
+        <default>true</default>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Issue%20Image</typeUri>
+        <typeHeading>Issue Image</typeHeading>
+        <typeHeadingPlural>Issue Images</typeHeadingPlural>
+        <typeCode>issue_image</typeCode>
+      </articleType>
+    </articleTypeList>
+
+    <!-- User alerts -->
+    <userAlerts>
+      <categories>
+        <category key="ambra">Ambra Journal</category>
+        <category key="overlay">Overlay Journal</category>
+      </categories>
+      <monthly>ambra, overlay</monthly>
+      <weekly>ambra, overlay</weekly>
+    </userAlerts>
+
+    <!-- Ambra caching parameters -->
+    <cache>
+      <!-- Maximum size of small blobs to be cached. In kilobytes. -->
+      <smallBlobSize>64</smallBlobSize>
+    </cache>
+  </ambra>
+
+  <!-- See the AmbraStruts2Filter dispatcher on how struts constants are configured -->
+  <struts>
+    <devMode>false</devMode>
+  </struts>
+
+</config>

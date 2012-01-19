@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2006-2010 by Public Library of Science
+  http://plos.org
+  http://ambraproject.org
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<beans default-autowire="byName"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+  <util:map id="countries" map-class="org.apache.commons.collections.map.ListOrderedMap">
+    <entry key="" value="Country..."/>
+    <entry key="Afganistan" value="Afghanistan"/>
+    <entry key="Albania" value="Albania"/>
+    <entry key="Algeria" value="Algeria"/>
+    <entry key="American Samoa" value="American Samoa"/>
+    <entry key="Andorra" value="Andorra"/>
+    <entry key="Angola" value="Angola"/>
+    <entry key="Anguilla" value="Anguilla"/>
+    <entry key="Antigua &amp; Barbuda" value="Antigua &amp; Barbuda"/>
+    <entry key="Argentina" value="Argentina"/>
+    <entry key="Armenia" value="Armenia"/>
+    <entry key="Aruba" value="Aruba"/>
+    <entry key="Australia" value="Australia"/>
+    <entry key="Austria" value="Austria"/>
+    <entry key="Azerbaijan" value="Azerbaijan"/>
+    <entry key="Bahamas" value="Bahamas"/>
+    <entry key="Bahrain" value="Bahrain"/>
+    <entry key="Bangladesh" value="Bangladesh"/>
+    <entry key="Barbados" value="Barbados"/>
+    <entry key="Belarus" value="Belarus"/>
+    <entry key="Belgium" value="Belgium"/>
+    <entry key="Belize" value="Belize"/>
+    <entry key="Benin" value="Benin"/>
+    <entry key="Bermuda" value="Bermuda"/>
+    <entry key="Bhutan" value="Bhutan"/>
+    <entry key="Bolivia" value="Bolivia"/>
+    <entry key="Bonaire" value="Bonaire"/>
+    <entry key="Bosnia &amp; Herzegovina" value="Bosnia &amp; Herzegovina"/>
+    <entry key="Botswana" value="Botswana"/>
+    <entry key="Brazil" value="Brazil"/>
+    <entry key="British Indian Ocean Ter" value="British Indian Ocean Ter"/>
+    <entry key="Brunei" value="Brunei"/>
+    <entry key="Bulgaria" value="Bulgaria"/>
+    <entry key="Burkina Faso" value="Burkina Faso"/>
+    <entry key="Burundi" value="Burundi"/>
+    <entry key="Cambodia" value="Cambodia"/>
+    <entry key="Cameroon" value="Cameroon"/>
+    <entry key="Canada" value="Canada"/>
+    <entry key="Canary Islands" value="Canary Islands"/>
+    <entry key="Cape Verde" value="Cape Verde"/>
+    <entry key="Cayman Islands" value="Cayman Islands"/>
+    <entry key="Central African Republic" value="Central African Republic"/>
+    <entry key="Chad" value="Chad"/>
+    <entry key="Channel Islands" value="Channel Islands"/>
+    <entry key="Chile" value="Chile"/>
+    <entry key="China" value="China"/>
+    <entry key="Christmas Island" value="Christmas Island"/>
+    <entry key="Cocos Island" value="Cocos Island"/>
+    <entry key="Columbia" value="Columbia"/>
+    <entry key="Comoros" value="Comoros"/>
+    <entry key="Congo" value="Congo"/>
+    <entry key="Cook Islands" value="Cook Islands"/>
+    <entry key="Costa Rica" value="Costa Rica"/>
+    <entry key="Cote DIvoire" value="Cote D'Ivoire"/>
+    <entry key="Croatia" value="Croatia"/>
+    <entry key="Cuba" value="Cuba"/>
+    <entry key="Curaco" value="Curacao"/>
+    <entry key="Cyprus" value="Cyprus"/>
+    <entry key="Czech Republic" value="Czech Republic"/>
+    <entry key="Denmark" value="Denmark"/>
+    <entry key="Djibouti" value="Djibouti"/>
+    <entry key="Dominica" value="Dominica"/>
+    <entry key="Dominican Republic" value="Dominican Republic"/>
+    <entry key="East Timor" value="East Timor"/>
+    <entry key="Ecuador" value="Ecuador"/>
+    <entry key="Egypt" value="Egypt"/>
+    <entry key="El Salvador" value="El Salvador"/>
+    <entry key="Equatorial Guinea" value="Equatorial Guinea"/>
+    <entry key="Eritrea" value="Eritrea"/>
+    <entry key="Estonia" value="Estonia"/>
+    <entry key="Ethiopia" value="Ethiopia"/>
+    <entry key="Falkland Islands" value="Falkland Islands"/>
+    <entry key="Faroe Islands" value="Faroe Islands"/>
+    <entry key="Fiji" value="Fiji"/>
+    <entry key="Finland" value="Finland"/>
+    <entry key="France" value="France"/>
+    <entry key="French Guiana" value="French Guiana"/>
+    <entry key="French Polynesia" value="French Polynesia"/>
+    <entry key="French Southern Ter" value="French Southern Ter"/>
+    <entry key="Gabon" value="Gabon"/>
+    <entry key="Gambia" value="Gambia"/>
+    <entry key="Georgia" value="Georgia"/>
+    <entry key="Germany" value="Germany"/>
+    <entry key="Ghana" value="Ghana"/>
+    <entry key="Gibraltar" value="Gibraltar"/>
+    <entry key="Great Britain" value="Great Britain"/>
+    <entry key="Greece" value="Greece"/>
+    <entry key="Greenland" value="Greenland"/>
+    <entry key="Grenada" value="Grenada"/>
+    <entry key="Guadeloupe" value="Guadeloupe"/>
+    <entry key="Guam" value="Guam"/>
+    <entry key="Guatemala" value="Guatemala"/>
+    <entry key="Guinea" value="Guinea"/>
+    <entry key="Guyana" value="Guyana"/>
+    <entry key="Haiti" value="Haiti"/>
+    <entry key="Hawaii" value="Hawaii"/>
+    <entry key="Honduras" value="Honduras"/>
+    <entry key="Hong Kong" value="Hong Kong"/>
+    <entry key="Hungary" value="Hungary"/>
+    <entry key="Iceland" value="Iceland"/>
+    <entry key="India" value="India"/>
+    <entry key="Indonesia" value="Indonesia"/>
+    <entry key="Iran" value="Iran"/>
+    <entry key="Iraq" value="Iraq"/>
+    <entry key="Ireland" value="Ireland"/>
+    <entry key="Isle of Man" value="Isle of Man"/>
+    <entry key="Israel" value="Israel"/>
+    <entry key="Italy" value="Italy"/>
+    <entry key="Jamaica" value="Jamaica"/>
+    <entry key="Japan" value="Japan"/>
+    <entry key="Jordan" value="Jordan"/>
+    <entry key="Kazakhstan" value="Kazakhstan"/>
+    <entry key="Kenya" value="Kenya"/>
+    <entry key="Kiribati" value="Kiribati"/>
+    <entry key="Korea North" value="Korea North"/>
+    <entry key="Korea Sout" value="Korea South"/>
+    <entry key="Kuwait" value="Kuwait"/>
+    <entry key="Kyrgyzstan" value="Kyrgyzstan"/>
+    <entry key="Laos" value="Laos"/>
+    <entry key="Latvia" value="Latvia"/>
+    <entry key="Lebanon" value="Lebanon"/>
+    <entry key="Lesotho" value="Lesotho"/>
+    <entry key="Liberia" value="Liberia"/>
+    <entry key="Libya" value="Libya"/>
+    <entry key="Liechtenstein" value="Liechtenstein"/>
+    <entry key="Lithuania" value="Lithuania"/>
+    <entry key="Luxembourg" value="Luxembourg"/>
+    <entry key="Macau" value="Macau"/>
+    <entry key="Macedonia" value="Macedonia"/>
+    <entry key="Madagascar" value="Madagascar"/>
+    <entry key="Malaysia" value="Malaysia"/>
+    <entry key="Malawi" value="Malawi"/>
+    <entry key="Maldives" value="Maldives"/>
+    <entry key="Mali" value="Mali"/>
+    <entry key="Malta" value="Malta"/>
+    <entry key="Marshall Islands" value="Marshall Islands"/>
+    <entry key="Martinique" value="Martinique"/>
+    <entry key="Mauritania" value="Mauritania"/>
+    <entry key="Mauritius" value="Mauritius"/>
+    <entry key="Mayotte" value="Mayotte"/>
+    <entry key="Mexico" value="Mexico"/>
+    <entry key="Midway Islands" value="Midway Islands"/>
+    <entry key="Moldova" value="Moldova"/>
+    <entry key="Monaco" value="Monaco"/>
+    <entry key="Mongolia" value="Mongolia"/>
+    <entry key="Montenegro" value="Montenegro"/>
+    <entry key="Montserrat" value="Montserrat"/>
+    <entry key="Morocco" value="Morocco"/>
+    <entry key="Mozambique" value="Mozambique"/>
+    <entry key="Myanmar" value="Myanmar"/>
+    <entry key="Nambia" value="Nambia"/>
+    <entry key="Nauru" value="Nauru"/>
+    <entry key="Nepal" value="Nepal"/>
+    <entry key="Netherland Antilles" value="Netherland Antilles"/>
+    <entry key="Netherlands" value="Netherlands"/>
+    <entry key="Nevis" value="Nevis"/>
+    <entry key="New Caledonia" value="New Caledonia"/>
+    <entry key="New Zealand" value="New Zealand"/>
+    <entry key="Nicaragua" value="Nicaragua"/>
+    <entry key="Niger" value="Niger"/>
+    <entry key="Nigeria" value="Nigeria"/>
+    <entry key="Niue" value="Niue"/>
+    <entry key="Norfolk Island" value="Norfolk Island"/>
+    <entry key="Norway" value="Norway"/>
+    <entry key="Oman" value="Oman"/>
+    <entry key="Pakistan" value="Pakistan"/>
+    <entry key="Palau Island" value="Palau Island"/>
+    <entry key="Palestine" value="Palestine"/>
+    <entry key="Panama" value="Panama"/>
+    <entry key="Papua New Guinea" value="Papua New Guinea"/>
+    <entry key="Paraguay" value="Paraguay"/>
+    <entry key="Peru" value="Peru"/>
+    <entry key="Phillipines" value="Philippines"/>
+    <entry key="Pitcairn Island" value="Pitcairn Island"/>
+    <entry key="Poland" value="Poland"/>
+    <entry key="Portugal" value="Portugal"/>
+    <entry key="Puerto Rico" value="Puerto Rico"/>
+    <entry key="Qatar" value="Qatar"/>
+    <entry key="Reunion" value="Reunion"/>
+    <entry key="Romania" value="Romania"/>
+    <entry key="Russia" value="Russia"/>
+    <entry key="Rwanda" value="Rwanda"/>
+    <entry key="St Barthelemy" value="St Barthelemy"/>
+    <entry key="St Eustatius" value="St Eustatius"/>
+    <entry key="St Helena" value="St Helena"/>
+    <entry key="St Kitts-Nevis" value="St Kitts-Nevis"/>
+    <entry key="St Lucia" value="St Lucia"/>
+    <entry key="St Maarten" value="St Maarten"/>
+    <entry key="St Pierre &amp; Miquelon" value="St Pierre &amp; Miquelon"/>
+    <entry key="St Vincent &amp; Grenadines" value="St Vincent &amp; Grenadines"/>
+    <entry key="Saipan" value="Saipan"/>
+    <entry key="Samoa" value="Samoa"/>
+    <entry key="Samoa American" value="Samoa American"/>
+    <entry key="San Marino" value="San Marino"/>
+    <entry key="Sao Tome &amp; Principe" value="Sao Tome &amp; Principe"/>
+    <entry key="Saudi Arabia" value="Saudi Arabia"/>
+    <entry key="Senegal" value="Senegal"/>
+    <entry key="Seychelles" value="Seychelles"/>
+    <entry key="Serbia" value="Serbia"/>
+    <entry key="Sierra Leone" value="Sierra Leone"/>
+    <entry key="Singapore" value="Singapore"/>
+    <entry key="Slovakia" value="Slovakia"/>
+    <entry key="Slovenia" value="Slovenia"/>
+    <entry key="Solomon Islands" value="Solomon Islands"/>
+    <entry key="Somalia" value="Somalia"/>
+    <entry key="South Africa" value="South Africa"/>
+    <entry key="Spain" value="Spain"/>
+    <entry key="Sri Lanka" value="Sri Lanka"/>
+    <entry key="Sudan" value="Sudan"/>
+    <entry key="Suriname" value="Suriname"/>
+    <entry key="Swaziland" value="Swaziland"/>
+    <entry key="Sweden" value="Sweden"/>
+    <entry key="Switzerland" value="Switzerland"/>
+    <entry key="Syria" value="Syria"/>
+    <entry key="Tahiti" value="Tahiti"/>
+    <entry key="Taiwan" value="Taiwan"/>
+    <entry key="Tajikistan" value="Tajikistan"/>
+    <entry key="Tanzania" value="Tanzania"/>
+    <entry key="Thailand" value="Thailand"/>
+    <entry key="Togo" value="Togo"/>
+    <entry key="Tokelau" value="Tokelau"/>
+    <entry key="Tonga" value="Tonga"/>
+    <entry key="Trinidad &amp; Tobago" value="Trinidad &amp; Tobago"/>
+    <entry key="Tunisia" value="Tunisia"/>
+    <entry key="Turkey" value="Turkey"/>
+    <entry key="Turkmenistan" value="Turkmenistan"/>
+    <entry key="Turks &amp; Caicos Is" value="Turks &amp; Caicos Is"/>
+    <entry key="Tuvalu" value="Tuvalu"/>
+    <entry key="Uganda" value="Uganda"/>
+    <entry key="Ukraine" value="Ukraine"/>
+    <entry key="United Arab Erimates" value="United Arab Emirates"/>
+    <entry key="United Kingdom" value="United Kingdom"/>
+    <entry key="United States of America" value="United States of America"/>
+    <entry key="Uraguay" value="Uruguay"/>
+    <entry key="Uzbekistan" value="Uzbekistan"/>
+    <entry key="Vanuatu" value="Vanuatu"/>
+    <entry key="Vatican City State" value="Vatican City State"/>
+    <entry key="Venezuela" value="Venezuela"/>
+    <entry key="Vietnam" value="Vietnam"/>
+    <entry key="Virgin Islands (Brit)" value="Virgin Islands (Brit)"/>
+    <entry key="Virgin Islands (USA)" value="Virgin Islands (USA)"/>
+    <entry key="Wake Island" value="Wake Island"/>
+    <entry key="Wallis &amp; Futana Is" value="Wallis &amp; Futana Is"/>
+    <entry key="Yemen" value="Yemen"/>
+    <entry key="Zaire" value="Zaire"/>
+    <entry key="Zambia" value="Zambia"/>
+    <entry key="Zimbabwe" value="Zimbabwe"/>
+  </util:map>
+
+</beans>

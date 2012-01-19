@@ -1,0 +1,3 @@
+See src/test/java/AnnotateExample.java on how to use this for annotating a document.
+
+It is added to the test tree because the xpointer lib is a dependency only for test scope.

@@ -1,0 +1,143 @@
+/*
+ * $HeadURL::                                                                            $
+ * $Id$
+ *
+ * Copyright (c) 2006-2010 by Public Library of Science
+ * http://plos.org
+ * http://ambraproject.org
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/***********************************************/
+/* ambra_forms.css                              */
+/* - seanaquino@gmail.com for Ambra            */
+/* - created 10-1-2006                         */
+/***********************************************/
+
+/***********************************************/
+/* general form styles                         */
+/***********************************************/ 
+
+.required {color: #f03; font-size:12px; font-weight: bold; }
+
+.ambra-form {
+	position: relative;
+	display: block;
+}
+
+.ambra-form fieldset {
+	position: relative;
+	margin: 0;
+	padding: 0;
+    border:none;
+}
+.ambra-form fieldset legend {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size: 1.6em;
+	color: #333;
+	background-color: #FFFFFF;
+	padding-right: 5px;
+}
+.ambra-form ol { list-style-type: none; margin: 0; padding: 0; position: relative; overflow:hidden; }
+
+.ambra-form ol li {
+	position: relative;
+	list-style: none;
+	display: block;
+	padding-bottom: 14px;
+	background-color: transparent;
+	background-image: none;
+	clear: both;
+}
+
+.ambra-form .form-last-item { border-bottom:none; }
+/************* inline form elements styles *****************/
+.ambra-form ol li ol li {
+	float: left;
+	margin-right: 10px;
+	border-bottom-style: none;
+	padding-left: 0px;
+	clear: none;
+}
+.ambra-form ol li ol {
+	display: block;
+	clear: both;
+	width: 100%;
+	float: none;
+}
+/************* general comambrant styles *****************/
+.ambra-form ol li label { display: block; font-size:12px; color:#333; margin-bottom:2px; line-height:normal; }
+.ambra-form ol li input { width: 206px; border:1px solid #999; padding: 2px; }
+.ambra-form ol li input.radio { border-width: 0; }
+.ambra-form ol li .long-input { width: 324px; } 
+.ambra-form ol li select { width: auto; padding: 1px; background-color:#fff; border:1px solid #999; width:213px; }
+.ambra-form ol li .radio { width: 14px;}
+.ambra-form ol li .checkbox { width: 14px;}
+.ambra-form textarea { width: 324px; }
+.ambra-form #submit, .ambra-form #cancel { }
+.ambra-form .checkboxLabel { position:relative; top:-2px; }
+#userForm  { width:445px; }
+#userForm_title { width:auto; }
+#userForm_givenNames { width:106px; }
+
+/***********************************************/
+/* individual styles                         */
+/***********************************************/ 
+
+/************* error styles *****************/
+.ambra-form ol .form-error { color: #f03; font-style:italic; }
+.ambra-form ol .form-error label { color: #00131D; font-weight:bold; color: #f03; font-style:normal; }
+.ambra-form ol .form-error input, .ambra-form ol .form-error select, .ambra-form ol .form-error textarea { border-color:#c03; }
+.ambra-form .errorMessage { padding-left:16px; }
+/************* success message styles *****************/
+.ambra-form .form-success { padding: 25px 0px 25px 10px; }
+
+.ambra-form ol .note { color: #999; font-style:italic; font-size:12px; line-height:15px; margin-top:2px; }
+
+.ambra-form ol .note.top { }
+
+/************* create profile styles *****************/
+
+.ambra-form .public-private {
+	width:324px;
+ 	background-image: none;
+	margin-top:10px;
+	clear: both;
+	border: none;
+}
+
+/************ two column layout *******************/
+.ambra-form .col { float:left; clear:none; margin-right:9px;  }
+
+
+.ambra-form .public-private legend { background-color:transparent; font-size:1.4em; margin: 20px 0;}
+
+/************* alerts styles *****************/
+#alert-form ol li.alerts-title { width: 190px; font-weight:bold; }
+#alert-form ol li { position: relative; margin: 0px; display: block; }
+#alert-form ol li ol { position: relative; margin: 0px; height: 40px; }
+#alert-form label { text-align: left; width: 178px; font-weight: normal;}
+#alert-form label input { margin: 0; width: 20px; border-width: 0;}
+
+ul { margin-left:15px; padding:0; }
+
+.btnwrap { margin-top:15px; }
+
+/** webkit (Safari & Chrome fixes) **/
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+    ol { -webkit-margin-top-collapse: separate; margin-top: 10px !important; }
+    .public-private label { position:relative; top:0px; }
+    #userForm_givenNames { width:110px; }
+}
+
+#createNewUser { margin-bottom:35px; }

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  $HeadURL::                                                                            $
+  $Id$
+  
+  Copyright (c) 2006-2010 by Public Library of Science
+  http://plos.org
+  http://ambraproject.org
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+  http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<beans default-autowire="autodetect"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+  <!-- Allow overrides from conf-helper -->
+  <bean id="propertyConfigurer" class="org.topazproject.ambra.configuration.SpringPlaceholderConfigurer"/>
+
+  <!--Ambra developer beans here -->
+  <bean id="serviceFactory" class="org.topazproject.ambra.service.ServiceFactory">
+    <property name="persistenceService" ref="persistenceService"/>
+    <property name="registrationService" ref="registrationService"/>
+  </bean>
+
+  <bean id="persistenceService" class="org.topazproject.ambra.service.impl.AmbraPersistenceService">
+    <property name="userDAO" ref="userDAO"/>
+  </bean>
+
+  <bean id="userDAO" class="org.topazproject.ambra.service.impl.HibernateUserDAO">
+    <property name="sessionFactory">
+      <ref bean="registrationSessionFactory"/>
+    </property>
+  </bean>
+
+  <bean id="defaultEncodingCharset" class="java.lang.String">
+    <constructor-arg type="java.lang.String" value="UTF-8"/>
+  </bean>
+
+  <bean id="registrationService" class="org.topazproject.ambra.service.impl.AmbraRegistrationService" scope="session">
+    <!-- proxy needed as this bean is a part of a singleton's reference  -->
+    <aop:scoped-proxy/>
+    <property name="userDAO" ref="userDAO"/>
+    <property name="passwordDigestService" ref="ambraPasswordDigestService"/>
+    <property name="mailer" ref="registrationVerificationMailer"/>
+  </bean>
+
+  <!-- required for email -->
+  <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+    <property name="host" value="${ambra.network.hosts.mailhost}"/>
+  </bean>
+
+<!--
+  <bean id="mailSession" class="org.springframework.jndi.JndiObjectFactoryBean">
+    <property name="jndiName">
+      <value>java:comp/env/mail/Session</value>
+    </property>
+  </bean>
+
+  <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+    <property name="session">
+      <ref bean="mailSession"/>
+    </property>
+  </bean>
+-->
+
+  <bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+  <!--<bean id="freemarkerConfig" class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">-->
+    <property name="templateLoaderPath" value="/WEB-INF/emailTemplates/"/>
+    <property name="defaultEncoding" ref="defaultEncodingCharset"/>
+  </bean>
+
+  <bean id="registrationVerificationMailer" class="org.topazproject.ambra.service.impl.RegistrationMailerImpl">
+    <property name="mailSender" ref="mailSender"/>
+    <property name="fromEmailAddress" value="${ambra.services.registration.from-email}"/>
+    <property name="fromEmailName" value="${ambra.services.registration.from-name}"/>
+    <property name="freemarkerConfig" ref="freemarkerConfig"/>
+    <property name="changeEmailMap">
+      <map>
+        <entry key="text" value="verifyChangeEmail-text.ftl"/>
+        <entry key="html" value="verifyChangeEmail-html.ftl"/>
+        <entry key="url" value="${ambra.services.registration.url}/changeEmailVerification.action"/>
+        <entry key="subject" value="Please verify your request to change your PLoS login"/>
+      </map>
+    </property>
+    <property name="verifyEmailMap">
+      <map>
+        <entry key="text" value="verifyEmail-text.ftl"/>
+        <entry key="html" value="verifyEmail-html.ftl"/>
+        <entry key="url" value="${ambra.services.registration.url}/emailVerification.action"/>
+        <entry key="subject" value="Please verify your PLoS registration"/>
+      </map>
+    </property>
+    <property name="forgotPasswordVerificationEmailMap">
+      <map>
+        <entry key="text" value="forgotPasswordVerificationEmailTemplate-text.ftl"/>
+        <entry key="html" value="forgotPasswordVerificationEmailTemplate-html.ftl"/>
+        <entry key="url" value="${ambra.services.registration.url}/forgotPasswordVerify.action"/>
+        <entry key="subject" value="PLoS Password Reset Request"/>
+      </map>
+    </property>
+  </bean>
+
+  <bean id="ambraPasswordDigestService" class="org.topazproject.ambra.service.password.PasswordDigestService">
+    <property name="algorithm" value="SHA-256"/>
+    <property name="encodingCharset" ref="defaultEncodingCharset"/>
+  </bean>
+
+  <!--Beans from Spring distribution  -->
+
+  <!-- MySQL datasource -->
+  <bean id="registrationDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    <property name="driverClassName" value="${ambra.services.cas.db.driver}"/>
+    <property name="url" value="${ambra.services.cas.db.url}"/>
+    <property name="username" value="${ambra.services.cas.db.user}"/>
+    <property name="password" value="${ambra.services.cas.db.password}"/>
+  </bean>
+
+  <!-- Useful link:
+  http://static.springframework.org/spring/docs/2.0.x/api/org/springframework/orm/hibernate3/annotation/AnnotationSessionFactoryBean.html -->
+  <!--  Injection for hibernate SessionFactory -->
+  <bean id="registrationSessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+    <property name="dataSource" ref="registrationDataSource"/>
+    <property name="annotatedClasses">
+      <list>
+        <value>org.topazproject.ambra.registration.UserImpl</value>
+      </list>
+    </property>
+    <property name="hibernateProperties">
+      <props>
+        <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+        <prop key="hibernate.hbm2ddl.auto">update</prop>
+        <prop key="hibernate.show_sql">true</prop>
+      </props>
+    </property>
+  </bean>
+
+
+  <!--  Transaction injection for annotated transaction classes-->
+  <bean id="registrationTxManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+    <property name="sessionFactory" ref="registrationSessionFactory"/>
+  </bean>
+
+  <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
+
+  <bean class="org.springframework.transaction.interceptor.TransactionAttributeSourceAdvisor">
+    <property name="transactionInterceptor" ref="transactionInterceptor"/>
+  </bean>
+
+  <bean id="transactionInterceptor" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+    <property name="transactionManager" ref="registrationTxManager"/>
+    <property name="transactionAttributeSource">
+      <bean class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"/>
+    </property>
+  </bean>
+  <!--  END - Transaction injection for annotated transaction classes-->
+</beans>

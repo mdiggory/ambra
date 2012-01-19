@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Ambra Configuration file -->
+<config>
+  <ambra>
+    <services>
+      <search>
+        <articleIndexingQueue></articleIndexingQueue>
+        <articleDeleteQueue></articleDeleteQueue>
+        <indexingMailReceiver>josowski@plos.org</indexingMailReceiver>
+        <server>
+          <url>http://localhost:8983/solr</url>
+        </server>
+        <timeout>5000</timeout>
+      </search>
+    </services>
+  </ambra>
+</config>

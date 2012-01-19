@@ -1,0 +1,191 @@
+/*
+ * $HeadURL::                                                                            $
+ * $Id$
+ *
+ * Copyright (c) 2006-2010 by Public Library of Science
+ * http://plos.org
+ * http://ambraproject.org
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/***********************************************/
+/* images.css                                  */
+/* - seanaquino@gmail.com for Ambra            */
+/* - created 11-1-2006                         */
+/***********************************************/
+
+/***********************************************/
+/* article images styles                       */
+/***********************************************/
+
+ #container .figure {
+	border: 2px solid #069;
+	padding: 0px;
+	margin: 10px 0;
+	background: #D2F7FF;
+}
+.figure-header {
+	border-bottom: 1px solid #069;
+	padding: 10px 10px 0px;
+	position: relative;
+	background: #8ec8de url(../images/figure-header_bg.gif) repeat-x left -75px;
+}
+.figure-description {
+	padding: 10px; background: #D2F7FF;
+	
+}
+
+/**************  Hax! ******************/
+.figure-header:after {
+content: "."; 
+display: block; 
+height: 0; 
+clear: both; 
+visibility: hidden;
+}
+ .figure-header {
+display: inline-block;
+}  
+
+    /* Holly Hack Targets IE Win only \*/
+    * html .figure-header {height: 1%;}
+	.figure-header {display: block;}
+    /* End Holly Hack */
+/***********************************************/
+/* pop-up images styles                         */
+/***********************************************/ 
+
+.figure-popup {
+	border: 2px solid #069;
+	width: 324px;
+	font: 0.85em Verdana, Arial, Helvetica, sans-sif;
+	color: #330;
+	background-color: #D2F7FF;
+}
+.figure-popup img {
+	border: 2px solid #069;
+	
+}
+.figure-popup-header {
+	border-bottom: 1px solid #069;
+	padding: 10px;
+	background: #D2F7FF url(../images/figure-header_bg.gif) repeat-x left bottom;
+}
+.figure-popup-description { padding: 10px;}
+/***********************************************/
+/*  images window styles                         */
+/***********************************************/ 
+a:link		{ color: #069; text-decoration: underline; }
+a:visited 	{ color: #004B70; }
+a:hover		{ color: #008ED5;}
+a:active	{ }
+#figure-window-wrapper {
+	position: relative;
+	margin: 0;
+	width: 735px;
+	font: 85% Verdana, Arial, Helvetica, sans-serif;
+	color: #330;
+	min-height: 100%;
+	border: solid 2px #CCC;
+	background: #F8F8F8;
+}
+* html #figure-window-wrapper {
+	width: 738px;
+}
+
+#figure-window-wrapper h2 { font-size:1.2em; font-family: Georgia, "Times New Roman", Times, serif; letter-spacing: -0.03em; color: #333; position: relative;}
+#figure-window-nav {
+	position: relative;
+	z-index: 100;
+	width: 113px;
+	float: left;
+	display: inline;
+	padding-top: 50px;
+}
+#figure-window-container {
+	margin-left: 113px;
+	border-left: 2px solid #ccc;
+}
+#figure-window-hdr {
+	padding: 10px 0px 10px 10px;
+	background: url(../images/toolbar_bg.gif) repeat-x left center;
+	text-align: center;
+}
+#figure-window-viewer {
+	width: 620px;
+	padding: 20px 0;
+	text-align: center;
+	border-top: 2px solid #ccc;
+	border-bottom: 2px solid #ccc;
+	background: #fff;
+	position: relative;
+}
+#figure-window-viewer img{
+	margin: 0 auto;
+}
+#figure-window-viewer p {
+	margin: 0 20px;
+}
+#figure-window-description {
+	padding: 10px;
+	background: transparent;
+	position: relative;	
+}
+.figure-window-nav-item {
+	text-align: center;
+	padding: 10px;
+}
+.figure-window-nav-item.current {
+	background: #069;
+}
+.figure-window-nav-item img {
+	border: 2px solid #069;
+  width:70px;
+}
+#figure-window-close {
+	width: 125px;
+	position: absolute;
+	right: 0px;
+	top: 3px;
+}
+#figure-window-close img {
+	border: none;
+}
+#figure-window-hdr-links {
+	position: relative;
+	
+}
+#figure-window-hdr-links a {
+	margin-right: 10px;
+}
+#figureTitle 		{ display: block; font-size: .85em;  margin-top: 25px;}
+div.btn.close		{ display: inline; margin: 0; text-transform: uppercase; font-size: .9em;}
+div.btn	*			{ vertical-align: middle; padding: 4px; font-weight: bold; cursor: pointer;}
+
+/* for closing and canceling viewing windows */
+
+div.close a:hover	{ background-color: #ddd; }
+a.close,
+a.return			{ font-family: Verdana, Arial, Helvetica, sans-serif; font-size: .8em; margin: 10px; display: block;}
+a.icon				{ padding: 2px 0 2px 20px; background-repeat: no-repeat; background-position: 0px 0px; font-size: .8em; }
+a.ppt				{ background-image: url(../images/icon_ppt.gif); }
+a.image				{ background-image: url(../images/icon_image.gif); }
+a.next				{ background: url(../images/icon_next.gif) no-repeat right center; padding: 2px 20px 2px 0; }
+a.next.hidden { background-image: url(../images/icon_next_off.gif); color: #ccc !important; cursor: default; font-weight: normal !important; }
+a.previous			{ background-image: url(../images/icon_previous.gif); }
+a.previous.hidden { background-image: url(../images/icon_previous_off.gif); color: #ccc !important; cursor: default; font-weight: normal !important; }
+a.larger			{ background-image: url(../images/icon_larger.gif); }
+div.figure-next		{ text-align: center; border-bottom: 1px solid #CCC; margin-right: 10px; margin-bottom: 5px; padding-bottom: 5px; position: relative; }
+div.figure-next a	{ font-weight: bold; text-decoration: none; font-size: .85em; text-transform: uppercase; }
+span.genus-species { font-style:italic; }

@@ -1,0 +1,685 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article
+  PUBLIC "-//NLM//DTD Journal Publishing DTD v2.0 20040830//EN" "http://dtd.nlm.nih.gov/publishing/2.0/journalpublishing.dtd">
+<article xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" article-type="research-article" dtd-version="2.0" xml:lang="EN">
+<front>
+<journal-meta>
+<journal-id journal-id-type="nlm-ta">PLoS Negl Trop Dis</journal-id>
+<journal-id journal-id-type="publisher-id">plos</journal-id>
+<journal-id journal-id-type="pmc">plosntds</journal-id>
+<journal-title>PLoS Neglected Tropical Diseases</journal-title>
+<issn pub-type="epub">1935-2735</issn>
+<publisher>
+<publisher-name>Public Library of Science</publisher-name>
+<publisher-loc>San Francisco, USA</publisher-loc></publisher>
+</journal-meta>
+<article-meta>
+<article-id pub-id-type="publisher-id">07-PNTD-RA-0172R3</article-id>
+<article-id pub-id-type="doi">10.1371/journal.pntd.0000241</article-id>
+<article-categories><subj-group subj-group-type="heading"><subject>Research Article</subject></subj-group><subj-group subj-group-type="Discipline"><subject>Hematology/Anemias</subject><subject>Infectious Diseases</subject><subject>Infectious Diseases/Epidemiology and Control of Infectious Diseases</subject><subject>Infectious Diseases/Helminth Infections</subject><subject>Infectious Diseases/Neglected Tropical Diseases</subject><subject>Infectious Diseases/Protozoal Infections</subject><subject>Public Health and Epidemiology/Infectious Diseases</subject></subj-group></article-categories>
+<title-group>
+<article-title>Controlling Schistosomiasis: Significant Decrease of Anaemia Prevalence One Year after a Single Dose of Praziquantel in Nigerien Schoolchildren</article-title>
+<alt-title alt-title-type="running-head">Schistosomiasis-Related Anaemia in Niger</alt-title>
+</title-group>
+<contrib-group>
+<contrib contrib-type="author" xlink:type="simple"><name name-style="western"><surname>Tohon</surname><given-names>Zilahatou B.</given-names></name><xref ref-type="aff" rid="aff1"><sup>1</sup></xref><xref ref-type="corresp" rid="cor1"><sup>*</sup></xref></contrib>
+<contrib contrib-type="author" xlink:type="simple"><name name-style="western"><surname>Mainassara</surname><given-names>Halima B.</given-names></name><xref ref-type="aff" rid="aff1"><sup>1</sup></xref></contrib>
+<contrib contrib-type="author" xlink:type="simple"><name name-style="western"><surname>Garba</surname><given-names>Amadou</given-names></name><xref ref-type="aff" rid="aff2"><sup>2</sup></xref></contrib>
+<contrib contrib-type="author" xlink:type="simple"><name name-style="western"><surname>Mahamane</surname><given-names>Ali E.</given-names></name><xref ref-type="aff" rid="aff1"><sup>1</sup></xref></contrib>
+<contrib contrib-type="author" xlink:type="simple"><name name-style="western"><surname>Bosqué-Oliva</surname><given-names>Elisa</given-names></name><xref ref-type="aff" rid="aff3"><sup>3</sup></xref></contrib>
+<contrib contrib-type="author" xlink:type="simple"><name name-style="western"><surname>Ibrahim</surname><given-names>Maman-Laminou</given-names></name><xref ref-type="aff" rid="aff1"><sup>1</sup></xref></contrib>
+<contrib contrib-type="author" xlink:type="simple"><name name-style="western"><surname>Duchemin</surname><given-names>Jean-Bernard</given-names></name><xref ref-type="aff" rid="aff1"><sup>1</sup></xref></contrib>
+<contrib contrib-type="author" xlink:type="simple"><name name-style="western"><surname>Chanteau</surname><given-names>Suzanne</given-names></name><xref ref-type="aff" rid="aff1"><sup>1</sup></xref><xref ref-type="aff" rid="aff4"><sup>4</sup></xref></contrib>
+<contrib contrib-type="author" xlink:type="simple"><name name-style="western"><surname>Boisier</surname><given-names>Pascal</given-names></name><xref ref-type="aff" rid="aff1"><sup>1</sup></xref><xref ref-type="aff" rid="aff5"><sup>5</sup></xref></contrib>
+</contrib-group>
+<aff id="aff1"><label>1</label><addr-line>CERMES/Réseau International des Instituts Pasteur, Niamey, Niger</addr-line>       </aff>
+<aff id="aff2"><label>2</label><addr-line>Programme National de Lutte contre la Bilharziose et les Géohelminthes, Niamey, Niger</addr-line>       </aff>
+<aff id="aff3"><label>3</label><addr-line>Schistosomiasis Control Initiative, Imperial College, London, United Kingdom</addr-line>       </aff>
+<aff id="aff4"><label>4</label><addr-line>Institut Pasteur, Nouméa, Nouvelle Calédonie</addr-line>       </aff>
+<aff id="aff5"><label>5</label><addr-line>Centre Pasteur du Cameroun, Yaoundé, Cameroon</addr-line>       </aff>
+<contrib-group>
+<contrib contrib-type="editor" xlink:type="simple"><name name-style="western"><surname>Webster</surname><given-names>Joanne P.</given-names></name>
+<role>Editor</role>
+<xref ref-type="aff" rid="edit1"/></contrib>
+</contrib-group>
+<aff id="edit1">Imperial College Faculty of Medicine, United Kingdom</aff>
+<author-notes>
+<corresp id="cor1">* E-mail: <email xlink:type="simple">ztohon@cermes.org</email></corresp>
+<fn fn-type="con"><p>Analyzed the data: ZT. Wrote the paper: ZT. Critically read the manuscript: SC. Contributed to the protocol, treated the population, critically read the manuscript: AG. Monitored field studies, performed all ultrasound examinations: ZT. Participated in field studies, critically read the manuscript: HM AM. West African Programme manager for SCI, critically read the manuscript: EB. Assessment of malarial infection, critical reading of the manuscript: MI JD. Investigator coordinator of the studies, contributed to data analysis and interpretation, critically read the manuscript: PB.</p></fn>
+</author-notes>
+<pub-date pub-type="collection"><month>5</month><year>2008</year></pub-date>
+<pub-date pub-type="epub"><day>28</day><month>5</month><year>2008</year></pub-date>
+<volume>2</volume>
+<issue>5</issue>
+<elocation-id>e241</elocation-id>
+<history>
+<date date-type="received"><day>16</day><month>7</month><year>2007</year></date>
+<date date-type="accepted"><day>23</day><month>4</month><year>2008</year></date>
+</history>
+<copyright-statement>Tohon et al. This is an open-access article distributed under the terms of the Creative Commons Attribution License, which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.</copyright-statement>
+<copyright-year>2008</copyright-year>
+<abstract><sec>
+<title>Background</title>
+<p>In the framework of the monitoring and evaluation of the Nigerien schistosomiasis and soil-transmitted helminth control programme, a follow-up of children took place in eight sentinel sites. The objective of the study was to assess the evolution of <italic>Schistosoma haematobium</italic> infection and anaemia in schoolchildren after a single administration of praziquantel (PZQ) and albendazole.</p>
+</sec><sec>
+<title>Methods/Principal Findings</title>
+<p>Pre-treatment examination and follow-up at one year post-treatment of schoolchildren aged 7, 8, and 11 years, including interview, urine examination, ultrasound examination of the urinary tract, and measurement of haemoglobin. Before treatment, the overall prevalence of <italic>S. heamatobium</italic> infection was 75.4% of the 1,642 enrolled children, and 21.8% of children excreted more than 50 eggs/10 ml urine. Prevalence increased with age. The overall prevalence of anaemia (haemoglobin &lt;11.5 g/dl) was 61.6%, decreasing significantly with increasing age. The mean haemoglobinemia was 11 g/dl. In bivariate analysis, anaemia was significantly more frequent in children infected with <italic>S. haematobium</italic>, although it was not correlated to the intensity of infection. Anaemia was also associated with micro-haematuria and to kidney distensions. In a sub-sample of 636 children tested for <italic>P. falciparum</italic> infection, anaemia was significantly more frequent in malaria-infected children. In multivariate analysis, significant predictors of anaemia were <italic>P. falciparum</italic> infection, kidney distension, and the village. One year after a single-dose praziquantel treatment (administered using the WHO PZQ dose pole) co-administered with albendazole (400 mg single dose) for de-worming, the prevalence of <italic>S. haematobium</italic> infection was 38%, while the prevalence of anaemia fell to 50.4%. The mean haemoglobinemia showed a statistically significant increase of 0.39 g/dl to reach 11.4 g/dl. Anaemia was no longer associated with <italic>S. haematobium</italic> or to <italic>P. falciparum</italic> infections, or to haematuria or ultrasound abnormalities of the urinary tract.</p>
+</sec><sec>
+<title>Conclusions</title>
+<p>The high prevalence of anaemia in Nigerien children is clearly a result of many factors and not of schistosomiasis alone. Nevertheless, treatment of schistosomiasis and de-worming were followed by a partial, but significant, reduction of anaemia in schoolchildren, not explainable by any other obvious intervention.</p>
+</sec></abstract>
+<abstract abstract-type="summary"><title>Author Summary</title>
+<p>The World Health Organization's recommendation for the control of urinary schistosomiasis is to reduce morbidity by reducing the prevalence of heavy infections. In Niger, where urinary schistosomiasis is endemic along the Niger River valley and in proximity to ponds, a national control programme for schistosomiasis and soil-transmitted helminth was launched in 2004 with the financial support of the Gates Foundation through the Schistosomiasis Control Initiative. In the framework of the monitoring and evaluation of the control programme, a follow-up of school children took place in eight sentinel sites. The aim of this study was to assess the evolution of <italic>Schistosoma haematobium</italic> infection and associated morbidity after a single-dose administration of praziquantel and albendazole. Before treatment, the overall prevalence of <italic>S. heamatobium</italic> infection was 75.4% and anaemia (haemoglobin &lt;11.5 g/dl) was present in 61.6% of the study sample. One year after a single-dose praziquantel treatment (administered by dose-pole) co-administered with albendazole (400 mg single dose) for de-worming, all morbidity markers of the infection decreased significantly. This study shows how a schistosomiasis control programme can benefit populations by improving their health status.</p>
+</abstract>
+<counts><page-count count="8"/></counts></article-meta>
+</front>
+<body><sec id="s1">
+<title>Introduction</title>
+<p><italic>Schistosoma haematobium</italic> is endemic in Niger, particularly throughout the Niger River valley and in villages in close proximity to permanent and temporary ponds <xref ref-type="bibr" rid="pntd.0000241-Ernould1">[1]</xref>–<xref ref-type="bibr" rid="pntd.0000241-Mouchet2">[3]</xref>. The prevalence of infection is highly variable from one village to another. School-aged children are more often and more heavily infected than adults <xref ref-type="bibr" rid="pntd.0000241-Jordan1">[4]</xref>. Overall, urinary schistosomiasis is an important public health problem in Niger. Thanks to portable ultrasound technology, urinary tract lesions due to <italic>S. haematobium</italic> infection can be easily identified in large epidemiological surveys <xref ref-type="bibr" rid="pntd.0000241-Degremont1">[5]</xref>–<xref ref-type="bibr" rid="pntd.0000241-Hatz1">[8]</xref>. Nevertheless, the relationship between other frequent pathologies, such as anaemia and <italic>S. haematobium</italic> infection, are less thoroughly documented <xref ref-type="bibr" rid="pntd.0000241-Friedman1">[9]</xref>. Different studies have found a statistically significant association between urinary schistosomiasis and anaemia <xref ref-type="bibr" rid="pntd.0000241-Bretagne1">[10]</xref>,<xref ref-type="bibr" rid="pntd.0000241-Prual1">[11]</xref>. However, many other factors, such as malaria, soil-transmitted helminthiasis, nutritional deficiencies and sickle-cell anaemia, are also frequently associated with anaemia <xref ref-type="bibr" rid="pntd.0000241-Beasley1">[12]</xref>–<xref ref-type="bibr" rid="pntd.0000241-BefidiMengue1">[15]</xref> and controversial statements have been made about the real impact of schistosomiasis on haemoglobin status.</p>
+<p>In the framework of the evaluation of the Nigerien national schistosomiasis and soil-transmitted control programme, launched in 2004 with the financial support of the Schistosomiasis Control Initiative (SCI), a longitudinal survey was implemented prior to the first round of mass treatment. This treatment consisted of the administration of praziquantel and albendazole to all the target population (school-aged children and high risk groups) determined by the programme. The double aim of this survey was to collect baseline data on parasitological and morbidity indicators and to monitor their evolution.</p>
+</sec><sec id="s2">
+<title>Methods</title>
+<sec id="s2a">
+<title>Population</title>
+<p>Eight villages located in schistosomiasis endemic regions were randomly selected to represent the two main transmission patterns in Niger: six villages located near permanent (Tabalak, Kokorou) or semi-permanent (Kaou, Mozague, Rouafi, and Sabon Birni) ponds and two (Saga Fondo, Sanguile) located along the Niger River. The villages represented the south-western region (Tillabéry) and the central-northern region (Tahoua) of the country, with four villages from each region. One village is located in the Sudanian climatic zone and the seven others are in the Sahelian climatic zone.</p>
+<p>Transmission is permanent along the river and near permanent pond settings while it is intermittent near temporary pond setting. The cold season (November to March) represents the high transmission period for both transmission patterns <xref ref-type="bibr" rid="pntd.0000241-Garba1">[16]</xref>.</p>
+<p>Both male and female schoolchildren aged 7, 8 and 11 years were the study population. These particular ages were selected to be included in the monitoring and evaluation surveys because the control programme supported by the SCI targets schoolchildren and therefore these age groups would be the most representative. The chosen study population would also have the lowest likelihood of high drop-out rates over the survey years, particularly those aged 7–8 years at baseline who will stay in primary school until they the age of 11–12 years old. Furthermore, if an improvement is evident in the study population than there is a higher probability that morbidity in adults can be prevented.</p>
+<p>The recommended sample size was 60 children by age group in <italic>S. haematobium</italic> zones. When the sample size could not be attained with enrolled schoolchildren, further school-aged children were recruited from the village.</p>
+</sec><sec id="s2b">
+<title>Ethical considerations</title>
+<p>The study was approved by the National Ethics Committee of Niger and the National Health System Local Research Ethics Committee of St. Mary's Hospital, London, prior to data collection. Once institutional consent obtained, meetings were held in all targeted villages in order to clearly present the objectives and the methods of the study to the families. They were invited to give their consent prior to inclusion of their children in the survey and they were made aware that they could refuse to permit their children from participating in the study or to remove their children without any consequences. The consent sought was verbal because of the high illiteracy rate in rural population, and the National Ethics Committee of Niger approved this method of consent.</p>
+<p>Participating schoolchildren underwent a standardized interview focusing on clinical signs of urinary or intestinal schistosomiasis and on previous anti-schistosomal treatment.</p>
+</sec><sec id="s2c">
+<title>Urine and stool samples</title>
+<p>From each child, a urine sample was collected between 10:00 AM and 2:00 PM and the presence of blood was noted, according to a standardized colorimetric scale coding from 0 to 6. Gross haematuria was defined as a visual quantification coded &gt;3. Reagent strips (Hemastix Bayer Diagnostics Division, Tarrytown, NY, U.S.A) were used for diagnosing microscopic haematuria. Codes ranging from 0 to 5 were attributed according to the manufacturer interpretation scale and micro-haematuria was defined as urines coded ≥3.</p>
+<p>Parasitological examination of urine and <italic>S. haematobium</italic> eggs count were performed after filtration of 10 ml of urine using Nytrel filters. The intensity of infection was categorized into two classes: light-intensity infection (egg count &lt;50/10 ml) and heavy-intensity infection (egg count ≥50/10 ml). The geometric mean egg count of excreting individuals was used to assess the infection at community level.</p>
+<p><italic>S. mansoni</italic> infections were determined by preparing two 41.7 mg Kato-Katz thick smears from a single fresh stool specimen <xref ref-type="bibr" rid="pntd.0000241-Katz1">[17]</xref>. All stool specimens were also analysed for <italic>Ascaris lumbricoides</italic>, <italic>Trichuris trichiura</italic>, <italic>Enterobius vermicularis</italic>, <italic>Taenia spp</italic> and hookworm.</p>
+</sec><sec id="s2d">
+<title>Blood samples</title>
+<p>A Hemocue photometer (HemoCue AB, Ängelholm, Sweden) was used to determine haemoglobin concentration from a capillary blood drop collected from the finger tip of each child, using sterile single-use material. Children were considered anaemic when haemoglobin was less than 11.5 g/dl <xref ref-type="bibr" rid="pntd.0000241-World1">[18]</xref>.</p>
+<p>A thick smear was made for the search of <italic>Plasmodium falciparum</italic>, but this examination was performed in the four villages of the region of Tahoua only. Children with asymptomatic malaria infection during dry season are supposed to have greater risk of chronic anaemia, knowing the great role played by malaria in the physiopathology of anaemia <xref ref-type="bibr" rid="pntd.0000241-Ehrhardt1">[13]</xref>,<xref ref-type="bibr" rid="pntd.0000241-Korenromp1">[19]</xref>.</p>
+</sec><sec id="s2e">
+<title>Ultrasonography</title>
+<p>All the children underwent an ultrasound examination of the urinary tract to assess morbidity due to schistosomiasis using a portable ultrasonographer Aloka SSD 500 (Aloka, Tokyo, Japan) with a 3.5 MHz convex transductor. Bladder and urinary tract abnormalities were assessed and reported according to the WHO/Niamey protocol <xref ref-type="bibr" rid="pntd.0000241-World2">[20]</xref>. Bladder lesions were scored 0, 1 or 2, ureteral lesions were scored between 0, 3 or 4, and kidney distension was scored between 0, 6 or 8. By adding these elementary scores, an Echographic Severity Index (ESI) was calculated. In total, there were four classes of ESI: 1 = light impact, 2–4 = moderate impact, 5–9 = severe impact, ≥10 = very severe impact <xref ref-type="bibr" rid="pntd.0000241-Garba1">[16]</xref>.</p>
+</sec><sec id="s2f">
+<title>Mass treatment</title>
+<p>According to the national control programme procedures, praziquantel and albendazole were administered by a local team at the community level during the mass drug administration campaign, following the baseline data collection and 1 year later during the second mass drug administration campaign, following the control survey.</p>
+<p>Praziquantel (using dose-pole corresponding to 40 mg/kg) and Albendazole (400 mg) were given to the target population regardless of infection status, during the mass drug administration campaign that took place 3–4 weeks after the surveys were conducted. Trained community drug distributors delivered the treatment in several distribution points in the villages. Schoolchildren were treated by teachers at school. Drugs were swallowed in presence of the drug distributor. Coverage rate reported by the national programme was approximately 68% for all the targeted regions (coverage rate was higher in school-based treatment than through community-based treatment).</p>
+</sec><sec id="s2g">
+<title>Data management and analysis</title>
+<p>EpiInfo and SPSS software was used for data management and analysis. The Pearson's χ<sup>2</sup>, the Fisher's exact test, the Student's t test or the Kruskal-Wallis' test were used whenever appropriate. For paired analysis, the McNemar's χ<sup>2</sup> was used. A <italic>p</italic> value &lt;0.05 was considered significant. Logistic regression was used for multivariate analysis to identify the risk factors of anaemia.</p>
+</sec></sec><sec id="s3">
+<title>Results</title>
+<sec id="s3a">
+<title>Baseline</title>
+<p>A total of 1642 schoolchildren were enrolled in the study. The overall sex ratio (male to female) was 1.27: 1, but the sex distribution varied greatly according to the village, ranging from 14.9% to 73.3% for girls. The overall mean age was 8.7 years, without any significant difference between schools. The number in each age group was 532, 546 and 565 for the 7, 8 and 11 years old respectively.</p>
+<p>The most commonly reported symptoms were bloody urine (41.8%), abdominal pain (28.5%) and pain when urinating (24.5%). A previous treatment against schistosomiasis was reported by 4.5% of the schoolchildren. No previous treatment had been administered at community level in any of the eight villages.</p>
+</sec><sec id="s3b">
+<title>Parasitological results</title>
+<p>The overall prevalence of <italic>S. haematobium</italic> infection was 75.4% [95% Confidence Interval (CI): 73.2–77.5]. The prevalence varied from 43.6% to 97.7%, according to the village. Older children were more frequently infected than were younger ones (<italic>p&lt;0.01</italic>). The overall prevalence of heavy-intensity infections was 21.8%. Intensity increased with increasing age: 16.4%, 21.8% and 27.0% in children aged 7, 8 and 11 years, respectively (<italic>p&lt;0.01</italic>). Among the heavily infected children, 50 (13.9%) excreted more than 500 eggs/10 ml of urine. The geometric mean egg count among egg excreting children was 15.5 eggs /10 ml urine. Geometric mean egg counts were 11.7, 16.9 and 17.6 in children aged 7, 8, and 11 years respectively (<italic>p&lt;0.01</italic>). The prevalence of infection was significantly higher in schools located in the south-western part of the country: 85.3% in the region of Tillabéry compared to 64.8% in the region of Tahoua <italic>(p&lt;0.01</italic>). The prevalence of <italic>S. haematobium</italic> infection was significantly associated with reported haematuria and pain during urination (<italic>p&lt;0.01</italic>).</p>
+<p><italic>S. mansoni</italic> infection was observed only in 2 schools: Sabon Birni (3%) and Sanguilé (1.1%).</p>
+<p>Hookworm infection was observed in 3 schools; Sabon Birni, where the prevalence was 18.8 and in 2 other villages were the prevalence was 0.6%. Hookworm infection was not observed in the schoolchildren of the 5 other villages.</p>
+<p>Very low prevalence (0.3 to 0.7%) of <italic>Ascaris lumbricoides</italic> infection was observed in 5 schools, while 3% of the schoolchildren were infected in 1 school (Sanguile) and no infection was observed in 2 schools (Kaou and Tabalak).</p>
+<p>The overall prevalence of <italic>P. falciparum</italic> infection was 8% in the 636 tested schoolchildren, ranging from 3.8% to 15.8% according to the village (<italic>p&lt;0.03</italic>). <italic>P. falciparum</italic> infection was neither associated with age, nor <italic>S. haematobium</italic> infection.</p>
+</sec><sec id="s3c">
+<title>Haematuria</title>
+<p>The overall prevalence of observed gross haematuria was 6.9%, with a significant relationship with <italic>S. haematobium</italic> infection (<italic>p&lt;0.03</italic>). Gross haematuria was observed in 21.4% of heavily infected children. The overall prevalence of micro-haematuria was 53.3%, differing significantly according to the village (<italic>p&lt;0.03</italic>) and increasing significantly with increasing age (<italic>p&lt;0.03</italic>). The prevalence of micro-haematuria was 9.6% in children not excreting eggs, 56.3% in children with light-intensity infections and 92.8% in children with heavy-intensity infections (<italic>p&lt;0.03</italic>). Reported history of haematuria and pain during urination were significantly associated with the prevalence of micro- and gross haematuria (<italic>p&lt;0.03</italic>).</p>
+</sec><sec id="s3d">
+<title>Haemoglobinemia</title>
+<p>Overall, the mean haemoglobinemia was 11 g/dl (range: 5.3 g–17.3 g). The prevalence of anaemia was 61.6%, without significant difference between sexes. Haemoglobinemia was significantly related to age: 66.5% in children aged 7 years, 64.6% in children aged 8 years and 54.1% in those aged 11 years (<italic>p&lt;0.03</italic>). Prevalence of anaemia was also statistically different according to the village (<italic>p&lt;0.03</italic>). Anaemia was significantly associated with micro-haematuria (<italic>p</italic>&lt;0.02), but not to gross haematuria. Overall, we found a significant association of anaemia with <italic>S. haematobium</italic> infection coded as a binary variable yes/no (<italic>p</italic> = 0.045), but not with infection coded into 3 levels of intensity. After adjusting for age, the association was present only in 8 year old children, where prevalence of anaemia increased significantly with increasing intensity of infection (<italic>p&lt;0.01</italic>). The presence of anaemia was significantly associated with <italic>P. falciparum</italic> infection (<italic>p&lt;0.01</italic>). <xref ref-type="table" rid="pntd-0000241-t001">Table 1</xref> shows the prevalence of anaemia according to the presence, or absence, of several potential risk factors using bivariate analysis.</p>
+<table-wrap id="pntd-0000241-t001" position="float"><object-id pub-id-type="doi">10.1371/journal.pntd.0000241.t001</object-id><label>Table 1</label><caption>
+<title>Prevalence (%) of anaemia according to the absence or to the presence of several potential risk factors at the baseline data collection</title>
+</caption><graphic id="pntd-0000241-t001-1" xlink:href="info:doi/10.1371/journal.pntd.0000241.t001" alt-version="no" mimetype="image" position="float" xlink:type="simple"/>
+<table alternate-form-of="pntd-0000241-t001-1"><colgroup span="1"><col align="left" span="1"/><col align="center" span="1"/><col align="center" span="1"/><col align="center" span="1"/><col align="center" span="1"/><col align="center" span="1"/></colgroup>
+<thead>
+<tr>
+<td align="left" rowspan="1" colspan="1">Potential risk factor</td>
+<td align="left" rowspan="1" colspan="1">n</td>
+<td align="left" rowspan="1" colspan="1">Number of positive children</td>
+<td colspan="3" align="left" rowspan="1">Prevalence of anaemia (%)</td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1"/>
+<td align="left" rowspan="1" colspan="1"/>
+<td align="left" rowspan="1" colspan="1"/>
+<td align="left" rowspan="1" colspan="1">With risk factor absent</td>
+<td align="left" rowspan="1" colspan="1">With risk factor present</td>
+<td align="left" rowspan="1" colspan="1"><italic>P</italic></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" rowspan="1" colspan="1"><italic>S. haematobium</italic> egg excretion</td>
+<td align="left" rowspan="1" colspan="1">1624</td>
+<td align="left" rowspan="1" colspan="1">1230</td>
+<td align="left" rowspan="1" colspan="1">57.4</td>
+<td align="left" rowspan="1" colspan="1">63.0</td>
+<td align="left" rowspan="1" colspan="1"><italic>0.045</italic></td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">Macrohaematuria</td>
+<td align="left" rowspan="1" colspan="1">1624</td>
+<td align="left" rowspan="1" colspan="1">111</td>
+<td align="left" rowspan="1" colspan="1">61.3</td>
+<td align="left" rowspan="1" colspan="1">66.7</td>
+<td align="left" rowspan="1" colspan="1"><italic>0.304</italic></td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">Micro-haematuria</td>
+<td align="left" rowspan="1" colspan="1">1614</td>
+<td align="left" rowspan="1" colspan="1">861</td>
+<td align="left" rowspan="1" colspan="1">58.6</td>
+<td align="left" rowspan="1" colspan="1">64.3</td>
+<td align="left" rowspan="1" colspan="1"><italic>0.020</italic></td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">Ultrasonographic abnormality of the urinary tract</td>
+<td align="left" rowspan="1" colspan="1">1609</td>
+<td align="left" rowspan="1" colspan="1">734</td>
+<td align="left" rowspan="1" colspan="1">59.0</td>
+<td align="left" rowspan="1" colspan="1">64.4</td>
+<td align="left" rowspan="1" colspan="1"><italic>0.025</italic></td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">Bladder lesions</td>
+<td align="left" rowspan="1" colspan="1">1608</td>
+<td align="left" rowspan="1" colspan="1">667</td>
+<td align="left" rowspan="1" colspan="1">59.9</td>
+<td align="left" rowspan="1" colspan="1">63.6</td>
+<td align="left" rowspan="1" colspan="1"><italic>0.140</italic></td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">Kidney distension</td>
+<td align="left" rowspan="1" colspan="1">1595</td>
+<td align="left" rowspan="1" colspan="1">66</td>
+<td align="left" rowspan="1" colspan="1">60.4</td>
+<td align="left" rowspan="1" colspan="1">81.8</td>
+<td align="left" rowspan="1" colspan="1"><italic>&lt;0.001</italic></td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">Ureteral distension</td>
+<td align="left" rowspan="1" colspan="1">1614</td>
+<td align="left" rowspan="1" colspan="1">66</td>
+<td align="left" rowspan="1" colspan="1">61.3</td>
+<td align="left" rowspan="1" colspan="1">66.7</td>
+<td align="left" rowspan="1" colspan="1"><italic>0.455</italic></td>
+</tr>
+</tbody>
+</table>
+</table-wrap></sec><sec id="s3e">
+<title>Ultrasound examination</title>
+<p>The proportion of children presenting at least one ultrasound abnormality of the urinary tract was 45.8%, without significant differences between sexes or transmission patterns, and was significantly associated with age (37.8%, 46.0% and 53.0% in children aged 7, 8 and 11 years, respectively; <italic>p&lt;0.03</italic>), to the intensity of <italic>S. haematobium</italic> infection (22.1% in children not excreting eggs, 47.5% in light-intensity infections and 68.1% in heavy-intensity infections; <italic>p&lt;0.03</italic>) and to the presence of anaemia (<italic>p</italic> = 0.025).</p>
+<p>Bladder wall abnormalities, evident in 41.6% of children, were the most frequently reported ultrasound abnormality. Their prevalence increased significantly with increasing age (<italic>p&lt;0.03</italic>), with increasing intensity of infection (<italic>p&lt;0.03</italic>), and was not associated with the presence of anaemia. Severe bladder wall abnormalities (either masses or pseudopolyps) were present in 15.5% of the children. Kidney and ureteral distensions were present in 4.2% and 4.1% of the children, respectively. Contrary to ureteral distension, kidney distension was significantly associated with the intensity of <italic>S. haematobium</italic> infection (<italic>p&lt;0.01</italic>) and to the presence of anaemia (<italic>p&lt;0.03</italic>).</p>
+<p>The mean ESI, summarizing urinary tract morbidity due to <italic>S. haematobium</italic> infection, was 1.33 (range: 0–24) and the mean bladder score was 0.8 (range: 0–7). The mean ESI was not different between boys and girls. The mean ESI was significantly higher in pond-related transmission villages than in river-related transmission villages (<italic>p&lt;0.03</italic>).</p>
+<p>Multivariate analysis using logistic regression showed that the risk of anaemia was significantly associated with young age (OR = 1.7, 95% CI 1.3–2.2 for age = 7 and OR = 1.6, 95% CI 1.2–2.0 for age = 8), to the presence of ultrasound abnormalities of the kidneys (OR = 3.0, 95% CI 1.5–6.0) and to the village. When the same analysis was performed on the sub-sample of 4 villages where <italic>P. falciparum</italic> infection was documented, the predictors of anaemia were <italic>P. falciparum</italic> infection (OR = 2.5, 95% CI 1.3–4.7), ultrasound abnormalities of the kidneys (OR = 2.9, 95% CI 1.2–6.8) and the village (OR = 0.6, 95% CI 0.4–0.9 for Tabalak and OR = 0.4, 95% CI 0.3–0.7 for Kaou).</p>
+</sec><sec id="s3f">
+<title>Follow-up</title>
+<p>A total of 89% of the initial sample group were re-examined one year after baseline data collection and the first round of treatment with praziquantel and albendazole. The mean age was 9.7 years and the sex ratio (male to female) was 1.27:1. A total of 482 eight year olds, 470 nine year olds and 484 twelve year olds were re-examined.</p>
+<p>The overall prevalence of <italic>S. haematobium</italic> infection was 38% and 4.6% of children had heavy-intensity infections; only three (4.6%) among the latter excreted more than 500 eggs/10 ml. 56.2% of the initially infected children did not excrete eggs and 91.6% of heavy-intensity infections had cleared or become light intensity infection. However, the improvement of infection markers was different according to the village and prevalence was still above 60% in 3 schools (Kaou, Kokorou and Tabalak). In children from Tabalak, only minor changes in the prevalence and intensity of infection were observed (22.7% of heavy-intensity infections at baseline and 18.2% at follow-up).</p>
+<p>Assessment of <italic>P. falciparum</italic> infection in the 4 schools tested in 2005 showed a significant increase of the prevalence from 8.6% to 17.1% (p&lt;0.03). The rise of prevalence of malarial infection was observed in 4 schools, although only statistically significant in Rouafi (paired analysis, p&lt;0.03).</p>
+<p>The overall prevalence of all the morbidity markers of <italic>S. haematobium</italic> had decreased significantly at follow-up (<xref ref-type="table" rid="pntd-0000241-t002">Table 2</xref>). Among the 1412 schoolchildren which were re-examined, the overall prevalence of anaemia decreased from 61.9% to 50.4% (paired analysis, <italic>p&lt;0.03</italic>) and the mean haemoglobinemia showed a significant increase of 0.39 g /dl to reach 11.4 g/dl (paired analysis, <italic>p&lt;0.01</italic>). However, the change in prevalence of anaemia was not significant in children from Kaou, Kokorou, Mozague and Tabalak. At follow-up, anaemia was not associated with <italic>S. haematobium</italic> infection. Gross and micro-haematuria decreased from 7.1% to 0.4% (paired analysis, <italic>p&lt;0.03</italic>) and from 53.5% to 6.0% (paired analysis, <italic>p&lt;0.03</italic>), respectively. Prevalence of gross and micro-haematuria were each significantly associated with the intensity of <italic>S. haematobium</italic> infection (<italic>p&lt;0.03</italic>). Anaemia was neither associated with micro-haematuria nor with gross haematuria. One year after treatment, the overall prevalence of ultrasound abnormalities of the urinary tract and the prevalence of ultrasound abnormalities of the bladder decreased from 45.6% to 15.2% (paired analysis, <italic>p&lt;0.03</italic>) and from 41.6% to 14.7% (paired analysis, <italic>p&lt;0.03</italic>), respectively. The mean global ESI showed a significant decrease of 1.04 (paired analysis, <italic>p&lt;0.03</italic>).</p>
+<table-wrap id="pntd-0000241-t002" position="float"><object-id pub-id-type="doi">10.1371/journal.pntd.0000241.t002</object-id><label>Table 2</label><caption>
+<title>Evolution of the prevalence (%) of the main morbidity indicators between initial survey and re-assessment one year later (paired analysis)</title>
+</caption><graphic id="pntd-0000241-t002-2" xlink:href="info:doi/10.1371/journal.pntd.0000241.t002" alt-version="no" mimetype="image" position="float" xlink:type="simple"/>
+<table alternate-form-of="pntd-0000241-t002-2"><colgroup span="1"><col align="left" span="1"/><col align="center" span="1"/><col align="center" span="1"/><col align="center" span="1"/><col align="center" span="1"/><col align="center" span="1"/><col align="center" span="1"/></colgroup>
+<thead>
+<tr>
+<td align="left" rowspan="1" colspan="1"/>
+<td colspan="6" align="left" rowspan="1">Comparison initial survey/one year post-treatment (paired analysis)</td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">Morbidity indicators</td>
+<td align="left" rowspan="1" colspan="1"><italic>Number of pairs</italic></td>
+<td align="left" rowspan="1" colspan="1">No/No%</td>
+<td align="left" rowspan="1" colspan="1">No/Yes%</td>
+<td align="left" rowspan="1" colspan="1">Yes/No%</td>
+<td align="left" rowspan="1" colspan="1">Yes/Yes%</td>
+<td align="left" rowspan="1" colspan="1"><italic>P</italic> <xref ref-type="table-fn" rid="nt101">*</xref></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" rowspan="1" colspan="1">Reported haematuria <xref ref-type="table-fn" rid="nt102">†</xref></td>
+<td align="left" rowspan="1" colspan="1">1405</td>
+<td align="left" rowspan="1" colspan="1">46.0</td>
+<td align="left" rowspan="1" colspan="1">11.2</td>
+<td align="left" rowspan="1" colspan="1">24.8</td>
+<td align="left" rowspan="1" colspan="1">17.9</td>
+<td align="left" rowspan="1" colspan="1"><italic>&lt;0.001</italic></td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">Reported pain urinating <xref ref-type="table-fn" rid="nt102">†</xref></td>
+<td align="left" rowspan="1" colspan="1">1405</td>
+<td align="left" rowspan="1" colspan="1">52.5</td>
+<td align="left" rowspan="1" colspan="1">22.8</td>
+<td align="left" rowspan="1" colspan="1">14.5</td>
+<td align="left" rowspan="1" colspan="1">10.2</td>
+<td align="left" rowspan="1" colspan="1"><italic>&lt;0.001</italic></td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1"><italic>S. haematobium</italic> infection <xref ref-type="table-fn" rid="nt102">†</xref></td>
+<td align="left" rowspan="1" colspan="1">1417</td>
+<td align="left" rowspan="1" colspan="1">19.6</td>
+<td align="left" rowspan="1" colspan="1">5.0</td>
+<td align="left" rowspan="1" colspan="1">42.3</td>
+<td align="left" rowspan="1" colspan="1">33.0</td>
+<td align="left" rowspan="1" colspan="1"><italic>&lt;0.001</italic></td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">Heavy-intensity infections <xref ref-type="table-fn" rid="nt103">‡</xref></td>
+<td align="left" rowspan="1" colspan="1">1417</td>
+<td align="left" rowspan="1" colspan="1">74.5</td>
+<td align="left" rowspan="1" colspan="1">2.7</td>
+<td align="left" rowspan="1" colspan="1">20.9</td>
+<td align="left" rowspan="1" colspan="1">1.9</td>
+<td align="left" rowspan="1" colspan="1"><italic>&lt;0.001</italic></td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">Gross haematuria <xref ref-type="table-fn" rid="nt102">†</xref></td>
+<td align="left" rowspan="1" colspan="1">1417</td>
+<td align="left" rowspan="1" colspan="1">92.6</td>
+<td align="left" rowspan="1" colspan="1">0.2</td>
+<td align="left" rowspan="1" colspan="1">7.1</td>
+<td align="left" rowspan="1" colspan="1">0.1</td>
+<td align="left" rowspan="1" colspan="1"><italic>&lt;0.001</italic></td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">Micro-haematuria <xref ref-type="table-fn" rid="nt102">†</xref></td>
+<td align="left" rowspan="1" colspan="1">1405</td>
+<td align="left" rowspan="1" colspan="1">45.2</td>
+<td align="left" rowspan="1" colspan="1">1.4</td>
+<td align="left" rowspan="1" colspan="1">48.8</td>
+<td align="left" rowspan="1" colspan="1">4.7</td>
+<td align="left" rowspan="1" colspan="1"><italic>&lt;0.001</italic></td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">Anaemia <xref ref-type="table-fn" rid="nt102">†</xref></td>
+<td align="left" rowspan="1" colspan="1">1412</td>
+<td align="left" rowspan="1" colspan="1">26.1</td>
+<td align="left" rowspan="1" colspan="1">12.0</td>
+<td align="left" rowspan="1" colspan="1">23.4</td>
+<td align="left" rowspan="1" colspan="1">38.5</td>
+<td align="left" rowspan="1" colspan="1"><italic>&lt;0.001</italic></td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">Bladder lesion <xref ref-type="table-fn" rid="nt104">§</xref></td>
+<td align="left" rowspan="1" colspan="1">1407</td>
+<td align="left" rowspan="1" colspan="1">52.8</td>
+<td align="left" rowspan="1" colspan="1">5.6</td>
+<td align="left" rowspan="1" colspan="1">32.5</td>
+<td align="left" rowspan="1" colspan="1">9.1</td>
+<td align="left" rowspan="1" colspan="1"><italic>&lt;0.001</italic></td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">Ureteral dilatation <xref ref-type="table-fn" rid="nt102">†</xref></td>
+<td align="left" rowspan="1" colspan="1">1412</td>
+<td align="left" rowspan="1" colspan="1">96.0</td>
+<td align="left" rowspan="1" colspan="1">0.2</td>
+<td align="left" rowspan="1" colspan="1">3.6</td>
+<td align="left" rowspan="1" colspan="1">0.1</td>
+<td align="left" rowspan="1" colspan="1"><italic>&lt;0.001</italic></td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">Kidney dilatation <xref ref-type="table-fn" rid="nt102">†</xref></td>
+<td align="left" rowspan="1" colspan="1">1393</td>
+<td align="left" rowspan="1" colspan="1">95.5</td>
+<td align="left" rowspan="1" colspan="1">0.2</td>
+<td align="left" rowspan="1" colspan="1">3.9</td>
+<td align="left" rowspan="1" colspan="1">0.4</td>
+<td align="left" rowspan="1" colspan="1"><italic>&lt;0.001</italic></td>
+</tr>
+<tr>
+<td align="left" rowspan="1" colspan="1">ESI</td>
+<td align="left" rowspan="1" colspan="1">1376</td>
+<td align="left" rowspan="1" colspan="1">68.1</td>
+<td align="left" rowspan="1" colspan="1">3.4</td>
+<td align="left" rowspan="1" colspan="1">25.1</td>
+<td align="left" rowspan="1" colspan="1">3.3</td>
+<td align="left" rowspan="1" colspan="1"><italic>&lt;0.001</italic></td>
+</tr>
+</tbody>
+</table>
+<table-wrap-foot><fn id="nt101"><label>*</label><p>McNemar's chi<sup>2</sup> for paired samples</p></fn><fn id="nt102"><label>†</label><p>No = absent, Yes = present</p></fn><fn id="nt103"><label>‡</label><p>No = Not infected or light-intensity infection, Yes = heavy-intensity infection</p></fn><fn id="nt104"><label>§</label><p>No = no lesion, Yes = at least one lesion</p></fn><fn id="nt105"><label>¶</label><p>No = no impact or light impact, Yes = moderate to very severe impact</p></fn></table-wrap-foot></table-wrap>
+<p>In 2006, the relationship between anaemia and <italic>P. falciparum</italic> infection was no longer observed.</p>
+<p>Compared to those children who remained in the study cohort, the 216 children who dropped out after the initial survey differed significantly in the prevalence of <italic>S. haematobium</italic> infection (75.4% <italic>vs.</italic> 78%, respectively), but had less frequently heavy-intensity infections (22.8% <italic>vs.</italic> 16.5%, respectively). On the other hand, they did not differ in mean age (8.7 <italic>vs.</italic> 8.9 years, respectively), in the prevalence of anaemia (61.9% <italic>vs.</italic> 59.7%, respectively) nor in mean haemoglobinemia (11.04 g/dl <italic>vs.</italic> 11.03 g/dl, respectively).</p>
+</sec></sec><sec id="s4">
+<title>Discussion</title>
+<p>According to the WHO guidelines <xref ref-type="bibr" rid="pntd.0000241-World3">[21]</xref>, the aim of the Nigerien National Schistosomiasis Control Programme is to reduce schistosomiasis-associated morbidity by reducing the prevalence of heavy-intensity infections.</p>
+<p>Our study, which compared baseline data collected before treatment and follow-up data collected one year post treatment, aimed to describe the evolution of <italic>S. haematobium</italic> infection and of anaemia prevalence in schoolchildren in 8 sentinel cohorts.</p>
+<p>The predominance of boys in our samples reflects the overall low proportion of girls in full-time education in Niger. Only 11% of children of the initial sample did not take part in the follow-up survey. The characteristics of the children who dropped out of the study, for both ultrasound assessed morbidity and for anaemia, did not differ significantly from children who completed the follow-up. The children who dropped out also had slightly lower prevalence and intensity of infection at baseline.</p>
+<sec id="s4a">
+<title><italic>S. haematobium</italic> infection</title>
+<p>Our data showed a high prevalence of urinary schistosomiasis at baseline, with a classical increase of both prevalence and intensity of infection with increasing age during childhood. Although studies have shown that both prevalence and intensity of infection is often higher among males in many surveys <xref ref-type="bibr" rid="pntd.0000241-Beasley2">[22]</xref>,<xref ref-type="bibr" rid="pntd.0000241-Saathoff1">[23]</xref>, our data did not show such a relationship.</p>
+<p><italic>S. haematobium</italic> infection was well correlated to the prevalence of observed gross haematuria, confirming the value of this indicator for rapid assessment of infection at community level, as well as its intensity. Reported history of haematuria and pain during urination were both related to the infection, even if the schoolchildren underestimated it. These markers, have been used for rapid screening of urinary schistosomiasis <xref ref-type="bibr" rid="pntd.0000241-Lengeler1">[24]</xref>.</p>
+<p>According to the operating procedures of the national control programme, the praziquantel and albendazole treatment was administered by school teachers or health agents using the praziquantel “dose-pole” <xref ref-type="bibr" rid="pntd.0000241-Montresor1">[25]</xref>,<xref ref-type="bibr" rid="pntd.0000241-Montresor2">[26]</xref> for praziquantel within 3–4 weeks following the baseline data collection (in November-December 2004 in Tillabéry region and in April-May 2005 in Tahoua region). Eleven to twelve months after treatment, the overall prevalence of <italic>S. haematobium</italic> infection had decreased significantly, from 75.4% to 38% and the prevalence of heavy-intensity infections had drastically reduced by 91.7%. These observations fully confirm the effectiveness of a single dose of praziquantel on infection, as demonstrated over the past two decades <xref ref-type="bibr" rid="pntd.0000241-King1">[27]</xref>,<xref ref-type="bibr" rid="pntd.0000241-Mott1">[28]</xref>.</p>
+<p>However, in 3 schools, the prevalence of <italic>S. haematobium</italic> infection remained high, over 60%. In on village, Tabalak, the prevalence of heavy-intensity infections did not change at all. It is unlikely that this was solely due to re-infection, according to previous studies in Niger <xref ref-type="bibr" rid="pntd.0000241-Garba1">[16]</xref>,<xref ref-type="bibr" rid="pntd.0000241-Campagne1">[29]</xref> prevalence is unlikely to reach the initial level of intensity within a year of treatment. However, it has been demonstrated that <italic>S. haematobium</italic> reinfection patterns may vary strongly according to local epidemiological settings. Mass treatment took place after the high transmission period in the Tahoua region. In Tabalak where the transmission is year-round, the water level in local ponds usually decreases significantly during the hot and dry season. This reduction in water levels can induce a greater parasite concentration and thus a more severe infestation. Some alarming reports have been made since the 1990s about praziquantel treatment failures in <italic>S. mansoni</italic> infections <xref ref-type="bibr" rid="pntd.0000241-Fallon1">[30]</xref>, but despite large scale use of praziquantel in many countries there is currently no evidence to suggest that any <italic>S. haematobium</italic> has developed resistance to praziquantel as a result of its widespread use <xref ref-type="bibr" rid="pntd.0000241-Doenhoff1">[31]</xref> and praziquantel can still be considered very effective. Furthermore, in the 4 villages where disappointing results were observed, the absence of mass treatment history should rule out a possible local problem of drug resistance induced by overuse or misuse of praziquantel. Although 75.1% of children in Tabalak reported having received tablets just after the baseline data collection, the absence of prevalence reduction is likely to be explained by the fact that praziquantel treatment was not administered as effectively as had been assumed. For children, confusion between albendazole tablets and praziquantel tablets could be quite easy and the drug delivery system in Tabalak will need to be assessed. In addition, transmission of <italic>S. haematobium</italic> in Tabalak will also be investigated.</p>
+</sec><sec id="s4b">
+<title>Soil-transmitted helminth infections</title>
+<p>The very low prevalence of soil-transmitted helminth infection is in accordance with previous observations made in Niger <xref ref-type="bibr" rid="pntd.0000241-Develoux1">[32]</xref> and in 2 other African countries, Mali and Chad <xref ref-type="bibr" rid="pntd.0000241-Beasley2">[22]</xref>,<xref ref-type="bibr" rid="pntd.0000241-DeClercq1">[33]</xref>, areas that are subjected to climatic conditions comparable to the most inhabited regions of Niger. The single school where hookworm infection prevalence was over 1% was located in the Sudanian climatic zone, in the southern-most part of the country.</p>
+</sec><sec id="s4c">
+<title>Ultrasound-assessed morbidity</title>
+<p>The nature and the frequency of ultrasound-assessed urinary tract abnormalities, observed in 46.2% of schoolchildren, with an association with both intensity of infection and with age are fully consistent with results from other studies <xref ref-type="bibr" rid="pntd.0000241-Degremont1">[5]</xref>,<xref ref-type="bibr" rid="pntd.0000241-Serieye1">[34]</xref>.</p>
+<p>The effect of treatment on reducing the prevalence of both bladder and ureteral lesions was 78.2% and 96.3% respectively, a clear confirmation of the relevance of the control strategy. Previous surveys in Niger reported similar favourable results, showing the rapid regression of ultrasound-assessed bladder and ureteral lesions <xref ref-type="bibr" rid="pntd.0000241-Garba1">[16]</xref>,<xref ref-type="bibr" rid="pntd.0000241-Campagne1">[29]</xref>,<xref ref-type="bibr" rid="pntd.0000241-Laurent1">[35]</xref>. Many studies in other endemic areas also demonstrated the invaluable benefit of praziquantel administration on <italic>S. haematobium</italic> associated bladder morbidity <xref ref-type="bibr" rid="pntd.0000241-Richter1">[36]</xref>.</p>
+<p>At baseline, the prevalence of ultrasound assessed-kidney lesions was low (4.1%), compared to results from other studies which reported up to 43% of hydronephrosis in schoolchildren in hyperendemic village in the Niger River valley. Other results reported between 20.9% and 23.2% upper urinary tract lesions in two villages in an irrigated area of Niger <xref ref-type="bibr" rid="pntd.0000241-Garba1">[16]</xref>,<xref ref-type="bibr" rid="pntd.0000241-Campagne1">[29]</xref>. Contrary to other observations <xref ref-type="bibr" rid="pntd.0000241-Brouwer1">[37]</xref>, in our study sample kidney dilatations were significantly associated with the intensity of <italic>S. haematobium</italic> infection. Although ultrasound-assessed kidney dilatations are not specific to urinary schistosomiasis, their regression following praziquantel treatment strengthens the likelihood of their relationship with infection. According to the literature, the observed clearance rate of kidney dilatations following praziquantel treatment may vary greatly, from low <xref ref-type="bibr" rid="pntd.0000241-King2">[38]</xref>,<xref ref-type="bibr" rid="pntd.0000241-Wagatsuma1">[39]</xref> to very satisfactory <xref ref-type="bibr" rid="pntd.0000241-Laurent1">[35]</xref>,<xref ref-type="bibr" rid="pntd.0000241-Devidas1">[40]</xref>. This may be explained by many factors, such as the length of the post-treatment follow-up or the age of lesions.</p>
+</sec><sec id="s4d">
+<title>Anaemia</title>
+<p>Anaemia is considered a severe public health problem when its prevalence is over 40% within a population <xref ref-type="bibr" rid="pntd.0000241-World4">[41]</xref>. Anaemia is very common in developing countries and a multi-country survey in sub-Saharan Africa showed that it was generally a serious problem in schoolchildren <xref ref-type="bibr" rid="pntd.0000241-Hall1">[42]</xref>. Our results, showing a prevalence of 61.2%, confirm that anaemia in schoolchildren is a worrying public health problem in Niger.</p>
+<p>Various causes can lead to anaemia including infections, low dietary iron intake, sickle-cell anaemia, malnutrition and inflammatory diseases. Although many cross-sectional studies and a small number of randomized controlled trials have addressed the relationship between schistosomiasis and anaemia, the conflicting results make the magnitude of the relationship unclear. Urinary schistosomiasis had been associated with anaemia in many studies. In a study in Niger, <italic>S. haematobium</italic> egg count and intensity of haematuria were negatively correlated to haemoglobin level, to haematocrit and to transferrin saturation, and positively associated with anaemia and iron deficiency <xref ref-type="bibr" rid="pntd.0000241-Prual1">[11]</xref>. Another Nigerien survey concluded that <italic>S. haematobium</italic> infections increased the risk of anaemia by 30% <xref ref-type="bibr" rid="pntd.0000241-Bretagne1">[10]</xref>. In Tanzania, haemoglobin concentration in infected children was 0.4 g/dl lower than in uninfected ones <xref ref-type="bibr" rid="pntd.0000241-Bhargava1">[43]</xref>. In Kenya, the intensity of <italic>S. haematobium</italic> infection was negatively correlated with haemoglobin level on a cross sectional basis <xref ref-type="bibr" rid="pntd.0000241-Stephenson2">[44]</xref>. On the other hand, a survey in Cameroon, in a context of concurrent malarial and schistosomal infections <xref ref-type="bibr" rid="pntd.0000241-BefidiMengue1">[15]</xref>, did not establish a relationship between schistosomiasis haematobia and anaemia while anaemia correlated significantly with malaria infection. In Mali, in a survey focusing on interactions between helminth and malarial infections in children, results showed haemoglobin was similar in children infected with <italic>S. haematobium</italic> compared to those not infected <xref ref-type="bibr" rid="pntd.0000241-Lyke1">[45]</xref>. Likewise, in a survey on anaemia in Tanzania, no relationship was observed with <italic>S. haematobium</italic>, whereas anaemia was significantly associated with hookworm infection <xref ref-type="bibr" rid="pntd.0000241-Lwambo1">[46]</xref>.</p>
+<p>Our results, showing a significant relationship between schistosomiasis haematobia and anaemia, were bordering on statistical significance in a bivariate analysis, and anaemia was not related to intensity of infection. In a previous analysis using an alternative haemoglobin threshold for anaemia (11 g/dl instead of 11.5, data not shown), no relationship was observed between infection and anaemia. Also, it is worthy to note that the prevalence and intensity of <italic>S. haematobium</italic> infection increased with increasing age, contrary to anaemia that was more prevalent in the youngest schoolchildren. The latter observation is consistent with the results found in Chad <xref ref-type="bibr" rid="pntd.0000241-Beasley2">[22]</xref>.</p>
+<p>Our results showed that micro-haematuria increases with age as does the prevalence of schistosomiasis and that the prevalence of anaemia decreases with age. These findings raise the question about the significance of micro-haematuria in the prevalence of anaemia. By which mechanism does micro-haematuria contributes to anaemia? Why anaemia prevalence is higher in the age group where micro-haematuria is lower?</p>
+<p>Lastly, in multivariate analysis, <italic>S. haematobium</italic> infection was not associated with anaemia. However, anaemia could be related to <italic>S. haematobium</italic> in an indirect way as it was significantly associated with micro-haematuria. The significant improvement of haemoglobin levels one year after praziquantel and albendazole treatment suggests that <italic>S. haematobium</italic> can contribute significantly to anaemia. In Burkina Faso where the SCI-supported schistosomiasis control programme provides also large-scale chemotherapy with praziquantel and albendazole, Koukounari and others found significant reduction in the prevalence of anaemia and a significant increase in haemoglobin concentration <xref ref-type="bibr" rid="pntd.0000241-Koukounari1">[47]</xref>. This confirms our findings on the benefit of praziquantel on anaemia.</p>
+<p>Due to the study design, the causality cannot be formally established, but one can note that the 3 schools were anaemia did not improve corresponded to the 3 of 4 schools were <italic>S. haematobium</italic> infection showed only minor changes one year after praziquantel treatment. The overall very low prevalence of hookworm infection can rule out a significant contribution of hookworm in schoolchildren anaemia in Niger. Lastly, the observed improvement of anaemia is unlikely explained by the fact that some children dropped out of the survey before follow-up, as they did not differ significantly from the others, neither for <italic>S. haematobium</italic> infection, nor for anaemia prevalence.</p>
+<p>The simultaneous delivery of several drug packages within the framework of the integrated neglected tropical disease control programmes (schistosomiasis, lymphatic filariasis, intestinal worms, trachoma, onchocerciasis) which are currently being implemented in several sub-Saharan African countries will probably involve an additional improvement of the prevalence of anaemia and the global health of the populations by the synergistic actions of the drugs on the worms, the ectoparasites and certain bacteria. Our study showed that anaemia can be a useful indicator for the monitoring of the impact of programs NTD as suggested by Bates et al. and Molyneux et al <xref ref-type="bibr" rid="pntd.0000241-Bates1">[48]</xref>,<xref ref-type="bibr" rid="pntd.0000241-Molyneux1">[49]</xref>.</p>
+<p>Malarial infection is a well documented cause of anaemia in African children <xref ref-type="bibr" rid="pntd.0000241-Ehrhardt1">[13]</xref>,<xref ref-type="bibr" rid="pntd.0000241-Korenromp1">[19]</xref>. The multivariate analysis performed on the sub-sample of 4 schools where data on <italic>P. falciparum</italic> infection were available showed that asymptomatic carriage of <italic>P. falciparum</italic>, kidney distension and the village were the only predictors of anaemia, while no relationship was found with <italic>S. haematobium</italic> infection. In Niger, 83.9% of children &lt;5 years had an haemoglobinemia of &lt;11 g/dl in a nationwide survey in 2006, with only minor differences between rural and urban settings <xref ref-type="bibr" rid="pntd.0000241-Institut1">[50]</xref>, although both prevalence and intensity of <italic>S. haematobium</italic> infection are usually low in this age group. In total, <italic>S. haematobium</italic> alone cannot explain the high prevalence of anaemia in Nigerien schoolchildren. Actually, with 8.1% of children carrying <italic>P. falciparum</italic> at baseline, malarial infection could hardly explain the entire problem of anaemia in Nigerien children. Dietary iron availability should be investigated, as well as the prevalence of other known risk factors, such as sickle cell anaemia.</p>
+</sec><sec id="s4e">
+<title>Conclusions</title>
+<p>Both <italic>S. haematobium</italic> and anaemia are highly prevalent in schoolchildren in Niger. Before treatment, anaemia was significantly associated with infection in a bivariate analysis, but this association was not observed in a multivariate analysis, while malarial infection was a significant predictor of anaemia. One year after systematic praziquantel treatment, we observed a significant decrease of the prevalence and intensity of infection and of morbidity. Though the prevalence of anaemia significantly reduced, prevalence was still 50.5%. The high prevalence of anaemia in Nigerien schoolchildren is likely a result of the combination of many risk factors and should be thoroughly investigated. The role of schistosomiasis on anaemia clearly deserves more studies. It would be interesting to study the interactions of malarial infection, schistosomiasis, soil-transmitted helminthiasis as well as nutritional status in the mechanisms of anaemia. Even though schistosomiasis represents only one of multiple causes of anaemia, the effect of praziquantel treatment on morbidity clearly indicates the benefits of schistosomiasis control programmes, which must be perpetuate.</p>
+</sec></sec></body>
+<back>
+<ack>
+<p>We gratefully acknowledge the Schistosomiasis Control Initiative for funding this study, and Alan Fenwick, Howard Thompson, Jean Roux and Ali Djibo for their helpful comments and contributions to implement this survey in Niger. Our thanks are extended to Artemis Koukounari for her statistical comments. We are indebted to the teachers who kindly welcomed the study team in their schools, and to all participating children.</p>
+</ack>
+<ref-list>
+<title>References</title>
+<ref id="pntd.0000241-Ernould1"><label>1</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Ernould</surname><given-names>JC</given-names></name>
+<name name-style="western"><surname>Garba</surname><given-names>A</given-names></name>
+<name name-style="western"><surname>Labbo</surname><given-names>R</given-names></name>
+<name name-style="western"><surname>Kaman</surname><given-names>AK</given-names></name>
+<name name-style="western"><surname>Sidiki</surname><given-names>A</given-names></name>
+<etal/></person-group>             <year>2004</year>             <article-title>[Heterogeneity of <italic>Schistosoma haematobium</italic> transmission in irrigated fields].</article-title>             <source>Bull Soc Pathol Exot</source>             <volume>97</volume>             <fpage>19</fpage>             <lpage>23</lpage>          </citation></ref>
+<ref id="pntd.0000241-Mouchet1"><label>2</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Mouchet</surname><given-names>F</given-names></name>
+<name name-style="western"><surname>Labo</surname><given-names>R</given-names></name>
+<name name-style="western"><surname>Develoux</surname><given-names>M</given-names></name>
+<name name-style="western"><surname>Sellin</surname><given-names>B</given-names></name>
+</person-group>             <year>1987</year>             <article-title>[Survey of schistosomiasis in the Gaya district (Republic of Niger)].</article-title>             <source>Ann Soc Belg Med Trop</source>             <volume>67</volume>             <fpage>23</fpage>             <lpage>29</lpage>          </citation></ref>
+<ref id="pntd.0000241-Mouchet2"><label>3</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Mouchet</surname><given-names>F</given-names></name>
+<name name-style="western"><surname>Vera</surname><given-names>C</given-names></name>
+<name name-style="western"><surname>Bremond</surname><given-names>P</given-names></name>
+<name name-style="western"><surname>Devidas</surname><given-names>A</given-names></name>
+<name name-style="western"><surname>Sellin</surname><given-names>B</given-names></name>
+</person-group>             <year>1990</year>             <article-title>[Urinary schistosomiasis in the Saharan mountain plateau of Air (Republic of Niger)].</article-title>             <source>Bull Soc Pathol Exot</source>             <volume>83</volume>             <fpage>249</fpage>             <lpage>256</lpage>          </citation></ref>
+<ref id="pntd.0000241-Jordan1"><label>4</label><citation citation-type="other" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Jordan</surname><given-names>P</given-names></name>
+<name name-style="western"><surname>Webbe</surname><given-names>G</given-names></name>
+</person-group>             <year>1993</year>             <article-title>Epidemiology.</article-title>             <person-group person-group-type="editor">
+<name name-style="western"><surname>Jordan</surname><given-names>P</given-names></name>
+<name name-style="western"><surname>Webbe</surname><given-names>G</given-names></name>
+<name name-style="western"><surname>Sturrock</surname><given-names>RF</given-names></name>
+</person-group>             <source>Human schistosomiasis</source>             <publisher-loc>Wallingford, UK</publisher-loc>             <publisher-name>CAB International</publisher-name>             <fpage>87</fpage>             <lpage>158</lpage>          </citation></ref>
+<ref id="pntd.0000241-Degremont1"><label>5</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Degremont</surname><given-names>A</given-names></name>
+<name name-style="western"><surname>Burki</surname><given-names>A</given-names></name>
+<name name-style="western"><surname>Burnier</surname><given-names>E</given-names></name>
+<name name-style="western"><surname>Schweizer</surname><given-names>W</given-names></name>
+<name name-style="western"><surname>Meudt</surname><given-names>R</given-names></name>
+<etal/></person-group>             <year>1985</year>             <article-title>Value of ultrasonography in investigating morbidity due to <italic>Schistosoma haematobium</italic> infection.</article-title>             <source>Lancet</source>             <volume>1</volume>             <fpage>662</fpage>             <lpage>665</lpage>          </citation></ref>
+<ref id="pntd.0000241-Doehring1"><label>6</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Doehring</surname><given-names>E</given-names></name>
+<name name-style="western"><surname>Ehrich</surname><given-names>JH</given-names></name>
+<name name-style="western"><surname>Reider</surname><given-names>F</given-names></name>
+<name name-style="western"><surname>Dittrich</surname><given-names>M</given-names></name>
+<name name-style="western"><surname>Schmidt-Ehry</surname><given-names>G</given-names></name>
+<etal/></person-group>             <year>1985</year>             <article-title>Morbidity in urinary schistosomiasis: relation between sonographical lesions and pathological urine findings.</article-title>             <source>Trop Med Parasitol</source>             <volume>36</volume>             <fpage>145</fpage>             <lpage>149</lpage>          </citation></ref>
+<ref id="pntd.0000241-Heurtier1"><label>7</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Heurtier</surname><given-names>Y</given-names></name>
+<name name-style="western"><surname>Lamothe</surname><given-names>F</given-names></name>
+<name name-style="western"><surname>Develoux</surname><given-names>M</given-names></name>
+<name name-style="western"><surname>Docquier</surname><given-names>J</given-names></name>
+<name name-style="western"><surname>Mouchet</surname><given-names>F</given-names></name>
+<etal/></person-group>             <year>1986</year>             <article-title>Urinary tract lesions due to <italic>Schistosoma haematobium</italic> infection assessed by ultrasonography in a community based study in Niger.</article-title>             <source>Am J Trop Med Hyg</source>             <volume>35</volume>             <fpage>1163</fpage>             <lpage>1172</lpage>          </citation></ref>
+<ref id="pntd.0000241-Hatz1"><label>8</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Hatz</surname><given-names>CF</given-names></name>
+</person-group>             <year>2001</year>             <article-title>The use of ultrasound in schistosomiasis.</article-title>             <source>Adv Parasitol</source>             <volume>48</volume>             <fpage>225</fpage>             <lpage>284</lpage>          </citation></ref>
+<ref id="pntd.0000241-Friedman1"><label>9</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Friedman</surname><given-names>JF</given-names></name>
+<name name-style="western"><surname>Kanzaria</surname><given-names>HK</given-names></name>
+<name name-style="western"><surname>McGarvey</surname><given-names>ST</given-names></name>
+</person-group>             <year>2005</year>             <article-title>Human schistosomiasis and anaemia: the relationship and potential mechanisms.</article-title>             <source>Trends Parasitol</source>             <volume>21</volume>             <fpage>386</fpage>             <lpage>392</lpage>          </citation></ref>
+<ref id="pntd.0000241-Bretagne1"><label>10</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Bretagne</surname><given-names>S</given-names></name>
+<name name-style="western"><surname>Roussin</surname><given-names>S</given-names></name>
+<name name-style="western"><surname>Sellin</surname><given-names>E</given-names></name>
+<name name-style="western"><surname>Rey</surname><given-names>JL</given-names></name>
+<name name-style="western"><surname>Fly Sainte Marie</surname><given-names>F</given-names></name>
+<etal/></person-group>             <year>1985</year>             <article-title>[Urinary bilharziasis and sideropenic anaemia. Study of their relation in 2 villages in Niger].</article-title>             <source>Bull Soc Pathol Exot Filiales</source>             <volume>78</volume>             <fpage>648</fpage>             <lpage>656</lpage>          </citation></ref>
+<ref id="pntd.0000241-Prual1"><label>11</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Prual</surname><given-names>A</given-names></name>
+<name name-style="western"><surname>Daouda</surname><given-names>H</given-names></name>
+<name name-style="western"><surname>Develoux</surname><given-names>M</given-names></name>
+<name name-style="western"><surname>Sellin</surname><given-names>B</given-names></name>
+<name name-style="western"><surname>Galan</surname><given-names>P</given-names></name>
+<etal/></person-group>             <year>1992</year>             <article-title>Consequences of <italic>Schistosoma haematobium</italic> infection on the iron status of schoolchildren in Niger.</article-title>             <source>Am J Trop Med Hyg</source>             <volume>47</volume>             <fpage>291</fpage>             <lpage>297</lpage>          </citation></ref>
+<ref id="pntd.0000241-Beasley1"><label>12</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Beasley</surname><given-names>NM</given-names></name>
+<name name-style="western"><surname>Tomkins</surname><given-names>AM</given-names></name>
+<name name-style="western"><surname>Hall</surname><given-names>A</given-names></name>
+<name name-style="western"><surname>Kihamia</surname><given-names>CM</given-names></name>
+<name name-style="western"><surname>Lorri</surname><given-names>W</given-names></name>
+<etal/></person-group>             <year>1999</year>             <article-title>The impact of population level deworming on the haemoglobin levels of schoolchildren in Tanga, Tanzania.</article-title>             <source>Trop Med Int Health</source>             <volume>4</volume>             <fpage>744</fpage>             <lpage>750</lpage>          </citation></ref>
+<ref id="pntd.0000241-Ehrhardt1"><label>13</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Ehrhardt</surname><given-names>S</given-names></name>
+<name name-style="western"><surname>Burchard</surname><given-names>GD</given-names></name>
+<name name-style="western"><surname>Mantel</surname><given-names>C</given-names></name>
+<name name-style="western"><surname>Cramer</surname><given-names>JP</given-names></name>
+<name name-style="western"><surname>Kaiser</surname><given-names>S</given-names></name>
+<etal/></person-group>             <year>2006</year>             <article-title>Malaria, anaemia, and malnutrition in african children–defining intervention priorities.</article-title>             <source>J Infect Dis</source>             <volume>194</volume>             <fpage>108</fpage>             <lpage>114</lpage>          </citation></ref>
+<ref id="pntd.0000241-Stephenson1"><label>14</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Stephenson</surname><given-names>LS</given-names></name>
+<name name-style="western"><surname>Kinoti</surname><given-names>SN</given-names></name>
+<name name-style="western"><surname>Latham</surname><given-names>MC</given-names></name>
+<name name-style="western"><surname>Kurz</surname><given-names>KM</given-names></name>
+<name name-style="western"><surname>Kyobe</surname><given-names>J</given-names></name>
+</person-group>             <year>1989</year>             <article-title>Single dose metrifonate or praziquantel treatment in Kenyan children. I. Effects on <italic>Schistosoma haematobium</italic>, hookworm, hemoglobin levels, splenomegaly, and hepatomegaly.</article-title>             <source>Am J Trop Med Hyg</source>             <volume>41</volume>             <fpage>436</fpage>             <lpage>444</lpage>          </citation></ref>
+<ref id="pntd.0000241-BefidiMengue1"><label>15</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Befidi-Mengue</surname><given-names>RN</given-names></name>
+<name name-style="western"><surname>Ratard</surname><given-names>RC</given-names></name>
+<name name-style="western"><surname>Beltran</surname><given-names>G</given-names></name>
+<name name-style="western"><surname>D'Alessandro</surname><given-names>A</given-names></name>
+<name name-style="western"><surname>Rice</surname><given-names>J</given-names></name>
+<etal/></person-group>             <year>1993</year>             <article-title>Impact of <italic>Schistosoma haematobium</italic> infection and of praziquantel treatment on anaemia of primary school children in Bertoua, Cameroon.</article-title>             <source>J Trop Med Hyg</source>             <volume>96</volume>             <fpage>225</fpage>             <lpage>230</lpage>          </citation></ref>
+<ref id="pntd.0000241-Garba1"><label>16</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Garba</surname><given-names>A</given-names></name>
+<name name-style="western"><surname>Campagne</surname><given-names>G</given-names></name>
+<name name-style="western"><surname>Tassie</surname><given-names>JM</given-names></name>
+<name name-style="western"><surname>Barkire</surname><given-names>A</given-names></name>
+<name name-style="western"><surname>Vera</surname><given-names>C</given-names></name>
+<etal/></person-group>             <year>2004</year>             <article-title>[Long-term impact of a mass treatment by praziquantel on morbidity due to <italic>Schistosoma haematobium</italic> in two hyperendemic villages of Niger].</article-title>             <source>Bull Soc Pathol Exot</source>             <volume>97</volume>             <fpage>7</fpage>             <lpage>11</lpage>          </citation></ref>
+<ref id="pntd.0000241-Katz1"><label>17</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Katz</surname><given-names>N</given-names></name>
+<name name-style="western"><surname>Chaves</surname><given-names>A</given-names></name>
+<name name-style="western"><surname>Pellegrino</surname><given-names>J</given-names></name>
+</person-group>             <year>1972</year>             <article-title>A simple device for quantitative stool thick-smear technique in <italic>Schistosomiasis mansoni</italic>.</article-title>             <source>Rev Inst Med Trop Sao Paulo</source>             <volume>14</volume>             <fpage>397</fpage>             <lpage>400</lpage>          </citation></ref>
+<ref id="pntd.0000241-World1"><label>18</label><citation citation-type="other" xlink:type="simple">             <collab xlink:type="simple">World Health Organization</collab>             <year>1999</year>             <article-title>Monitoring helminth control programmes. Guidelines for monitoring the impact of control programmes aimed at reducing morbidity caused by soil-transmitted helminths and schistosomes, with particular reference to school-age children. Document WHO/CDS/CPC/SIP/99.3.</article-title>             <publisher-loc>Geneva</publisher-loc>             <publisher-name>World Health Organization</publisher-name>          </citation></ref>
+<ref id="pntd.0000241-Korenromp1"><label>19</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Korenromp</surname><given-names>EL</given-names></name>
+<name name-style="western"><surname>Armstrong-Schellenberg</surname><given-names>JR</given-names></name>
+<name name-style="western"><surname>Williams</surname><given-names>BG</given-names></name>
+<name name-style="western"><surname>Nahlen</surname><given-names>BL</given-names></name>
+<name name-style="western"><surname>Snow</surname><given-names>RW</given-names></name>
+</person-group>             <year>2004</year>             <article-title>Impact of malaria control on childhood anaemia in Africa–a quantitative review.</article-title>             <source>Trop Med Int Health</source>             <volume>9</volume>             <fpage>1050</fpage>             <lpage>1065</lpage>          </citation></ref>
+<ref id="pntd.0000241-World2"><label>20</label><citation citation-type="other" xlink:type="simple">             <collab xlink:type="simple">World Health Organization</collab>             <year>2000</year>             <article-title>Ultrasound in Schistosomiasis. A Practical Guide to the Standardized Use of Ultrasonography for the Assessment of Schistosomiasis-related Morbidity. Document TDR/STR/SCH/00.1.</article-title>             <publisher-loc>Geneva</publisher-loc>             <publisher-name>World Health Organization</publisher-name>          </citation></ref>
+<ref id="pntd.0000241-World3"><label>21</label><citation citation-type="other" xlink:type="simple">             <collab xlink:type="simple">World Health Organization</collab>             <year>2002</year>             <article-title>Prevention and control of schistosomiasis and soil-transmitted helminthiasis. Report of a WHO expert committee.</article-title>             <publisher-loc>Geneva</publisher-loc>             <publisher-name>World Health Organization</publisher-name>          </citation></ref>
+<ref id="pntd.0000241-Beasley2"><label>22</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Beasley</surname><given-names>M</given-names></name>
+<name name-style="western"><surname>Brooker</surname><given-names>S</given-names></name>
+<name name-style="western"><surname>Ndinaromtan</surname><given-names>M</given-names></name>
+<name name-style="western"><surname>Madjiouroum</surname><given-names>EM</given-names></name>
+<name name-style="western"><surname>Baboguel</surname><given-names>M</given-names></name>
+<etal/></person-group>             <year>2002</year>             <article-title>First nationwide survey of the health of schoolchildren in Chad.</article-title>             <source>Trop Med Int Health</source>             <volume>7</volume>             <fpage>625</fpage>             <lpage>630</lpage>          </citation></ref>
+<ref id="pntd.0000241-Saathoff1"><label>23</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Saathoff</surname><given-names>E</given-names></name>
+<name name-style="western"><surname>Olsen</surname><given-names>A</given-names></name>
+<name name-style="western"><surname>Magnussen</surname><given-names>P</given-names></name>
+<name name-style="western"><surname>Kvalsvig</surname><given-names>JD</given-names></name>
+<name name-style="western"><surname>Becker</surname><given-names>W</given-names></name>
+<etal/></person-group>             <year>2004</year>             <article-title>Patterns of <italic>Schistosoma haematobium</italic> infection, impact of praziquantel treatment and re-infection after treatment in a cohort of schoolchildren from rural KwaZulu-Natal/South Africa.</article-title>             <source>BMC Infect Dis</source>             <volume>4</volume>             <fpage>40</fpage>          </citation></ref>
+<ref id="pntd.0000241-Lengeler1"><label>24</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Lengeler</surname><given-names>C</given-names></name>
+<name name-style="western"><surname>Utzinger</surname><given-names>J</given-names></name>
+<name name-style="western"><surname>Tanner</surname><given-names>M</given-names></name>
+</person-group>             <year>2002</year>             <article-title>Questionnaires for rapid screening of schistosomiasis in sub-Saharan Africa.</article-title>             <source>Bull World Health Organ</source>             <volume>80</volume>             <fpage>235</fpage>             <lpage>242</lpage>          </citation></ref>
+<ref id="pntd.0000241-Montresor1"><label>25</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Montresor</surname><given-names>A</given-names></name>
+<name name-style="western"><surname>Engels</surname><given-names>D</given-names></name>
+<name name-style="western"><surname>Chitsulo</surname><given-names>L</given-names></name>
+<name name-style="western"><surname>Bundy</surname><given-names>DA</given-names></name>
+<name name-style="western"><surname>Brooker</surname><given-names>S</given-names></name>
+<etal/></person-group>             <year>2001</year>             <article-title>Development and validation of a ‘tablet pole’ for the administration of praziquantel in sub-Saharan Africa.</article-title>             <source>Trans R Soc Trop Med Hyg</source>             <volume>95</volume>             <fpage>542</fpage>             <lpage>544</lpage>          </citation></ref>
+<ref id="pntd.0000241-Montresor2"><label>26</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Montresor</surname><given-names>A</given-names></name>
+<name name-style="western"><surname>Engels</surname><given-names>D</given-names></name>
+<name name-style="western"><surname>Ramsan</surname><given-names>M</given-names></name>
+<name name-style="western"><surname>Foum</surname><given-names>A</given-names></name>
+<name name-style="western"><surname>Savioli</surname><given-names>L</given-names></name>
+</person-group>             <year>2002</year>             <article-title>Field test of the ‘dose pole’ for praziquantel in Zanzibar.</article-title>             <source>Trans R Soc Trop Med Hyg</source>             <volume>96</volume>             <fpage>323</fpage>             <lpage>324</lpage>          </citation></ref>
+<ref id="pntd.0000241-King1"><label>27</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>King</surname><given-names>CH</given-names></name>
+<name name-style="western"><surname>Muchiri</surname><given-names>E</given-names></name>
+<name name-style="western"><surname>Ouma</surname><given-names>JH</given-names></name>
+<name name-style="western"><surname>Koech</surname><given-names>D</given-names></name>
+</person-group>             <year>1991</year>             <article-title>Chemotherapy-based control of schistosomiasis haematobia. IV. Impact of repeated annual chemotherapy on prevalence and intensity of <italic>Schistosoma haematobium</italic> infection in an endemic area of Kenya.</article-title>             <source>Am J Trop Med Hyg</source>             <volume>45</volume>             <fpage>498</fpage>             <lpage>508</lpage>          </citation></ref>
+<ref id="pntd.0000241-Mott1"><label>28</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Mott</surname><given-names>KE</given-names></name>
+<name name-style="western"><surname>Dixon</surname><given-names>H</given-names></name>
+<name name-style="western"><surname>Osei-Tutu</surname><given-names>E</given-names></name>
+<name name-style="western"><surname>England</surname><given-names>EC</given-names></name>
+<name name-style="western"><surname>Davis</surname><given-names>A</given-names></name>
+</person-group>             <year>1985</year>             <article-title>Effect of praziquantel on haematuria and proteinuria in urinary schistosomiasis.</article-title>             <source>Am J Trop Med Hyg</source>             <volume>34</volume>             <fpage>1119</fpage>             <lpage>1126</lpage>          </citation></ref>
+<ref id="pntd.0000241-Campagne1"><label>29</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Campagne</surname><given-names>G</given-names></name>
+<name name-style="western"><surname>Garba</surname><given-names>A</given-names></name>
+<name name-style="western"><surname>Barkire</surname><given-names>H</given-names></name>
+<name name-style="western"><surname>Vera</surname><given-names>C</given-names></name>
+<name name-style="western"><surname>Sidiki</surname><given-names>A</given-names></name>
+<etal/></person-group>             <year>2001</year>             <article-title>[Continued ultrasonic follow-up of children infected with <italic>Schistosoma haematobium</italic> after treatment with praziquantel].</article-title>             <source>Trop Med Int Health</source>             <volume>6</volume>             <fpage>24</fpage>             <lpage>30</lpage>          </citation></ref>
+<ref id="pntd.0000241-Fallon1"><label>30</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Fallon</surname><given-names>PG</given-names></name>
+<name name-style="western"><surname>Sturrock</surname><given-names>RF</given-names></name>
+<name name-style="western"><surname>Niang</surname><given-names>AC</given-names></name>
+<name name-style="western"><surname>Doenhoff</surname><given-names>MJ</given-names></name>
+</person-group>             <year>1995</year>             <article-title>Short report: diminished susceptibility to praziquantel in a Senegal isolate of <italic>Schistosoma mansoni</italic>.</article-title>             <source>Am J Trop Med Hyg</source>             <volume>53</volume>             <fpage>61</fpage>             <lpage>62</lpage>          </citation></ref>
+<ref id="pntd.0000241-Doenhoff1"><label>31</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Doenhoff</surname><given-names>MJ</given-names></name>
+<name name-style="western"><surname>Pica-Mattoccia</surname><given-names>L</given-names></name>
+</person-group>             <year>2006</year>             <article-title>Praziquantel for the treatment of schistosomiasis: its use for control in areas with endemic disease and prospects for drug resistance.</article-title>             <source>Expert Rev Anti Infect Ther</source>             <volume>4</volume>             <fpage>199</fpage>             <lpage>210</lpage>          </citation></ref>
+<ref id="pntd.0000241-Develoux1"><label>32</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Develoux</surname><given-names>M</given-names></name>
+<name name-style="western"><surname>Mouchet</surname><given-names>F</given-names></name>
+<name name-style="western"><surname>Labo</surname><given-names>R</given-names></name>
+</person-group>             <year>1986</year>             <article-title>[Intestinal parasitic diseases of school children in the Republic of Niger].</article-title>             <source>Bull Soc Pathol Exot Filiales</source>             <volume>79</volume>             <fpage>571</fpage>             <lpage>575</lpage>          </citation></ref>
+<ref id="pntd.0000241-DeClercq1"><label>33</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>De Clercq</surname><given-names>D</given-names></name>
+<name name-style="western"><surname>Sacko</surname><given-names>M</given-names></name>
+<name name-style="western"><surname>Behnke</surname><given-names>JM</given-names></name>
+<name name-style="western"><surname>Traore</surname><given-names>M</given-names></name>
+<name name-style="western"><surname>Vercruysse</surname><given-names>J</given-names></name>
+</person-group>             <year>1995</year>             <article-title>Schistosoma and geohelminth infections in Mali, west Africa.</article-title>             <source>Ann Soc Belg Med Trop</source>             <volume>75</volume>             <fpage>191</fpage>             <lpage>199</lpage>          </citation></ref>
+<ref id="pntd.0000241-Serieye1"><label>34</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Serieye</surname><given-names>J</given-names></name>
+<name name-style="western"><surname>Boisier</surname><given-names>P</given-names></name>
+<name name-style="western"><surname>Ravaoalimalala</surname><given-names>VE</given-names></name>
+<name name-style="western"><surname>Ramarokoto</surname><given-names>CE</given-names></name>
+<name name-style="western"><surname>Leutscher</surname><given-names>P</given-names></name>
+<etal/></person-group>             <year>1996</year>             <article-title><italic>Schistosoma haematobium</italic> infection in western Madagascar: morbidity determined by ultrasonography.</article-title>             <source>Trans R Soc Trop Med Hyg</source>             <volume>90</volume>             <fpage>398</fpage>             <lpage>401</lpage>          </citation></ref>
+<ref id="pntd.0000241-Laurent1"><label>35</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Laurent</surname><given-names>C</given-names></name>
+<name name-style="western"><surname>Lamothe</surname><given-names>F</given-names></name>
+<name name-style="western"><surname>Develoux</surname><given-names>M</given-names></name>
+<name name-style="western"><surname>Sellin</surname><given-names>B</given-names></name>
+<name name-style="western"><surname>Mouchet</surname><given-names>F</given-names></name>
+</person-group>             <year>1990</year>             <article-title>Ultrasonographic assessment of urinary tract lesions due to <italic>Schistosoma haematobium</italic> in Niger after four consecutive years of treatment with praziquantel.</article-title>             <source>Trop Med Parasitol</source>             <volume>41</volume>             <fpage>139</fpage>             <lpage>142</lpage>          </citation></ref>
+<ref id="pntd.0000241-Richter1"><label>36</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Richter</surname><given-names>J</given-names></name>
+</person-group>             <year>2000</year>             <article-title>Evolution of schistosomiasis-induced pathology after therapy and interruption of exposure to schistosomes: a review of ultrasonographic studies.</article-title>             <source>Acta Trop</source>             <volume>77</volume>             <fpage>111</fpage>             <lpage>131</lpage>          </citation></ref>
+<ref id="pntd.0000241-Brouwer1"><label>37</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Brouwer</surname><given-names>KC</given-names></name>
+<name name-style="western"><surname>Ndhlovu</surname><given-names>PD</given-names></name>
+<name name-style="western"><surname>Wagatsuma</surname><given-names>Y</given-names></name>
+<name name-style="western"><surname>Munatsi</surname><given-names>A</given-names></name>
+<name name-style="western"><surname>Shiff</surname><given-names>CJ</given-names></name>
+</person-group>             <year>2003</year>             <article-title>Epidemiological assessment of <italic>Schistosoma haematobium</italic>-induced kidney and bladder pathology in rural Zimbabwe.</article-title>             <source>Acta Trop</source>             <volume>85</volume>             <fpage>339</fpage>             <lpage>347</lpage>          </citation></ref>
+<ref id="pntd.0000241-King2"><label>38</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>King</surname><given-names>CH</given-names></name>
+<name name-style="western"><surname>Lombardi</surname><given-names>G</given-names></name>
+<name name-style="western"><surname>Lombardi</surname><given-names>C</given-names></name>
+<name name-style="western"><surname>Greenblatt</surname><given-names>R</given-names></name>
+<name name-style="western"><surname>Hodder</surname><given-names>S</given-names></name>
+<etal/></person-group>             <year>1990</year>             <article-title>Chemotherapy-based control of <italic>Schistosomiasis haematobia</italic>. II. Metrifonate vs. praziquantel in control of infection-associated morbidity.</article-title>             <source>Am J Trop Med Hyg</source>             <volume>42</volume>             <fpage>587</fpage>             <lpage>595</lpage>          </citation></ref>
+<ref id="pntd.0000241-Wagatsuma1"><label>39</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Wagatsuma</surname><given-names>Y</given-names></name>
+<name name-style="western"><surname>Aryeetey</surname><given-names>ME</given-names></name>
+<name name-style="western"><surname>Sack</surname><given-names>DA</given-names></name>
+<name name-style="western"><surname>Morrow</surname><given-names>RH</given-names></name>
+<name name-style="western"><surname>Hatz</surname><given-names>C</given-names></name>
+<etal/></person-group>             <year>1999</year>             <article-title>Resolution and resurgence of <italic>schistosoma haematobium</italic>-induced pathology after community-based chemotherapy in ghana, as detected by ultrasound.</article-title>             <source>J Infect Dis</source>             <volume>179</volume>             <fpage>1515</fpage>             <lpage>1522</lpage>          </citation></ref>
+<ref id="pntd.0000241-Devidas1"><label>40</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Devidas</surname><given-names>A</given-names></name>
+<name name-style="western"><surname>Lamothe</surname><given-names>F</given-names></name>
+<name name-style="western"><surname>Develoux</surname><given-names>M</given-names></name>
+<name name-style="western"><surname>Mouchet</surname><given-names>F</given-names></name>
+<name name-style="western"><surname>Sellin</surname><given-names>B</given-names></name>
+</person-group>             <year>1989</year>             <article-title>Ultrasonographic assessment of the regression of bladder and renal lesions due to <italic>Schistosoma haematobium</italic> after treatment with praziquantel.</article-title>             <source>Ann Soc Belg Med Trop</source>             <volume>69</volume>             <fpage>57</fpage>             <lpage>65</lpage>          </citation></ref>
+<ref id="pntd.0000241-World4"><label>41</label><citation citation-type="other" xlink:type="simple">             <collab xlink:type="simple">World Health Organization</collab>             <year>2001</year>             <article-title>Iron deficiency anaemia: assessment, prevention and control. A guide for programme managers. Document WHO/NHD/01.3.</article-title>             <publisher-loc>Geneva</publisher-loc>             <publisher-name>World Health Organization</publisher-name>          </citation></ref>
+<ref id="pntd.0000241-Hall1"><label>42</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Hall</surname><given-names>A</given-names></name>
+<name name-style="western"><surname>Bobrow</surname><given-names>E</given-names></name>
+<name name-style="western"><surname>Brooker</surname><given-names>S</given-names></name>
+<name name-style="western"><surname>Jukes</surname><given-names>M</given-names></name>
+<name name-style="western"><surname>Nokes</surname><given-names>K</given-names></name>
+<etal/></person-group>             <year>2001</year>             <article-title>Anaemia in schoolchildren in eight countries in Africa and Asia.</article-title>             <source>Public Health Nutr</source>             <volume>4</volume>             <fpage>749</fpage>             <lpage>756</lpage>          </citation></ref>
+<ref id="pntd.0000241-Bhargava1"><label>43</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Bhargava</surname><given-names>A</given-names></name>
+<name name-style="western"><surname>Jukes</surname><given-names>M</given-names></name>
+<name name-style="western"><surname>Lambo</surname><given-names>J</given-names></name>
+<name name-style="western"><surname>Kihamia</surname><given-names>CM</given-names></name>
+<name name-style="western"><surname>Lorri</surname><given-names>W</given-names></name>
+<etal/></person-group>             <year>2003</year>             <article-title>Anthelmintic treatment improves the haemoglobin and serum ferritin concentrations of Tanzanian schoolchildren.</article-title>             <source>Food Nutr Bull</source>             <volume>24</volume>             <fpage>332</fpage>             <lpage>342</lpage>          </citation></ref>
+<ref id="pntd.0000241-Stephenson2"><label>44</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Stephenson</surname><given-names>LS</given-names></name>
+<name name-style="western"><surname>Latham</surname><given-names>MC</given-names></name>
+<name name-style="western"><surname>Kurz</surname><given-names>KM</given-names></name>
+<name name-style="western"><surname>Kinoti</surname><given-names>SN</given-names></name>
+<name name-style="western"><surname>Oduori</surname><given-names>ML</given-names></name>
+<etal/></person-group>             <year>1985</year>             <article-title>Relationships of <italic>Schistosoma haematobium</italic>, hookworm and malarial infections and metrifonate treatment to growth of Kenyan school children.</article-title>             <source>Am J Trop Med Hyg</source>             <volume>34</volume>             <fpage>1109</fpage>             <lpage>1118</lpage>          </citation></ref>
+<ref id="pntd.0000241-Lyke1"><label>45</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Lyke</surname><given-names>KE</given-names></name>
+<name name-style="western"><surname>Dicko</surname><given-names>A</given-names></name>
+<name name-style="western"><surname>Dabo</surname><given-names>A</given-names></name>
+<name name-style="western"><surname>Sangare</surname><given-names>L</given-names></name>
+<name name-style="western"><surname>Kone</surname><given-names>A</given-names></name>
+<etal/></person-group>             <year>2005</year>             <article-title>Association of <italic>Schistosoma haematobium</italic> infection with protection against acute <italic>Plasmodium falciparum</italic> malaria in Malian children.</article-title>             <source>Am J Trop Med Hyg</source>             <volume>73</volume>             <fpage>1124</fpage>             <lpage>1130</lpage>          </citation></ref>
+<ref id="pntd.0000241-Lwambo1"><label>46</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Lwambo</surname><given-names>NJ</given-names></name>
+<name name-style="western"><surname>Brooker</surname><given-names>S</given-names></name>
+<name name-style="western"><surname>Siza</surname><given-names>JE</given-names></name>
+<name name-style="western"><surname>Bundy</surname><given-names>DA</given-names></name>
+<name name-style="western"><surname>Guyatt</surname><given-names>H</given-names></name>
+</person-group>             <year>2000</year>             <article-title>Age patterns in stunting and anaemia in African schoolchildren: a cross-sectional study in Tanzania.</article-title>             <source>Eur J Clin Nutr</source>             <volume>54</volume>             <fpage>36</fpage>             <lpage>40</lpage>          </citation></ref>
+<ref id="pntd.0000241-Koukounari1"><label>47</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Koukounari</surname><given-names>A</given-names></name>
+<name name-style="western"><surname>Gabrielli</surname><given-names>AF</given-names></name>
+<name name-style="western"><surname>Toure</surname><given-names>S</given-names></name>
+<name name-style="western"><surname>Bosque-Oliva</surname><given-names>E</given-names></name>
+<name name-style="western"><surname>Zhang</surname><given-names>Y</given-names></name>
+<etal/></person-group>             <year>2007</year>             <article-title><italic>Schistosoma haematobium</italic> infection and morbidity before and after large-scale administration of praziquantel in Burkina Faso.</article-title>             <source>J Infect Dis</source>             <volume>196</volume>             <fpage>659</fpage>             <lpage>669</lpage>          </citation></ref>
+<ref id="pntd.0000241-Bates1"><label>48</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Bates</surname><given-names>I</given-names></name>
+<name name-style="western"><surname>McKew</surname><given-names>S</given-names></name>
+<name name-style="western"><surname>Sarkinfada</surname><given-names>F</given-names></name>
+</person-group>             <year>2007</year>             <article-title>Anaemia: a useful indicator of neglected disease burden and control.</article-title>             <source>PLoS Med</source>             <volume>4</volume>             <fpage>e231. doi:10.1371/journal.pmed.0040231</fpage>          </citation></ref>
+<ref id="pntd.0000241-Molyneux1"><label>49</label><citation citation-type="journal" xlink:type="simple">             <person-group person-group-type="author">
+<name name-style="western"><surname>Molyneux</surname><given-names>DH</given-names></name>
+<name name-style="western"><surname>Hotez</surname><given-names>PJ</given-names></name>
+<name name-style="western"><surname>Fenwick</surname><given-names>A</given-names></name>
+</person-group>             <year>2005</year>             <article-title>“Rapid-impact interventions”: how a policy of integrated control for Africa's neglected tropical diseases could benefit the poor.</article-title>             <source>PLoS Med</source>             <volume>2</volume>             <fpage>e336. doi:10.1371/journal.pmed.0020336</fpage>          </citation></ref>
+<ref id="pntd.0000241-Institut1"><label>50</label><citation citation-type="other" xlink:type="simple">             <collab xlink:type="simple">Institut National de la Statistique (INS), Macro International Inc</collab>             <year>2007</year>             <article-title>Enquête Démographique et de Santé et à Indicateurs Multiples du Niger 2006.</article-title>             <publisher-loc>Calverton, Maryland, USA</publisher-loc>             <publisher-name>INS &amp; Macro International Inc</publisher-name>          </citation></ref>
+</ref-list>
+<fn-group>
+<fn fn-type="conflict"><p>The authors have declared that no competing interests exist.</p></fn>
+<fn fn-type="financial-disclosure"><p>The Schistosomiasis Control Initiative funded this study and chose the study design. The funders had no role in data collection and analysis, decision to publish, or preparation of the manuscript.</p></fn>
+</fn-group>
+</back>
+</article>

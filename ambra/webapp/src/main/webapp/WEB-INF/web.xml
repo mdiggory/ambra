@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+
+  <display-name>Ambra</display-name>
+
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>/WEB-INF/propertyConfigurer.xml /WEB-INF/countryList.xml /WEB-INF/profaneWords.xml /WEB-INF/applicationContext.xml</param-value>
+  </context-param>
+
+  <resource-ref>
+    <description>Main Ambra Database</description>
+    <res-ref-name>jdbc/AmbraDS</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Container</res-auth>
+  </resource-ref>
+
+  <resource-env-ref>
+    <description>File Store for Ambra</description>
+    <resource-env-ref-name>ambra/FileStore</resource-env-ref-name>
+    <resource-env-ref-type>org.ambraproject.filestore.FileStoreService</resource-env-ref-type>
+  </resource-env-ref>
+
+  <filter>
+    <description>Filter out any request that matches regexp</description>
+    <filter-name>SinkHoleFilter</filter-name>
+    <filter-class>org.ambraproject.web.GatekeeperFilter</filter-class>
+    <init-param>
+      <param-name>regexp</param-name>
+      <param-value>.*\.ftl$</param-value>
+    </init-param>
+  </filter>
+
+  <filter>
+    <filter-name>UrlRewriteFilter</filter-name>
+    <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
+  </filter>
+
+  <filter>
+    <filter-name>MultipleRequestFilter</filter-name>
+    <filter-class>org.ambraproject.web.MultipleRequestFilter</filter-class>
+    <init-param>
+      <param-name>includePattern_fetchArticle</param-name>
+      <param-value>.*\/article\/info.*</param-value>
+    </init-param>
+    <init-param>
+      <param-name>includePattern_browseIssue</param-name>
+      <param-value>.*browseIssue\.action.*</param-value>
+    </init-param>
+    <init-param>
+      <param-name>includePattern_browseVolume</param-name>
+      <param-value>.*browseVolume\.action.*</param-value>
+    </init-param>
+  </filter>
+
+  <filter>
+    <description>Sets the virtual journal context.
+Should be 1st in the chain as other Filters, e.g. caching, may rely on the journal context.</description>
+    <filter-name>VirtualJournalContextFilter</filter-name>
+    <filter-class>org.ambraproject.web.VirtualJournalContextFilter</filter-class>
+  </filter>
+
+  <filter>
+    <description>Should immediately follow VirtualJournalContext in Filter chain.
+If a virtual journal context is set, check to see if requested resource has a virtual journal override.
+If so, wrap request with virtual journal override values in FilterChain.</description>
+    <filter-name>VirtualJournalMappingFilter</filter-name>
+    <filter-class>org.ambraproject.web.VirtualJournalMappingFilter</filter-class>
+  </filter>
+
+  <filter>
+    <filter-name>DummySSOFilter</filter-name>
+    <filter-class>org.ambraproject.web.DummySSOFilter</filter-class>
+    <!-- uncomment these if you want to be logged in by default when you start the server
+    <init-param>
+      <param-name>auth.id</param-name>
+      <param-value>foo</param-value>
+    </init-param>
+    <init-param>
+      <param-name>email</param-name>
+      <param-value>foobar@b.com</param-value>
+    </init-param>
+    -->
+    <init-param>
+      <param-name>casUrl</param-name>
+      <param-value>https://localhost:7443/cas/</param-value>
+    </init-param>
+    <init-param>
+      <param-name>wrapRequest</param-name>
+      <param-value>false</param-value>
+    </init-param>
+  </filter>
+
+  <filter>
+    <filter-name>CAS Filter</filter-name>
+    <filter-class>org.ambraproject.cas.client.filter.CASFilterWrapper</filter-class>
+    <init-param>
+      <param-name>edu.yale.its.tp.cas.client.filter.loginUrl</param-name>
+      <param-value>https://localhost:7443/cas/login</param-value>
+    </init-param>
+    <init-param>
+      <param-name>edu.yale.its.tp.cas.client.filter.validateUrl</param-name>
+      <param-value>https://localhost:7443/cas/proxyValidate</param-value>
+    </init-param>
+    <init-param>
+      <param-name>edu.yale.its.tp.cas.client.filter.serverName</param-name>
+      <param-value>localhost:8080</param-value>
+    </init-param>
+    <init-param>
+      <param-name>edu.yale.its.tp.cas.client.filter.wrapRequest</param-name>
+      <param-value>false</param-value>
+    </init-param>
+  </filter>
+
+  <filter>
+    <filter-name>gzip</filter-name>
+    <filter-class>org.mortbay.servlet.GzipFilter</filter-class>
+    <init-param>
+      <param-name>minGzipSize</param-name>
+      <param-value>100</param-value>
+    </init-param>
+    <init-param>
+      <param-name>mimeTypes</param-name>
+      <param-value>text/html,text/plain,text/css,text/javascript,application/xml,application/atom+xml</param-value>
+    </init-param>
+  </filter>
+
+  <filter>
+    <filter-name>journalStaticResources</filter-name>
+    <filter-class>org.ambraproject.web.JournalStaticResourceFilter</filter-class>
+  </filter>
+
+  <filter>
+    <filter-name>struts2</filter-name>
+    <!--
+    <filter-class>org.apache.struts2.dispatcher.FilterDispatcher</filter-class>
+    -->
+    <filter-class>org.ambraproject.struts2.AmbraStruts2Dispatcher</filter-class>
+    <init-param>
+      <param-name>packages</param-name>
+      <param-value>struts</param-value>
+    </init-param>
+  </filter>
+
+  <!--
+  <filter>
+    <filter-name>DebuggingFilter</filter-name>
+    <filter-class>org.ambraproject.web.DebuggingFilter</filter-class>
+  </filter>
+  -->
+
+
+  <filter-mapping>
+    <filter-name>SinkHoleFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>MultipleRequestFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>UrlRewriteFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>VirtualJournalContextFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>FORWARD</dispatcher>
+    <dispatcher>ERROR</dispatcher>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>VirtualJournalMappingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>FORWARD</dispatcher>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>DummySSOFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>FORWARD</dispatcher>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>CAS Filter</filter-name>
+    <url-pattern>/annotation/secure/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>FORWARD</dispatcher>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>CAS Filter</filter-name>
+    <url-pattern>/user/secure/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>FORWARD</dispatcher>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>CAS Filter</filter-name>
+    <url-pattern>/rate/secure/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>FORWARD</dispatcher>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>CAS Filter</filter-name>
+    <url-pattern>/admin/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>FORWARD</dispatcher>
+  </filter-mapping>
+  
+  <filter-mapping>
+    <filter-name>gzip</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>FORWARD</dispatcher>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>journalStaticResources</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>FORWARD</dispatcher>
+    <dispatcher>ERROR</dispatcher>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>struts2</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>FORWARD</dispatcher>
+    <dispatcher>ERROR</dispatcher>
+  </filter-mapping>
+
+  <!--
+  <filter-mapping >
+    <filter-name>DebuggingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>FORWARD</dispatcher>
+  </filter-mapping>
+-->
+
+
+  <!-- The configuration WebAppListener to pull in the configuration stuff automatically. -->
+  <listener>
+    <listener-class>org.topazproject.ambra.configuration.WebAppListener</listener-class>
+  </listener>
+  <!-- to hook in the spring container -->
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  <!-- to hook in the scope management system that provides scopes like session, request for Servlet 2.4 and Spring 2.0 above  -->
+  <listener>
+    <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+  </listener>
+
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+
+  <error-page>
+    <error-code>404</error-code>
+    <location>/static/pageNotFound.action</location>
+  </error-page>
+  
+  <session-config>
+    <session-timeout>1440</session-timeout>
+  </session-config>
+</web-app>

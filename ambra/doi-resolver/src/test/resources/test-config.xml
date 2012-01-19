@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ $HeadURL$
+  ~ $Id$
+  ~ Copyright (c) 2006-2011 by Public Library of Science
+  ~ http://plos.org
+  ~ http://ambraproject.org
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~ http://www.apache.org/licenses/LICENSE-2.0Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!--
+  This file contains most of the defaults for the doi-resolver. However, there may be additional
+  defaults in the conf-helper library's global-defaults.xml.
+
+  See also libs/conf-helper/src/main/resources/global-defaults.xml
+-->
+<config>
+  <ambra>
+    <platform>
+      <webserverUrl>http://ambrajournal.example.org/</webserverUrl>
+      <errorPage>static/pageNotFound.action</errorPage>
+      <guid-prefix>info:doi/10.1371/</guid-prefix>
+    </platform>
+
+    <aliases>
+      <doiPrefix>info:doi</doiPrefix>
+    </aliases>
+
+    <services>
+      <database>
+        <driver>org.hsqldb.jdbcDriver</driver>
+        <url>jdbc:hsqldb:mem:testdb</url>
+        <username>sa</username>
+        <password></password>
+      </database>
+
+      <doiResolver>
+        <!-- 
+          This is used to define which DOI regular expression maps to which URL in the DOI  resolver.
+          The rules are applied sequentially from top to bottom and the first matching one will execute.
+          If an error is encountered, or the article is not found, it will send out the 
+          ambra.platform.errorPage from ambra.platform.webserverUrl.
+        -->
+        <mappings>
+          <journalMapping>
+            <url>http://ambrajournal.example.org/</url>
+            <regex>10\.1371/ambr\.\d{7}</regex>
+            <figureRegex>10\.1371/ambr\.\d{7}\.[gt]\d{3}</figureRegex>
+            <repRegex>10\.1371/ambr\.\d{7}\.(pdf|xml)</repRegex>
+          </journalMapping>
+          <journalMapping>
+            <url>http://overlayjournal.example.org/</url>
+            <regex>10\.1371/ovrj\.(\d{7}|v\d\d\.i\d\d)</regex>
+            <figureRegex>10\.1371/ovrj\.(\d{7}|v\d\d\.i\d\d)\.[gt]\d{3}</figureRegex>
+            <repRegex>10\.1371/ovrj\.\d{7}\.(pdf|xml)</repRegex>
+          </journalMapping>
+        </mappings>
+      </doiResolver>
+    </services>
+  </ambra>
+</config>

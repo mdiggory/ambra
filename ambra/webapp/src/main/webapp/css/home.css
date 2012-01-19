@@ -1,0 +1,227 @@
+/*
+ * $HeadURL::                                                                            $
+ * $Id$
+ *
+ * Copyright (c) 2006-2010 by Public Library of Science
+ * http://plos.org
+ * http://ambraproject.org
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/*
+----------------------------------------------------------
+Homepages Style Sheet for Ambra
+Created on: August 22, 2006
+Created by: Margaret Shear
+Modified by: Sebastian Toomey
+----------------------------------------------------------
+All journal specific styles, colors are on individual
+journal style sheets
+----------------------------------------------------------
+*/
+body		{ background-color: transparent;}
+#wrap 		{ margin: 0 auto 0 auto; width: 940px; padding: 0 0 10px 0; line-height: 1.5em; position: relative;}
+#content 	{ margin-left: 0; }
+
+/* Homepage : Elements
+----------------------------------------------------------
+*/
+#home			{ position: relative; background:  url(../images/home_bg.gif) no-repeat 0 9px!important; margin: 0; margin-top: -30px; border:0;}/* removed border to fix 1px vertical alignment discrepency in IE7*/
+#home img,
+#home object		{ display: inline; position: relative;}
+#home a:hover 	{ text-decoration: underline; } /* apply a border in hover state */
+#home a:hover h1{ color: inherit; } /* this ensures that the headings in the ad blocks will highlight appropriately */
+#home h2		{ margin: 10px 0; font-size: 1.8em; color: #333; border: none; padding-left: 24px; background-repeat: no-repeat; background-position: left center;}
+div.recent h2	{ padding-left:6px; margin-bottom:0}
+h3		{ font-size: 1.6em; line-height:1.2em; margin:0 0 10px 0; padding:0 0 3px 0; color:#444; border-bottom:1px solid #ccc; }
+div.other h3 { border-bottom:0; font-family:Verdana, sans-serif; font-size:.9em; margin:10px 0 8px 0; padding:0; }
+div.other h3 em { font-weight:bold; }
+
+/* suppresses underlined links in lists, preserves underlind hover state */
+#home ul li a,
+#home ul li a:link,
+#home ul li a:visited,
+#home dl dd a,
+#home dl dd a:link,
+#home dl dd a:visited { text-decoration:none; }
+#home ul li a:hover,
+#home dl dd a:hover  { text-decoration:underline; }
+	
+/* Homepage : Layout : Structure
+----------------------------------------------------------
+This layout has been adapted from the Yahoo Developer's Interface Library
+Software License Agreement (BSD License)
+----------------------------------------------------------
+Copyright (c) 2006, Yahoo! Inc.
+All rights reserved.
+----------------------------------------------------------
+*/
+/* all modules and grids nested in a grid get floated */
+.col .subcol, .col .col 	{ float:right; display:inline;   /* for ie */ }
+/* float left and kill margin on first for added flex */
+#first, .col .first 		{ float:left; }
+/* container column 1 */
+#first 						{ width:518px; padding-top:12px; }
+
+/* column 1 --This column is empty-- */
+
+/* column 2 */
+#first .last 				{ width:490px; position:relative; margin-right:5px; }
+
+/* blocks in column 1, subcolumn 2 - i.e. the primary content area */
+#first .last .block { margin:20px 0; padding:0; border:1px solid #ccc; background:transparent; }
+#first .last .block h2 { margin:0; padding:8px 10px 6px 10px; border-bottom:1px dashed #ccc; background:#fcd3b8; }
+
+/* contains columns 3 and column 4 */
+#second 					{ width: 402px; padding-top:27px;}
+/* column 3 */ 
+#second .first 				{ width:253px; }
+/* column 4 */
+#second .last				{ width: 140px;}
+#second p { font-size:.9em; }
+
+/* lower contains lower background image */
+#lower  { width:100%; margin:0; height:50px; padding-top:40px; clear:both; font-size:.9em; background:url(../images/home_lower_bg.gif) no-repeat bottom center;}
+
+/* self clear floated parent containers This is critical for proper display in IE7 */
+#lower:after,
+.col:after 					{content:".";display:block;height:0;clear:both;visibility:hidden;}	
+#lower,
+.col 						{zoom:1;} /* IE */
+#lower h3					{ background-color: #ddd; letter-spacing: normal; font-size: 1em; margin-right: 10px; padding: 1px 5px; font-family: Verdana, Arial, Helvetica, sans-serif; }
+
+/* all homepage content blocks are wrapped in class block for padding to avoid ie box model */
+div.block 				{ margin:0; padding:0; clear: both; position: relative;}
+div.block p { margin:0; font-size:.9em; }
+div.block .section { margin:10px; padding:0 0 10px 0; border-bottom:1px solid #ccc;}
+div.block .lastSection { border:0; margin-bottom:0; }
+
+/* fixes float clearing bug */
+.block:after					{ content: ".";  display: block;  height: 0; clear: both; visibility: hidden; }
+div.clearer {clear:both; line-height:0; height:0; visibility:hidden; }
+
+div.article h3 { font-size:110%; font-weight:bold; line-height:1.5em; border:0; margin:0; padding:0; }
+div.article h3 a { text-decoration:none; }
+div.article h3 a:hover { text-decoration:underline; }
+div.article p { margin:6px 0 0 0!important; padding:0!important; }
+div.article img { float:left; margin:10px 10px 0 0; border: 1px solid #ccc; position:static!important; /* static position required to fix wierd image displacement bug in IE6 when tabs are written into page */ }
+div.article p.imgCredit { font-style:italic; color:#666; }
+
+/* wraps banner ads */
+div.banner				{ padding: 0; border: none; margin:0 0 4px 2px; }
+div.banner img,
+div.banner object 			{ float: none; margin:0 0 4px 2px!important; background: transparent;}
+div.banner object			{ padding-top: 0; }
+
+/* partner icons */
+div.partner 				{ position:relative; text-align: center; margin:0; padding:0; }
+div.partner h6			{ font-weight: normal; text-align: center; font-size: .85em; margin: 0 0 0 10px; color: #999;text-transform: uppercase; background: url(../images/home_partner_h6.gif) no-repeat top left; padding-top: 8px;}
+div.partner img 			{ margin:0 20px; vertical-align:top;}
+
+/* blocks in right-hand column */
+div#second div.first div.block { margin-bottom:15px; }
+div#second div.first div.block  p { margin:0 0 5px 0; }
+div#second div.first div.block  ul { margin:0; padding:0; }
+div#second div.first div.block  ul li { background:transparent url(../images/home_articles_li_bg.gif) no-repeat scroll 0pt 10px; font-size:0.9em; list-style-type:none; margin-left:10px; padding:3px 0pt 3px 10px; }
+
+/* Stay Connected block - list styles */
+div#connect ul { margin-bottom:10px; padding:0; text-indent:0; }
+div#second div.first div#connect ul li { list-style-type:none; background:none; margin-left:0; margin-bottom:.8em; padding:3px 0; font-size:.9em; line-height:1.5em; }
+div#connect ul li img { margin:0 .5em -.2em 0; }
+div#connect ul li a,
+div#connect ul li a:link,
+div#connect ul li a:visited { text-decoration:underline; }
+
+/* issue block */
+div#second div.first div#issue { margin:0; padding:0; border:1px solid #ccc; background:#fff; }
+div#issue h3 { margin:0; padding:4px 8px; font-family:Verdana, sans-serif; font-size:110%; font-weight:bold; }
+div#issue h3 a { text-decoration:none; }
+div#issue h3 a:hover { text-decoration:underline; }
+div#issue img { margin:0; padding:0; line-height:0 }
+div#second div.first div#mission p { margin:5px 0 0 0; }
+
+/* subject contains and category styles the category list */
+div.subject		{ padding: 0; padding-top: 5px; border: none;}
+dl.category 		{ margin: 0;  padding: 0 0 20px 0; }
+dl.category dt	{ margin:5px 0; padding: 0; font-weight: bold; /* vertical-align: bottom; clear: left; This fixes the IE5 Win gap! */ }
+dl.category dt a {padding-bottom: 0; margin-bottom: 2px;}
+dl.category dt a:hover {text-decoration: underline;}
+dl.category dd { line-height:1.5em; font-size:.9em; padding:0 0 5px 0;}
+dl.category dt a {padding-bottom: 0; margin-bottom: 2px;}
+dl.category dt a:hover {text-decoration: underline;}
+dl.category a.expand,
+dl.category a:visited.expand 	{ padding-left: 15px;  background: url(../images/home_expand.gif) no-repeat 0 5px;}
+dl.category img	{display: inline; padding: 0; margin-left: 0;}
+
+/* outreach block styles, based on those from non-Topaz journals */ 
+div#adWrap { position:relative; margin:30px 0 20px 0 }
+#home #second div.block.ad	{ margin:0 0 6px 0; padding:0; border:1px solid #ccc; background:#efefef; clear:left; }
+div.block.ad img { border:1px solid #ccc; display:block; float:left; }
+div.ad a:hover img { border:1px solid #0033cc; }
+div.block.ad a { overflow:hidden; width:239px; }
+div.block.ad a,
+div.block.ad a:link,
+div.block.ad a:visited { color:#555; text-decoration:none; display:block; padding:6px; }
+#home div.block.ad a:hover { text-decoration:none; border:2px solid; padding:4px; }
+#home div.ad a:hover { background-color:#bfd4ff; border-color:#0033cc; color:#0033cc; }
+div.block.ad a span.body { font-size:.9em; display:block; }
+#home div.block.ad a strong { font:normal 1.4em  Georgia,"Times New Roman",Times,serif; letter-spacing:-0.05em; line-height:1.25em; text-decoration:none; display:block; margin-bottom:0.2em; }
+#home div.block.ad a span.body { line-height:1.5em; }
+#home div.block.ad a strong,
+#home div.block.ad a span.body { margin-top:0; margin-left:70px; }
+#home div.block.ad a span.body:after { content:"."; display:block; height:0; clear:both; visibility:hidden; }
+
+#home div.other div	{ padding:0; padding:0; }
+div.recent p		{ margin: 0 0 10px 0; }
+
+#home div.other		{ padding-bottom: 0; /*margin-left: 0;*/ padding-left: 0;}
+#home div.other ul,
+#home div.other p { margin:5px 0 10px 0; padding: 0; text-indent: 0;}
+#home div.other li	{ background: url(../images/home_new_bullet.gif) no-repeat 0 4px; padding: 0 0 5px 14px;margin:0; text-indent: 0; list-style-type: none;}
+#home div.other h3 { font-weight:bold; }
+#home div.other p a em { white-space:nowrap; } /* for journal names */
+
+/* Explore by Subject block */
+div.explore p { margin:14px 14px 7px 14px }
+div.explore ul	{ position:static; width:244px; float:left; margin:5px 0 10px 0; padding: 0; text-indent: 0; } /* Note: explicit static positioning required for IE6 */
+div.explore li	{ margin:0; padding:0 14px 5px; text-indent:0; list-style-type: none; font-size:0.9em; }
+div.explore li img { position:static!important; vertical-align:-1px } /* Note: explicit static positioning with '!important' construct required for IE6 */
+
+/* browse widget */
+#first .last div#browseWidget { background: url(../images/home_browse_bg.gif) no-repeat left center; height:30px; border:0; }
+div#browseWidget p { margin:0 0 0 35px; padding:.5em 0 0 0; vertical-align:middle; font-weight:bold;}
+
+/* apply to all article lists on homepage */
+ul.articles,
+ul.articles li		{ margin: 0; padding: 0; list-style-type: none; }
+ul.articles			{ margin: 5px 4px 10px 0;  padding: 10px 10px 0 6px;}
+#home ul.articles li		{ font-size: .9em; margin-left:10px; padding: 3px 0 3px 10px; list-style:none; background: url(../images/home_articles_li_bg.gif) no-repeat 0 10px;}
+
+/* NOTE: horizontal tab styles that I'd previously moved to screen.css are now below. */
+
+/* tabs and tabbed box */
+div.horizontalTabs	{ position:relative; border:0; margin:0 0 20px; padding:0; background:transparent; width:490px; }
+div.horizontalTabs:after  { content:"."; display: block; height:0; clear:both; visibility:hidden; }
+ul#tabsContainer  { float:left;  margin:0!important; padding:0 0 0 10px!important; /* "!important" required for IE7 */ line-height:normal; background:transparent url("../images/tab_bg.gif") repeat-x bottom; width:480px; }
+ul#tabsContainer ul { margin:0; padding:10px 10px 0; }
+ul#tabsContainer li		{ cursor:pointer; float:left; background:url("../images/tab_left.gif") no-repeat 0% 0%; margin:0 2px; padding:0 0 0 8px; list-style:none; font-size:.9em; font-weight:bold; color:#666; }
+ul#tabsContainer li span { display:block; float:left; background:url("../images/tab_right.gif") no-repeat 100% 0%;  padding:8px 16px 8px 8px!important; /* "!important" required for IE7 */ }
+ul#tabsContainer li.active { background-position:0% -40px; }
+ul#tabsContainer li.active span { background-position:100% -40px; padding-bottom: 9px!important; }
+.horizontalTabs .contentwrap { float:left; width:488px; margin:0!important; padding:0!important; background:#ffffff;  border:1px solid #bababa; border-top:0; }
+.horizontalTabs ul {  border:0; /* suppresses "border-bottom:2px solid #acf1ff" from screen.css, ln. #511 */ }
+.horizontalTabs .contentwrap ul { list-style:none; margin:10px 10px 0 10px!important; padding:0!important; }
+.horizontalTabs .contentwrap li	{ display:list-item; background-image:none!important; list-style:none; margin:0!important; padding:0!important; padding-bottom:1em!important; line-height:1.5em; }
+.horizontalTabs .contentwrap li	a { font-weight:bold; }
+.horizontalTabs .contentwrap li.more	{ border-top:1px solid #ccc!important; padding-top:.4em!important; }
+.horizontalTabs .contentwrap li.more a	{ font-weight:normal!important; text-decoration:underline!important; }
