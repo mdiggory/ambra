@@ -47,7 +47,7 @@ public class JdbcResolverService implements ResolverDAOService {
   public boolean doiIsArticle(String doi) {
     log.debug("looking up doi " + doi + " in Article table");
     int count = jdbcTemplate
-        .queryForInt("select count(*) from Article where articleUri = ?",
+        .queryForInt("select count(*) from article where doi = ?",
             new Object[]{doi});
     return count != 0;
   }

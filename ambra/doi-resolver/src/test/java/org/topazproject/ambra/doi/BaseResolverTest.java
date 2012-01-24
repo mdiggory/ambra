@@ -46,11 +46,11 @@ public class BaseResolverTest {
     this.dataSource = dataSource;
     jdbcTemplate = new JdbcTemplate(dataSource);
     jdbcTemplate.execute(
-        "drop table if exists Article;" +
+        "drop table if exists article;" +
             "drop table if exists Annotation;" +
-            "create table Article (" +
-            "  articleUri varchar(255)," +
-            "  primary key (articleUri)" +
+            "create table article (" +
+            "  doi varchar(255)," +
+            "  primary key (doi)" +
             ");" +
             "create table Annotation (" +
             "  annotationUri varchar(255)," +
@@ -65,7 +65,7 @@ public class BaseResolverTest {
    * @param doi the doi column to insert
    */
   protected void insertArticleRow(String doi) {
-    jdbcTemplate.execute("insert into Article values ('" + doi + "');");
+    jdbcTemplate.execute("insert into article values ('" + doi + "');");
   }
 
   /**

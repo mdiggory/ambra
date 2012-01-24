@@ -115,67 +115,6 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.mortbay.jetty</groupId>
-        <artifactId>maven-jetty-plugin</artifactId>
-        <dependencies>
-          <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-            <version>1.5.10</version>
-            <type>jar</type>
-          </dependency>
-          <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.5.10</version>
-            <type>jar</type>
-          </dependency>
-          <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.14</version>
-          </dependency>
-        </dependencies>
-        <configuration>
-          <connectors>
-            <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-              <port>11080</port>
-              <maxIdleTime>3000</maxIdleTime>
-              <acceptors>10</acceptors>
-            </connector>
-          </connectors>
-          <systemProperties>
-            <systemProperty>
-              <name>log4j.configuration</name>
-              <value>file:///etc/ambra/log4j.xml</value>
-            </systemProperty>
-            <systemProperty>
-              <name>org.apache.commons.logging.Log</name>
-              <value>org.apache.commons.logging.impl.Log4JLogger</value>
-            </systemProperty>
-          </systemProperties>
-          <scanIntervalSeconds>5</scanIntervalSeconds>
-          <webDefaultXml>src/main/resources/webdefault.xml</webDefaultXml>
-          <webAppConfig>
-            <!-- work around slf4j conflicting with slf4j classes in jetty -->
-            <serverClasses>
-              <!-- Copied from WebAppContext with SLF4J removed -->
-              <filter>-org.mortbay.jetty.plus.jaas.</filter>
-              <filter>org.mortbay.jetty.</filter>
-            </serverClasses>
-            <systemClasses>
-              <!-- Copied from WebAppContext with Commons Logging and Log4j removed -->
-              <filter>java.</filter>
-              <filter>javax.servlet.</filter>
-              <filter>javax.xml.</filter>
-              <filter>org.mortbay.</filter>
-              <filter>org.xml.</filter>
-              <filter>org.w3c.</filter>
-            </systemClasses>
-          </webAppConfig>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 </project>
