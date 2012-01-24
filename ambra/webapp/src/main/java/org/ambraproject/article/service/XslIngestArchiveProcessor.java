@@ -350,7 +350,7 @@ public class XslIngestArchiveProcessor implements IngestArchiveProcessor {
     article.setCitedArticles(references);
 
     //assets
-    List<ArticleAsset> assets = parseArticleAssets(transformedXml, article.getDoi());
+    List<ArticleAsset> assets = parseArticleAssets(transformedXml, article);
     article.setAssets(assets);
 
     //related articles
@@ -567,7 +567,7 @@ public class XslIngestArchiveProcessor implements IngestArchiveProcessor {
     return authors;
   }
 
-  private List<ArticleAsset> parseArticleAssets(Document transformedXml, String doi) throws XPathExpressionException {
+  private List<ArticleAsset> parseArticleAssets(Document transformedXml, Article article) throws XPathExpressionException {
     //article assets
     int secondaryObjectCount = Integer.valueOf(xPathUtil.evaluate(transformedXml, "count(//Article/parts)"));
     //each secondary object has 3 files, plus article has xml and pdf
@@ -578,13 +578,15 @@ public class XslIngestArchiveProcessor implements IngestArchiveProcessor {
 
     for (int i = 1; i <= articleRepCount; i++) {
       ArticleAsset asset = new ArticleAsset();
-      asset.setDoi(doi);
+      asset.setDoi(article.getDoi());
       asset.setExtension(xPathUtil.evaluate(transformedXml,
           "//Article/representations[" + i + "]/name/text()"));
       asset.setContentType(xPathUtil.evaluate(transformedXml,
           "//Article/representations[" + i + "]/contentType/text()"));
       asset.setSize(Long.valueOf(
           xPathUtil.evaluate(transformedXml, "//Article/representations[" + i + "]/size/text()")));
+      asset.setTitle(article.getTitle());
+      asset.setDescription(article.getDescription());
       assets.add(asset);
     }
 
@@ -593,6 +595,8 @@ public class XslIngestArchiveProcessor implements IngestArchiveProcessor {
       String partXpath = "//Article/parts[" + i + "]";
       Integer repCount = Integer.valueOf(xPathUtil.evaluate(transformedXml,
           "count(" + partXpath + "/representations)"));
+      String title = xPathUtil.evaluate(transformedXml, partXpath + "/dublinCore/title/text()");
+      String description = xPathUtil.evaluate(transformedXml, partXpath + "/dublinCore/description/text()");
       for (int j = 1; j <= repCount; j++) {
         String repXpath = partXpath + "/representations[" + j + "]";
         ArticleAsset asset = new ArticleAsset();
@@ -601,6 +605,8 @@ public class XslIngestArchiveProcessor implements IngestArchiveProcessor {
         asset.setContentType(xPathUtil.evaluate(transformedXml, repXpath + "/contentType/text()"));
         asset.setExtension(xPathUtil.evaluate(transformedXml, repXpath + "/name/text()"));
         asset.setSize(Long.valueOf(xPathUtil.evaluate(transformedXml, repXpath + "/size/text()")));
+        asset.setTitle(title);
+        asset.setDescription(description);
         assets.add(asset);
       }
     }
