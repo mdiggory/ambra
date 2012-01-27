@@ -35,6 +35,22 @@
     become available. This page summarizes features and known bugs in each updated version.
   </p>
 
+    <h2>Ambra 2.20</h2>
+    <p>Released January 13, 2012</p>
+    <h3>Features Implemented in Ambra 2.20</h3>
+    <ul>
+        <li>A refactor of the way that articles are stored in the database. 26 tables used to store article data were replaced with 13 tables.</strong></li>
+        <li>Updates to the annotation feed to allow for different formats of the feed.</li>
+        <li>Updates to Browse By functionality.<li>
+    </ul>
+    
+    <h2>Ambra 2.10</h2>
+    <p>Released December 6, 2011</p>
+    <h3>Features Implemented in Ambra 2.10</h3>
+    <ul>
+        <li>The dust has settled. It's time to clean up.<li>
+    </ul>
+    
     <h2>Ambra 2.0</h2>
     <p>Released November 11, 2011</p>
     <h3>Features Implemented in Ambra 2.0</h3>
