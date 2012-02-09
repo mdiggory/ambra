@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  $HeadURL:: http://svn.topazproject.org/svn/head/packages/ambra/src/main/resources/ambra.xml    $ 
+  $Id: ambra.xml 7248 2009-02-05 00:26:54Z russ $ 
+
+  Copyright (c) 2007-2008 by Topaz, Inc. 
+  http://topazproject.org 
+
+  Licensed under the Apache License, Version 2.0 (the "License"); 
+  you may not use this file except in compliance with the License. 
+  You may obtain a copy of the License at 
+
+      http://www.apache.org/licenses/LICENSE-2.0 
+
+  Unless required by applicable law or agreed to in writing, software 
+  distributed under the License is distributed on an "AS IS" BASIS, 
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+  See the License for the specific language governing permissions and 
+  limitations under the License. 
+-->
+<!-- Ambra Configuration file -->
+<config>
+  <ambra>
+    <services>
+      <browse>
+        <cache>false</cache>
+        <sortOptions>
+          <option displayName="Date\, newest first">publication_date desc\, id desc</option>
+          <option displayName="Date\, oldest first">publication_date asc\, id desc</option>
+          <option displayName="Most views\, last 30 days">counter_total_month desc\, id desc</option>
+          <option displayName="Most views\, all time">counter_total_all desc\, id desc</option>
+          <option displayName="Most cited\, all time">alm_scopusCiteCount desc\, id desc</option>
+        </sortOptions>
+      </browse>
+      <syndications>
+        <syndication target="FOO">
+          <name>Foo Med Central</name>
+          <queue>activemq:plos.foo</queue>
+          <responseQueue>activemq:plos.foo.response</responseQueue>
+        </syndication>
+        <syndication target="BAR">
+          <name>Bar Med Central</name>
+          <queue>activemq:plos.bar</queue>
+          <responseQueue>activemq:plos.bar.response</responseQueue>
+        </syndication>
+      </syndications>
+      <search>
+        <articleIndexingQueue>activemq:plos.solr.article.index?transacted=false</articleIndexingQueue>
+        <articleDeleteQueue>activemq:plos.solr.article.delete?transacted=false</articleDeleteQueue>
+      </search>
+    </services>
+    <platform>
+      <!-- common display constants -->
+      <copyright type="creativecommons">
+        This work is licensed under a Creative Commons Attribution-Share Alike 3.0 License,
+        http://creativecommons.org/licenses/by-sa/3.0/
+      </copyright>
+      <email>
+        <general>test@plos.org</general>
+        <feedback>test@plos.org</feedback>
+        <errors>test@plos.org</errors>
+      </email>
+      <freemarker>
+        <almHost>http://alm.plos.org</almHost>
+      </freemarker>
+      <name>PLoS</name>
+    </platform>
+
+    <virtualJournals>
+      <default>journal</default>
+      <journals>journal,journal1</journals>
+      <journal>
+        <url>http://www.journal.org</url>
+      </journal>
+      <journal1>
+        <url>http://www.journal1.org</url>
+      </journal1>
+    </virtualJournals>
+
+    <articleTypeList>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Interview</typeUri>
+        <typeHeading>Interview</typeHeading>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Issue%20Image</typeUri>
+        <typeHeading>Issue Image</typeHeading>
+        <imageSetConfigName>issueImage</imageSetConfigName>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Research%20Article</typeUri>
+        <typeHeading>DefaultHeading</typeHeading>
+        <imageSetConfigName>MyImageSet</imageSetConfigName>
+        <default>true</default>
+      </articleType>
+    </articleTypeList>
+  </ambra>
+</config>

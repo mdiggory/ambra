@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  $HeadURL$
+  $Id$
+
+  Copyright (c) 2006-2010 by Public Library of Science
+  http://plos.org
+  http://ambraproject.org
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<beans default-autowire="byName"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+  <!-- Set up XML factories -->
+  <bean id="documentBuilderFactory" class="org.ambraproject.util.DocumentBuilderFactoryCreator"
+        factory-method="createFactory"/>
+
+  <!--Ambra developer beans here -->
+  <bean id="configurationStore" class="org.topazproject.ambra.configuration.ConfigurationStore"
+        factory-method="getInstance"/>
+  <bean id="ambraConfiguration" factory-bean="configurationStore" factory-method="getConfiguration"/>
+
+  <bean id="fetchArticleService" class="org.ambraproject.article.service.FetchArticleServiceImpl">
+    <property name="sessionFactory" ref="hibernateSessionFactory"/>
+    <property name="articleService" ref="articleService"/>
+    <property name="articleHtmlCache" ref="articleHtmlCache" />
+  </bean>
+
+  <bean id="articleAssetService" class="org.ambraproject.article.service.ArticleAssetServiceImpl">
+    <property name="permissionsService" ref="permissionsService" />
+    <property name="articleService" ref="articleService" />
+    <property name="sessionFactory" ref="hibernateSessionFactory"/>
+    <property name="smallImageRep" value="PNG_S"/>
+    <property name="mediumImageRep" value="PNG_M"/>
+    <property name="largeImageRep" value="PNG_L"/>
+  </bean>
+
+  <bean id="trackBackService" class="org.ambraproject.annotation.service.TrackbackServiceImpl">
+    <property name="sessionFactory" ref="hibernateSessionFactory"/>
+  </bean>
+
+  <bean id="articleTransformService" class="org.ambraproject.service.XMLServiceImpl" init-method="init">
+    <property name="articleRep" value="XML"/>
+    <property name="xslTemplate" value="/articleTransform.xsl"/>
+    <property name="ambraConfiguration" ref="ambraConfiguration"/>
+    <property name="xmlFactoryProperty" ref="xmlFactoryProperties"/>
+  </bean>
+
+  <bean id="xmlService" class="org.ambraproject.service.XMLServiceImpl" init-method="init">
+    <property name="articleRep" value="XML"/>
+    <property name="xslTemplate" value="/fullDOI.xsl"/>
+    <property name="ambraConfiguration" ref="ambraConfiguration"/>
+    <property name="xmlFactoryProperty" ref="xmlFactoryProperties"/>
+  </bean>
+
+  <bean id="secondaryObjectService" class="org.ambraproject.service.XMLServiceImpl" init-method="init">
+    <property name="articleRep" value="XML"/>
+    <property name="xslTemplate" value="/objInfo.xsl"/>
+    <property name="ambraConfiguration" ref="ambraConfiguration"/>
+    <property name="xmlFactoryProperty" ref="xmlFactoryProperties"/>
+  </bean>
+
+  <util:map id="xmlFactoryProperties">
+    <entry key="javax.xml.transform.TransformerFactory"
+           value="net.sf.saxon.TransformerFactoryImpl"/>
+    <entry key="javax.xml.transform.Transformer"
+           value="net.sf.saxon.Controller"/>
+  </util:map>
+
+  <bean id="articleService" class="org.ambraproject.article.service.ArticleServiceImpl">
+    <property name="sessionFactory" ref="hibernateSessionFactory"/>
+    <property name="permissionsService" ref="permissionsService"/>
+    <property name="journalService" ref="journalService" />
+  </bean>
+
+  <bean id="feedService" class="org.ambraproject.feed.service.FeedServiceImpl">
+    <property name="sessionFactory" ref="hibernateSessionFactory"/>
+    <property name="articleService" ref="articleService"/>
+    <property name="annotationService" ref="annotationService"/>
+    <property name="journalService" ref="journalService"/>
+    <property name="feedCache" ref="feedCache"/>
+    <property name="solrHttpService" ref="solrHttpService"/>
+    <property name="browseService" ref="browseService"/>
+    <property name="configuration" ref="ambraConfiguration" />
+    <property name="solrFieldConverter" ref="solrFieldConverter" />
+  </bean>
+
+  <bean id="documentBuilder" class="javax.xml.parsers.DocumentBuilder" factory-bean="documentBuilderFactory"
+        factory-method="newDocumentBuilder"/>
+
+  <bean id="httpConnectionManagerParams" class="org.apache.commons.httpclient.params.HttpConnectionManagerParams">
+    <!-- time out after 30 sec -->
+    <property name="soTimeout" value="30000"/>
+    <property name="connectionTimeout" value="30000"/>
+  </bean>
+
+  <bean id="multiThreadedHttpConnectionManager"
+        class="org.apache.commons.httpclient.MultiThreadedHttpConnectionManager">
+    <property name="params" ref="httpConnectionManagerParams"/>
+  </bean>
+
+  <bean id="httpClient" class="org.apache.commons.httpclient.HttpClient">
+    <constructor-arg index="0" ref="multiThreadedHttpConnectionManager"/>
+  </bean>
+
+  <bean id="crossRefLookupService" class="org.ambraproject.crossref.CrossRefLookupServiceImpl">
+    <property name="httpClient" ref="httpClient"/>
+    <property name="crossRefUrl" value="${ambra.services.crossref.query.url}"/>
+  </bean>
+
+  <bean id="pubGetLookupService" class="org.ambraproject.pubget.PubGetLookupServiceImpl">
+    <property name="httpClient" ref="httpClient"/>
+    <property name="pubGetUrl" value="${ambra.services.pubget.url}"/>
+  </bean>
+
+  <bean id="findArticleService" class="org.ambraproject.article.service.FindArticleServiceImpl">
+    <property name="crossRefLookupService" ref="crossRefLookupService"/>
+    <property name="pubGetLookupService" ref="pubGetLookupService"/>
+  </bean>
+
+  <!-- Warning. Spring does not autowire 'simple' properties like primitives, Strings and Classes -->
+  <bean id="defaultEncodingCharset" class="java.lang.String">
+    <constructor-arg value="UTF-8"/>
+  </bean>
+
+  <bean id="applicationId" class="java.lang.String">
+    <constructor-arg value="topaz-ambra"/>
+  </bean>
+
+  <bean id="permissionsService" class="org.ambraproject.permission.service.PermissionsServiceImpl">
+    <property name="sessionFactory" ref="hibernateSessionFactory"/>
+  </bean>
+
+  <bean id="annotationConverter" class="org.ambraproject.annotation.service.AnnotationConverterImpl"/>
+
+  <bean id="replyService" class="org.ambraproject.annotation.service.ReplyServiceImpl">
+    <property name="sessionFactory" ref="hibernateSessionFactory"/>
+    <property name="encodingCharset" ref="defaultEncodingCharset"/>
+    <property name="defaultType" value="http://www.w3.org/2001/12/replyType#Comment"/>
+    <property name="applicationId" ref="applicationId"/>
+    <property name="permissionsService" ref="permissionsService"/>
+  </bean>
+
+  <bean id="annotationService" class="org.ambraproject.annotation.service.AnnotationServiceImpl">
+    <property name="sessionFactory" ref="hibernateSessionFactory"/>
+    <property name="encodingCharset" ref="defaultEncodingCharset"/>
+    <property name="applicationId" ref="applicationId"/>
+    <property name="articleHtmlCache" ref="articleHtmlCache"/>
+  </bean>
+
+  <bean id="ratingsService" class="org.ambraproject.rating.service.RatingsServiceImpl">
+    <property name="sessionFactory" ref="hibernateSessionFactory"/>
+    <property name="applicationId" ref="applicationId"/>
+  </bean>
+
+  <bean id="userService" class="org.ambraproject.user.service.UserServiceImpl">
+    <property name="sessionFactory" ref="hibernateSessionFactory"/>
+    <property name="emailAddressUrl" value="${ambra.services.cas.url.base}/email?guid="/>
+    <property name="applicationId" ref="applicationId"/>
+  </bean>
+
+  <bean id="profanityCheckingService" class="org.ambraproject.util.ProfanityCheckingServiceImpl">
+    <property name="profaneWords" ref="profaneWords"/>
+  </bean>
+
+  <bean id="browseService" class="org.ambraproject.article.service.BrowseServiceImpl">
+    <property name="sessionFactory" ref="hibernateSessionFactory"/>
+    <property name="configuration" ref="ambraConfiguration"/>
+    <property name="journalService" ref="journalService"/>
+    <property name="browseSolrCache" ref="browseSolrCache"/>
+    <property name="serverFactory" ref="solrServerFactory"/>
+    <property name="articleService" ref="articleService" />
+  </bean>
+
+  <!-- Add all your constants to the map with a key and a value/ref -->
+  <util:map id="otherConstants" map-class="java.util.HashMap">
+    <entry key="countries" value-ref="countries"/>
+  </util:map>
+
+  <bean id="solrServerFactory" class="org.ambraproject.search.service.SolrServerFactory">
+    <constructor-arg ref="ambraConfiguration"/>
+  </bean>
+
+  <bean id="searchService" class="org.ambraproject.search.service.SolrSearchService">
+    <property name="configuration" ref="ambraConfiguration"/>
+    <property name="serverFactory" ref="solrServerFactory"/>
+  </bean>
+
+  <bean id="journalCreator" class="org.ambraproject.journal.JournalCreatorImpl"
+        init-method="createJournals" depends-on="bootstrapMigrator">
+    <property name="configuration" ref="ambraConfiguration"/>
+    <property name="sessionFactory" ref="hibernateSessionFactory"/>
+  </bean>
+
+  <bean id="journalService" class="org.ambraproject.journal.JournalServiceImpl"
+        depends-on="journalCreator">
+    <property name="configuration" ref="ambraConfiguration"/>
+    <property name="sessionFactory" ref="hibernateSessionFactory"/>
+  </bean>
+
+  <bean id="bootstrapMigrator" class="org.ambraproject.migration.BootstrapMigratorServiceImpl"
+        init-method="migrate">
+    <property name="sessionFactory" ref="hibernateSessionFactory"/>
+  </bean>
+
+  <!-- hibernate settings -->
+  <bean id="hibernateDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+    <property name="jndiName" value="java:comp/env/jdbc/AmbraDS"/>
+  </bean>
+
+  <bean id="fileStoreService" class="org.springframework.jndi.JndiObjectFactoryBean">
+    <property name="jndiName" value="java:comp/env/ambra/FileStore"/>
+  </bean>
+
+  <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+    <property name="sessionFactory" ref="hibernateSessionFactory"/>
+  </bean>
+
+  <!--Transactions are managed by the TransactionInterceptor-->
+  <!--<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>-->
+
+  <bean id="hibernateSessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+    <property name="dataSource" ref="hibernateDataSource"/>
+    <!--property name="useTransactionAwareDataSource" value="true"/>
+    <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration" /-->
+    <property name="mappingLocations">
+      <list>
+        <value>WEB-INF/hibernateMappings/CustomTypes.hbm.xml</value>
+        <!--value>WEB-INF/hibernateMappings/Article.hbm.xml</value-->
+        <!--value>WEB-INF/hibernateMappings/ObjectInfo.hbm.xml</value-->
+        <!--value>WEB-INF/hibernateMappings/RelatedArticle.hbm.xml</value-->
+        <!--value>WEB-INF/hibernateMappings/Category.hbm.xml</value-->
+        <!--value>WEB-INF/hibernateMappings/License.hbm.xml</value-->
+
+        <value>WEB-INF/hibernateMappings/UserProfile.hbm.xml</value>
+        <value>WEB-INF/hibernateMappings/UserAccount.hbm.xml</value>
+        <value>WEB-INF/hibernateMappings/UserRole.hbm.xml</value>
+        <value>WEB-INF/hibernateMappings/UserPreferences.hbm.xml</value>
+        <value>WEB-INF/hibernateMappings/UserPreference.hbm.xml</value>
+        <value>WEB-INF/hibernateMappings/AuthenticationId.hbm.xml</value>
+
+        <value>WEB-INF/hibernateMappings/Citation.hbm.xml</value>
+        <!--value>WEB-INF/hibernateMappings/Representation.hbm.xml</value-->
+
+        <value>WEB-INF/hibernateMappings/Annotation.hbm.xml</value>
+        <value>WEB-INF/hibernateMappings/ByteArrayBlob.hbm.xml</value>
+        <value>WEB-INF/hibernateMappings/RatingContent.hbm.xml</value>
+        <value>WEB-INF/hibernateMappings/TrackbackContent.hbm.xml</value>
+        <value>WEB-INF/hibernateMappings/RatingSummaryContent.hbm.xml</value>
+        <value>WEB-INF/hibernateMappings/Reply.hbm.xml</value>
+
+        <!--value>WEB-INF/hibernateMappings/Syndication.hbm.xml</value-->
+        <value>WEB-INF/hibernateMappings/Aggregations.hbm.xml</value>
+        <value>WEB-INF/hibernateMappings/EditorialBoard.hbm.xml</value>
+        <value>WEB-INF/hibernateMappings/CitedPerson.hbm.xml</value>
+        <value>WEB-INF/hibernateMappings/ArticleContributor.hbm.xml</value>
+
+        <!--NEW HBMS-->
+        <value>classpath:org/ambraproject/models/*.hbm.xml</value>
+      </list>
+    </property>
+    <property name="hibernateProperties">
+      <props>
+        <!-- We might use MySQLInnoDBDialect instead -->
+        <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+        <prop key="hibernate.show_sql">false</prop>
+        <prop key="hibernate.format_sql">false</prop>
+      </props>
+    </property>
+  </bean>
+
+  <!-- end hibernate settings -->
+
+  <bean id="browseSolrCache" class="org.ambraproject.cache.EhcacheProvider">
+    <constructor-arg index="0" ref="browseSolrEhcache"/>
+    <constructor-arg index="1" value="false"/>
+  </bean>
+  <bean id="feedCache" class="org.ambraproject.cache.EhcacheProvider">
+    <constructor-arg index="0" ref="feedEhcache"/>
+  </bean>
+  <bean id="articleHtmlCache" class="org.ambraproject.cache.EhcacheProvider">
+    <constructor-arg index="0" ref="articleHtmlEhcache"/>
+  </bean>
+
+  <!-- freemarker configs -->
+  <bean id="ambraFreemarkerConfig" class="org.ambraproject.struts2.AmbraFreemarkerConfig">
+    <constructor-arg index="0" ref="ambraConfiguration"/>
+  </bean>
+
+  <bean id="ambraFreemarkerManager" class="org.ambraproject.struts2.AmbraFreemarkerManager"/>
+
+  <!-- Caches -->
+  <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+    <property name="configLocation" value="file://${ambra.services.ehcache.configFileLocation}"/>
+    <property name="shared" value="true"/>
+  </bean>
+
+  <bean id="browseSolrEhcache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+    <property name="cacheName" value="BrowseSolrCache"/>
+  </bean>
+
+  <bean id="feedEhcache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+    <property name="cacheName" value="FeedCache"/>
+  </bean>
+
+  <bean id="articleHtmlEhcache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+    <property name="cacheName" value="ArticleHtmlCache"/>
+  </bean>
+
+  <!-- JMX exporting -->
+  <bean id="mbeanServer" class="org.springframework.jmx.support.MBeanServerFactoryBean">
+    <property name="locateExistingServerIfPossible" value="true"/>
+  </bean>
+
+  <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+    <property name="staticMethod"
+              value="net.sf.ehcache.management.ManagementService.registerMBeans"/>
+    <property name="arguments">
+      <list>
+        <ref bean="cacheManager"/>
+        <ref bean="mbeanServer"/>
+        <value>true</value>
+        <value>true</value>
+        <value>true</value>
+        <value>true</value>
+      </list>
+    </property>
+  </bean>
+
+  <bean class="org.springframework.jmx.export.MBeanExporter" lazy-init="false">
+    <property name="autodetect" value="true"/>
+  </bean>
+
+  <bean name="org.ambraproject.logging:name=log4j" class="org.apache.log4j.jmx.HierarchyDynamicMBean"/>
+
+  <!-- email configuration -->
+  <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+    <property name="host" value="${ambra.network.hosts.mailhost}"/>
+  </bean>
+
+  <bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+    <property name="templateLoaderPath" value="/WEB-INF/emailTemplates/"/>
+    <property name="defaultEncoding" ref="defaultEncodingCharset"/>
+  </bean>
+
+  <!--For Dev setup, you can uncomment the dummy mailer and comment out the real mailer-->
+  <!--<bean id="ambraMailer" class="org.ambraproject.service.DummyAmbraMailer" />-->
+
+  <bean id="ambraMailer" class="org.ambraproject.service.AmbraMailerImpl">
+    <property name="fromEmailAddress" value="application@plosone.org"/>
+    <property name="feedbackEmailMap">
+      <map>
+        <entry key="text" value="feedback-text.ftl"/>
+        <entry key="html" value="feedback-html.ftl"/>
+        <entry key="subject" value="My feedback for PLoS ONE"/>
+        <entry key="toEmailAddress" value="${ambra.platform.email.feedback}"/>
+      </map>
+    </property>
+    <property name="emailThisArticleMap">
+      <map>
+        <entry key="text" value="emailThisArticle-text.ftl"/>
+        <entry key="html" value="emailThisArticle-html.ftl"/>
+        <entry key="url" value="${ambra.services.crossref.plos.doiurl}"/>
+        <entry key="subject" value="An Article from "/>
+      </map>
+    </property>
+    <property name="autoIngestEmailMap">
+      <map>
+        <entry key="text" value="emailAutoIngest-text.ftl"/>
+        <entry key="html" value="emailAutoIngest-html.ftl"/>
+        <entry key="toEmailAddress" value="${ambra.platform.email.autoingest}"/>
+        <entry key="subject" value="Auto Ingest Results "/>
+      </map>
+    </property>
+    <property name="errorEmailMap">
+      <map>
+        <entry key="text" value="emailError-text.ftl"/>
+        <entry key="html" value="emailError-html.ftl"/>
+        <entry key="toEmailAddress" value="${ambra.platform.email.errors}"/>
+        <entry key="subject" value="An ambra error has occured"/>
+      </map>
+    </property>
+  </bean>
+
+  <bean id="solrHttpService" class="org.ambraproject.solr.SolrHttpServiceImpl">
+    <property name="config" ref="ambraConfiguration"/>
+  </bean>
+
+  <bean id="mostViewedArticleService" class="org.ambraproject.solr.SolrMostViewedArticleService">
+    <property name="solrFieldConverter" ref="solrFieldConverter"/>
+    <property name="solrHttpService" ref="solrHttpService"/>
+  </bean>
+
+
+  <bean id="solrFieldConverter" class="org.ambraproject.solr.SolrFieldConversionImpl">
+    <property name="allTimeViewsField" value="counter_total_all"/>
+    <property name="viewCountingFields">
+      <map>
+        <entry key="30" value="counter_total_month"/>
+      </map>
+    </property>
+  </bean>
+</beans>

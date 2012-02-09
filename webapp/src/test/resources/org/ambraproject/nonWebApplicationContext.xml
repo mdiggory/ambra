@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+~ $HeadURL$
+~ $Id$
+~ Copyright (c) 2006-2011 by Public Library of Science
+~ http://plos.org
+~ http://ambraproject.org
+~ Licensed under the Apache License, Version 2.0 (the "License");
+~ you may not use this file except in compliance with the License.
+~ You may obtain a copy of the License at
+~ http://www.apache.org/licenses/LICENSE-2.0Unless required by applicable law or agreed to in writing, software
+~ distributed under the License is distributed on an "AS IS" BASIS,
+~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~ See the License for the specific language governing permissions and
+~ limitations under the License.
+-->
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd"
+       xmlns:tx="http://www.springframework.org/schema/tx" default-lazy-init="true">
+
+  <import resource="hibernate-context.xml" />
+
+  <!--Transaction manager stuff.
+  This lets transactions be wrapped around service invocations as they would in production-->
+  <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+    <property name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+
+  <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+
+  <!--Cache stuff-->
+
+  <bean id="articleHtmlEhcache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+    <property name="cacheName" value="ArticleHtmlCache"/>
+  </bean>
+
+  <bean id="articleHtmlCache" class="org.ambraproject.cache.EhcacheProvider">
+    <constructor-arg index="0" ref="articleHtmlEhcache"/>
+  </bean>
+
+  <!-- File store stuff  (lazy-init all these)-->
+  <bean id="ingestZip" class="java.util.zip.ZipFile">
+    <constructor-arg index="0" value="src/test/resources/test-ingest.zip"/>
+  </bean>
+  <bean id="configuration" class="org.ambraproject.testutils.AmbraTestConfigurationFactory"
+        factory-method="getConfiguration">
+    <constructor-arg index="0" value="ambra-test-config.xml"/>
+  </bean>
+
+  <!--Solr server factory-->
+  <bean id="solrServerFactory" class="org.ambraproject.testutils.EmbeddedSolrServerFactory"
+      destroy-method="tearDown"/>
+
+  <!-- Set up XML factories -->
+  <bean id="documentBuilderFactory" class="org.ambraproject.util.DocumentBuilderFactoryCreator"
+        factory-method="createFactory"/>
+  <bean id="documentBuilder" factory-bean="documentBuilderFactory" factory-method="newDocumentBuilder" />
+
+  <!--Service Beans-->
+  <!-- Set up XML factories -->
+  <bean id="permissionsService" class="org.ambraproject.permission.service.PermissionsServiceImpl">
+    <property name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+
+  <bean id="annotationService" class="org.ambraproject.annotation.service.AnnotationServiceImpl">
+    <property name="sessionFactory" ref="sessionFactory"/>
+    <property name="applicationId" ref="applicationId"/>
+    <property name="permissionsService" ref="permissionsService" />
+    <property name="articleHtmlCache" ref="articleHtmlCache"/>
+  </bean>
+
+  <bean id="replyService" class="org.ambraproject.annotation.service.ReplyServiceImpl">
+    <property name="sessionFactory" ref="sessionFactory"/>
+    <property name="applicationId" ref="applicationId"/>
+    <property name="permissionsService" ref="permissionsService" />
+  </bean>
+  <bean id="articleAssetService" class="org.ambraproject.article.service.ArticleAssetServiceImpl">
+    <property name="sessionFactory" ref="sessionFactory"/>
+    <property name="permissionsService" ref="permissionsService"/>
+    <property name="articleService" ref="articleService"/>
+    <property name="smallImageRep" value="png_s" />
+    <property name="mediumImageRep" value="png_m" />
+    <property name="largeImageRep" value="png_l" />
+  </bean>
+
+  <bean id="articleService" class="org.ambraproject.article.service.ArticleServiceImpl">
+    <property name="sessionFactory" ref="sessionFactory"/>
+    <property name="permissionsService" ref="permissionsService"/>
+    <property name="journalService" ref="journalService"/>
+  </bean>
+
+  <bean id="trackbackService" class="org.ambraproject.annotation.service.TrackbackServiceImpl">
+    <property name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+
+  <bean id="ratingsService" class="org.ambraproject.rating.service.RatingsServiceImpl">
+    <property name="applicationId" ref="applicationId"/>
+    <property name="permissionsService" ref="permissionsService" />
+    <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+
+  <bean id="journalService" class="org.ambraproject.journal.JournalServiceImpl">
+    <property name="sessionFactory" ref="sessionFactory"/>
+    <property name="configuration" ref="configuration"/>
+  </bean>
+
+  <bean id="browseService" class="org.ambraproject.article.service.BrowseServiceImpl" depends-on="configuration">
+    <property name="journalService" ref="journalService"/>
+    <property name="browseSolrCache"><null/></property>
+    <property name="configuration" ref="configuration"/>
+    <property name="serverFactory" ref="solrServerFactory"/>
+    <property name="sessionFactory" ref="sessionFactory"/>
+    <property name="articleService" ref="articleService"/>
+  </bean>
+
+  <bean id="searchService" class="org.ambraproject.search.service.SolrSearchService">
+      <property name="serverFactory" ref="solrServerFactory"/>
+    <property name="configuration" ref="configuration"/>
+  </bean>
+
+  <bean id="ambraMailer" class="org.ambraproject.service.DummyAmbraMailer" />
+  
+  <bean id="applicationId" class="java.lang.String">
+    <constructor-arg index="0" value="topaz-ambra"/>
+  </bean>
+  
+  <bean id="userService" class="org.ambraproject.user.service.UserServiceImpl">
+    <property name="sessionFactory" ref="sessionFactory"/>
+    <property name="applicationId" ref="applicationId"/>
+    <property name="permissionsService" ref="permissionsService"/>
+  </bean>
+
+  <bean id="xmlService" class="org.ambraproject.service.XMLServiceImpl" init-method="init">
+    <property name="articleRep" value="XML"/>
+    <property name="xslTemplate" value="${project.basedir}/src/main/resources/viewnlm-v2.xsl"/>
+    <property name="ambraConfiguration" ref="configuration"/>
+    <property name="xmlFactoryProperty" ref="xmlFactoryProperties"/>
+  </bean>
+
+  <bean id="secondaryObjectService" class="org.ambraproject.service.XMLServiceImpl" init-method="init">
+    <property name="articleRep" value="XML"/>
+    <property name="xslTemplate" value="${project.basedir}/src/main/resources/objInfo.xsl"/>
+    <property name="ambraConfiguration" ref="configuration"/>
+    <property name="xmlFactoryProperty" ref="xmlFactoryProperties"/>
+  </bean>
+
+  <util:map id="xmlFactoryProperties">
+    <entry key="javax.xml.transform.TransformerFactory"
+           value="net.sf.saxon.TransformerFactoryImpl"/>
+    <entry key="javax.xml.transform.Transformer"
+           value="net.sf.saxon.Controller"/>
+  </util:map>
+
+  <bean id="solrFieldConverter" class="org.ambraproject.solr.SolrFieldConversionImpl">
+    <property name="allTimeViewsField" value="all_time_views" />
+    <property name="viewCountingFields">
+      <map>
+        <entry key="14" value="two_week_field"/>
+        <entry key="30" value="one_month_field"/>
+      </map>
+    </property>
+  </bean>
+
+  <bean id="profanityCheckingService" class="org.ambraproject.util.ProfanityCheckingServiceImpl">
+    <property name="profaneWords" ref="profaneWords" />
+  </bean>
+  <bean id="annotationConverter" class="org.ambraproject.annotation.service.AnnotationConverterImpl">
+    <property name="userService" ref="userService"/>
+  </bean>
+  <util:list id="profaneWords">
+    <value>ass</value>
+    <value>ass lick</value>
+    <value>asses</value>
+    <value>asshole</value>
+  </util:list>
+</beans>

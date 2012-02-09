@@ -40,7 +40,7 @@
 
     <property name="contextElement" column="contextElement" type="string" />
     <property name="contentType" column="contentType" type="string" />
-    <property name="title" column="title" type="string" />
+    <property name="title" column="title" type="string" length="500"/>
     <property name="description" column="description" type="string" />
     <property name="size" column="size" type="long" />
 
