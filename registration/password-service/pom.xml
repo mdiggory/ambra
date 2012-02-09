@@ -3,14 +3,14 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.ambraproject</groupId>
   <artifactId>ambra-password-service</artifactId>
-  <version>2.2.1-SNAPSHOT</version>
+  <version>2.2.1</version>
   <packaging>jar</packaging>
   <name>Ambra Registration Password Service</name>
 
   <parent>
     <groupId>org.ambraproject</groupId>
     <artifactId>ambra-registration</artifactId>
-    <version>2.2.1-SNAPSHOT</version>
+    <version>2.2.1</version>
   </parent>
 
   <dependencies>
