@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.ambraproject</groupId>
   <artifactId>ambra</artifactId>
-  <version>2.2.1</version>
+  <version>2.2.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Ambra application</name>
 
@@ -160,9 +160,9 @@
   </pluginRepositories>
 
   <scm>
-    <developerConnection>scm:svn:http://svn.ambraproject.org/svn/ambra/ambra/</developerConnection>
-    <connection>scm:svn:http://http://svn.ambraproject.org/svn/ambra/ambra/</connection>
-    <url>http://www.ambraproject.org/trac/browser/ambra/ambra/</url>
+    <developerConnection>scm:svn:http://svn.ambraproject.org/svn/ambra/ambra/head/</developerConnection>
+    <connection>scm:svn:http://http://svn.ambraproject.org/svn/ambra/ambra/head/</connection>
+    <url>http://www.ambraproject.org/trac/browser/ambra/head</url>
   </scm>
 
   <distributionManagement>
@@ -789,7 +789,7 @@
         <configuration>
           <goals>deploy</goals>                           <!-- disable site deploy -->
           <useReleaseProfile>false</useReleaseProfile>    <!-- no javadoc and source jars -->
-          <tagBase>http://svn.ambraproject.org/svn/ambra/ambra/tags</tagBase>
+          <tagBase>http://ambraproject.org/svn/ambra/ambra/tags</tagBase>
           <autoVersionSubmodules>true</autoVersionSubmodules>
           <preparationGoals>clean install</preparationGoals>
           <arguments>-Ppackages,distribution,release</arguments>
