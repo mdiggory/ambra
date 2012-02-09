@@ -160,9 +160,9 @@
   </pluginRepositories>
 
   <scm>
-    <developerConnection>scm:svn:http://svn.ambraproject.org/svn/ambra/tags/journal-publishing-system-2.2.1</developerConnection>
-    <connection>scm:svn:http://http://svn.ambraproject.org/svn/ambra/tags/journal-publishing-system-2.2.1</connection>
-    <url>http://www.ambraproject.org/trac/browser/tags/journal-publishing-system-2.2.1</url>
+    <developerConnection>scm:svn:http://svn.ambraproject.org/svn/ambra/ambra/</developerConnection>
+    <connection>scm:svn:http://http://svn.ambraproject.org/svn/ambra/ambra/</connection>
+    <url>http://www.ambraproject.org/trac/browser/ambra/ambra/</url>
   </scm>
 
   <distributionManagement>
@@ -789,7 +789,7 @@
         <configuration>
           <goals>deploy</goals>                           <!-- disable site deploy -->
           <useReleaseProfile>false</useReleaseProfile>    <!-- no javadoc and source jars -->
-          <tagBase>http://svn.ambraproject.org/svn/ambra/tags</tagBase>
+          <tagBase>http://svn.ambraproject.org/svn/ambra/ambra/tags</tagBase>
           <autoVersionSubmodules>true</autoVersionSubmodules>
           <preparationGoals>clean install</preparationGoals>
           <arguments>-Ppackages,distribution,release</arguments>
