@@ -583,7 +583,7 @@
       <dependency>
         <groupId>org.codehaus.groovy.maven</groupId>
         <artifactId>gmaven-mojo</artifactId>
-        <version>1.0-rc-3</version>
+        <version>1.4</version>
       </dependency>
 
       <dependency>

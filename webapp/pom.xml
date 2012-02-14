@@ -630,8 +630,9 @@
     </resources>
     <plugins>
       <plugin>
-        <groupId>org.codehaus.groovy.maven</groupId>
+        <groupId>org.codehaus.gmaven</groupId>
         <artifactId>gmaven-plugin</artifactId>
+        <version>1.4</version>
         <executions>
           <execution>
             <phase>generate-resources</phase>
