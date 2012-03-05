@@ -3,14 +3,14 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.ambraproject</groupId>
   <artifactId>ecqs</artifactId>
-  <version>2.2.2-SNAPSHOT</version>
+  <version>2.2.2</version>
   <packaging>jar</packaging>
   <name>ESUP CAS Quick Start</name>
 
   <parent>
     <groupId>org.ambraproject</groupId>
     <artifactId>ambra</artifactId>
-    <version>2.2.2-SNAPSHOT</version>
+    <version>2.2.2</version>
   </parent>
 
   <dependencies>

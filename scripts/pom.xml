@@ -2,14 +2,14 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.ambraproject</groupId>
   <artifactId>ambra-scripts</artifactId>
-  <version>2.2.2-SNAPSHOT</version>
+  <version>2.2.2</version>
   <packaging>pom</packaging>
   <name>Ambra Scripts</name>
 
   <parent>
     <groupId>org.ambraproject</groupId>
     <artifactId>ambra</artifactId>
-    <version>2.2.2-SNAPSHOT</version>
+    <version>2.2.2</version>
   </parent>
 
   <dependencies>
