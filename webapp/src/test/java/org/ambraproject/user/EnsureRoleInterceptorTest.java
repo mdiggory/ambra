@@ -19,6 +19,7 @@
  */
 package org.ambraproject.user;
 
+import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.config.Configuration;
@@ -28,6 +29,7 @@ import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.mock.MockActionInvocation;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
+import org.ambraproject.BaseInterceptorTest;
 import org.ambraproject.action.BaseActionSupport;
 import org.apache.axis.utils.Admin;
 import org.apache.struts2.ServletActionContext;
@@ -44,17 +46,13 @@ import java.util.Map;
 
 import static org.testng.Assert.assertEquals;
 
-public class EnsureRoleInterceptorTest extends BaseWebTest {
+public class EnsureRoleInterceptorTest extends BaseInterceptorTest {
 
   @Autowired
   protected EnsureRoleInterceptor interceptor;
 
   @Test
   public void testShouldReturnNotSufficientRole() throws Exception {
-    MockActionInvocation actionInvocation = new MockActionInvocation();
-    actionInvocation.setAction(null);
-    actionInvocation.setInvocationContext(ActionContext.getContext());
-
     final String result = interceptor.intercept(actionInvocation);
     assertEquals(result, Constants.ReturnCode.NOT_SUFFICIENT_ROLE, "Interceptor didn't block action invocation");
   }
@@ -62,19 +60,7 @@ public class EnsureRoleInterceptorTest extends BaseWebTest {
   @Test
   public void testShouldForwardToOriginalActionAsUserIsAdmin() throws Exception {
     setupAdminContext();
-    final String actionCalledStatus = "actionCalled";
-    final MockActionInvocation actionInvocation = new MockActionInvocation() {
-      public String invoke() throws Exception {
-        return actionCalledStatus;
-      }
-    };
-    actionInvocation.setInvocationContext(ActionContext.getContext());
     final String result = interceptor.intercept(actionInvocation);
-    assertEquals(result, actionCalledStatus, "Interceptor didn't allow action invocation to continue");
-  }
-
-  @Override
-  protected BaseActionSupport getAction() {
-    return null;
+    assertEquals(result, Action.SUCCESS, "Interceptor didn't allow action invocation to continue");
   }
 }

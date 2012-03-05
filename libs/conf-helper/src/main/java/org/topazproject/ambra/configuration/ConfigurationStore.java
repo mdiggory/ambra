@@ -110,6 +110,11 @@ public class ConfigurationStore {
   public static final String SYSTEM_OBJECT_ID_PREFIX = "SYSTEM_OBJECT_ID_PREFIX";
 
   /**
+   * Advanced usage logging
+   */
+  public static final String ADVANCED_USAGE_LOGGING = "ambra.advancedUsageLogging";
+
+  /**
    * Location of journal templates
    */
   public static final String JOURNAL_TEMPLATE_DIR = "ambra.virtualJournals.templateDir";

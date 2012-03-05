@@ -20,11 +20,12 @@
 
 package org.ambraproject.annotation.service;
 
+import org.ambraproject.BaseTest;
 import org.ambraproject.models.Article;
+import org.ambraproject.models.UserProfile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.ambraproject.BaseTest;
 import org.topazproject.ambra.models.Annotation;
 import org.topazproject.ambra.models.AnnotationBlob;
 import org.topazproject.ambra.models.ArticleAnnotation;
@@ -34,7 +35,6 @@ import org.topazproject.ambra.models.Journal;
 import org.topazproject.ambra.models.MinorCorrection;
 import org.topazproject.ambra.models.Reply;
 import org.topazproject.ambra.models.Retraction;
-import org.ambraproject.testutils.MockAmbraUser;
 
 import java.lang.reflect.Method;
 import java.net.URI;
@@ -105,6 +105,9 @@ public class AnnotationServiceTest extends BaseTest {
    */
   @Test(dataProvider = "dummyAnnotations")
   public void testCreateAnnotation(ArticleAnnotation annotation) throws Exception {
+    UserProfile user = new UserProfile();
+    user.setAccountUri(annotation.getCreator());
+
     String id = annotationService.createAnnotation(
         annotation.getClass(), //class
         "text/plain",   //mime type of body
@@ -115,7 +118,7 @@ public class AnnotationServiceTest extends BaseTest {
         "Test body with hash code " + annotation.hashCode(), //body
         "ciStatement", //ci statement
         true, //isPublic
-        new MockAmbraUser(annotation.getCreator()) //AmbraUser
+        user //AmbraUser
     );
     assertNotNull(id, "generated null id for annotation");
     assertFalse(id.isEmpty(), "generated empty id for annotation");
@@ -123,6 +126,9 @@ public class AnnotationServiceTest extends BaseTest {
 
   @Test(dataProvider = "dummyAnnotations")
   public void testCreateComment(ArticleAnnotation annotation) throws Exception {
+    UserProfile user = new UserProfile();
+    user.setAccountUri(annotation.getCreator());
+
     String id = annotationService.createComment(
         "text/plain",   //mime type of body
         annotation.getAnnotates().toString(), //target
@@ -132,7 +138,7 @@ public class AnnotationServiceTest extends BaseTest {
         "Test body with hash code " + annotation.hashCode(), //body
         "ciStatement", //ci statement
         true, //isPublic
-        new MockAmbraUser(annotation.getCreator()) //AmbraUser
+        user //AmbraUser
     );
     assertNotNull(id, "generated null id for comment");
     assertFalse(id.isEmpty(), "generated empty id for annotation");
@@ -140,12 +146,14 @@ public class AnnotationServiceTest extends BaseTest {
 
   @Test
   public void testCreateFlag() throws Exception {
+    UserProfile user = new UserProfile();
+    user.setAccountUri("id:test_creator");
     String id = annotationService.createFlag(
         "id://target", //target
         "reason code", //context
         "body",
         "text/plain",   //mime type of body
-        new MockAmbraUser("test creator") //AmbraUser
+        user //AmbraUser
     );
     assertNotNull(id, "generated null id for Flag");
     assertFalse(id.isEmpty(), "generated empty id for annotation");
@@ -170,8 +178,13 @@ public class AnnotationServiceTest extends BaseTest {
     };
   }
 
-  @Test(dataProvider = "annotationsToDelete", expectedExceptions = IllegalArgumentException.class)
+  @Test(dataProvider = "annotationsToDelete", expectedExceptions = {SecurityException.class})
+  public void testDeleteByNonAdmin(String annotationId) {
+    annotationService.deleteAnnotation(annotationId, DEFUALT_USER_AUTHID);
+  }
 
+  @Test(dataProvider = "annotationsToDelete", expectedExceptions = IllegalArgumentException.class,
+      dependsOnMethods = {"testDeleteByNonAdmin"})
   public void testDeleteAnnotation(String annotationId) {
     annotationService.deleteAnnotation(annotationId, DEFAULT_ADMIN_AUTHID);
     annotationService.getAnnotation(annotationId); //Should throw IllegalArgumentException

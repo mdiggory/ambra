@@ -20,19 +20,22 @@
 package org.ambraproject.article.action;
 
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
-import org.ambraproject.models.ArticleAsset;
-import org.apache.commons.lang.StringUtils;
+import org.ambraproject.action.BaseSessionAwareActionSupport;
+import org.ambraproject.article.service.ArticleAssetService;
+import org.ambraproject.article.service.NoSuchObjectIdException;
 import org.ambraproject.filestore.FSIDMapper;
 import org.ambraproject.filestore.FileStoreService;
+import org.ambraproject.models.ArticleAsset;
+import org.ambraproject.models.ArticleView;
+import org.ambraproject.models.UserProfile;
+import org.ambraproject.service.XMLService;
+import org.ambraproject.user.service.UserService;
+import org.ambraproject.util.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.transaction.annotation.Transactional;
-import org.ambraproject.action.BaseActionSupport;
-import org.ambraproject.article.service.ArticleAssetService;
-import org.ambraproject.article.service.NoSuchObjectIdException;
-import org.ambraproject.service.XMLService;
-import org.ambraproject.util.FileUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,12 +50,13 @@ import java.util.Date;
  * All transactions will be spanning over to results.
  */
 @Transactional(readOnly = true)
-public class FetchObjectAction extends BaseActionSupport {
+public class FetchObjectAction extends BaseSessionAwareActionSupport {
   private static final Logger log = LoggerFactory.getLogger(FetchObjectAction.class);
 
   private ArticleAssetService articleAssetService;
   private FileStoreService fileStoreService;
   private XMLService xmlService;
+  private UserService userService;
 
   private boolean fullDOI = false;
   private String uri;
@@ -73,13 +77,14 @@ public class FetchObjectAction extends BaseActionSupport {
    */
   @Transactional
   public String fetchObjectAction() {
+    ArticleAsset articleAsset;
     try {
       if (StringUtils.isEmpty(representation)) {
         addActionMessage("No representation specified");
         return ERROR;
       }
 
-      ArticleAsset articleAsset = articleAssetService.getArticleAsset(uri, representation, getAuthId());
+      articleAsset = articleAssetService.getArticleAsset(uri, representation, getAuthId());
 
       setResponseParams(articleAsset);
 
@@ -92,7 +97,7 @@ public class FetchObjectAction extends BaseActionSupport {
       Boolean needTransformedXML = (fullDOI && "XML".equals(representation));
       if (fileStoreService.hasXReproxy() && !needTransformedXML) {
         StringBuilder str = new StringBuilder();
-        URL[] urls =  fileStoreService.getRedirectURL(fsid);
+        URL[] urls = fileStoreService.getRedirectURL(fsid);
         for (URL url : urls) {
           str.append(url).append(" ");
         }
@@ -111,6 +116,29 @@ public class FetchObjectAction extends BaseActionSupport {
       log.error("Error retrieving object: " + uri, e);
       return ERROR;
     }
+
+    //If the user is logged in, record this as an xml or pdf download
+    UserProfile user = getCurrentUser();
+    if (user != null) {
+      try {
+        if ("XML".equalsIgnoreCase(representation) && !fullDOI) {
+          //downloading xml
+          userService.recordArticleView(
+              user.getID(),
+              articleAssetService.getArticleID(articleAsset),
+              ArticleView.Type.XML_DOWNLOAD);
+        } else if ("PDF".equalsIgnoreCase(representation)) {
+          //downloading pdf
+          userService.recordArticleView
+              (user.getID(),
+                  articleAssetService.getArticleID(articleAsset),
+                  ArticleView.Type.PDF_DOWNLOAD);
+        }
+      } catch (Exception e) {
+        log.error("Error recording an article download for user: " + user.getID() + " and uri: " + uri);
+      }
+    }
+
     return SUCCESS;
   }
 
@@ -139,17 +167,17 @@ public class FetchObjectAction extends BaseActionSupport {
       String fsid = FSIDMapper.doiTofsid(uri, articleAsset.getExtension());
 
       if (fileStoreService.hasXReproxy()) {
-         StringBuilder str = new StringBuilder();
-         URL[] urls =  fileStoreService.getRedirectURL(fsid);
-         for (URL url : urls) {
-           str.append(url).append(" ");
-         }
-         xReproxyList = str.toString();
-         reproxyCacheSettings = fileStoreService.getReproxyCacheSettings();
-       } else {
-         // x-reproxy not available so return the xml document stream
-         inputStream = fileStoreService.getFileInStream(fsid);
-       }
+        StringBuilder str = new StringBuilder();
+        URL[] urls = fileStoreService.getRedirectURL(fsid);
+        for (URL url : urls) {
+          str.append(url).append(" ");
+        }
+        xReproxyList = str.toString();
+        reproxyCacheSettings = fileStoreService.getReproxyCacheSettings();
+      } else {
+        // x-reproxy not available so return the xml document stream
+        inputStream = fileStoreService.getFileInStream(fsid);
+      }
 
     } catch (NoSuchObjectIdException e) {
       log.info("Object not found: " + uri, e);
@@ -309,5 +337,10 @@ public class FetchObjectAction extends BaseActionSupport {
   @Required
   public void setArticleAssetService(final ArticleAssetService articleAssetService) {
     this.articleAssetService = articleAssetService;
+  }
+
+  @Required
+  public void setUserService(UserService userService) {
+    this.userService = userService;
   }
 }

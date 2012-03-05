@@ -21,8 +21,8 @@
 
 package org.ambraproject.annotation.service;
 
+import org.ambraproject.models.UserProfile;
 import org.ambraproject.permission.service.PermissionsService;
-import org.ambraproject.user.AmbraUser;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -75,11 +75,11 @@ public class ReplyServiceImpl extends BaseAnnotationServiceImpl implements Reply
 
   @Override
   @Transactional(rollbackFor = Throwable.class)
-  public String createReply(String root, String inReplyTo, String title, String mimeType, String body, String ciStatement, AmbraUser user) throws Exception {
+  public String createReply(String root, String inReplyTo, String title, String mimeType, String body, String ciStatement, UserProfile user) throws Exception {
     permissionsService.checkLogin(user.getAuthId());
 
     final String contentType = getContentType(mimeType);
-    String userId = user.getUserId();
+    String userId = user.getAccountUri();
     ReplyBlob blob = new ReplyBlob(contentType);
     blob.setCIStatement(ciStatement);
     blob.setBody(body.getBytes(getEncodingCharset()));

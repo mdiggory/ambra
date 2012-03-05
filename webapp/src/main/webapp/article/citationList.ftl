@@ -26,7 +26,7 @@
     <div class="source">
       <span>Article Source:</span>
       <@s.url id="articlePageURL" action="fetchArticle" namespace="/article" articleURI="${articleURI}" includeParams="none"/>
-      <@s.a href="%{articlePageURL}" title="Back to original article" cssClass="article icon">${title}</@s.a>
+      <@s.a href="%{articlePageURL}" title="Back to original article" cssClass="article icon"><@articleFormat>${title}</@articleFormat></@s.a>
     </div>
   <p class="intro">
     <#assign isCorrection=false/>

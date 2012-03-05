@@ -21,8 +21,12 @@
 
 package org.ambraproject.annotation.service;
 
+import org.ambraproject.annotation.FlagUtil;
+import org.ambraproject.models.Article;
 import org.ambraproject.models.ArticleAuthor;
 import org.ambraproject.models.ArticleEditor;
+import org.ambraproject.models.UserProfile;
+import org.ambraproject.permission.service.PermissionsService;
 import org.apache.struts2.ServletActionContext;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -36,7 +40,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.transaction.annotation.Transactional;
-import org.ambraproject.annotation.FlagUtil;
 import org.topazproject.ambra.models.Annotation;
 import org.topazproject.ambra.models.AnnotationBlob;
 import org.topazproject.ambra.models.ArticleAnnotation;
@@ -46,9 +49,7 @@ import org.topazproject.ambra.models.Comment;
 import org.topazproject.ambra.models.FormalCorrection;
 import org.topazproject.ambra.models.RatingSummary;
 import org.topazproject.ambra.models.Retraction;
-import org.ambraproject.permission.service.PermissionsService;
-import org.ambraproject.user.AmbraUser;
-import org.ambraproject.models.Article;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -57,11 +58,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.List;
-import java.util.Date;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Alex Kudlick Date: 4/29/11
@@ -173,13 +174,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
         List<String> ids = new ArrayList<String>(results.size());
         for (Object o : results) {
           String id = (String) o;
-          // apply access-controls
-          try {
             ids.add(id);
-          } catch (SecurityException se) {
-            if (log.isDebugEnabled())
-              log.debug("Filtering reply " + id + " from Annotation list due to PEP SecurityException", se);
-          }
         }
 
         return ids;
@@ -247,12 +242,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
         List<String> ids = new ArrayList<String>(results.size());
         for (Object row : results) {
-          try {
             ids.add(row.toString());
-          } catch (SecurityException se) {
-            if (log.isDebugEnabled())
-              log.debug("Filtering reply " + row + " from Annotation list due to PEP SecurityException", se);
-          }
         }
         return ids;
       }
@@ -418,10 +408,10 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
   @Transactional(rollbackFor = Throwable.class)
   public String createAnnotation(Class<? extends ArticleAnnotation> annotationClass, String mimeType, String target,
                                  String context, String olderAnnotation, String title, String body, String ciStatement,
-                                 boolean isPublic, AmbraUser user) throws Exception {
+                                 boolean isPublic, UserProfile user) throws Exception {
 
     final String contentType = getContentType(mimeType);
-    String userId = user.getUserId();
+    String userId = user.getAccountUri();
 
     AnnotationBlob blob = new AnnotationBlob(contentType);
     blob.setCIStatement(ciStatement);
@@ -445,7 +435,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
   @Override
   @Transactional(rollbackFor = Throwable.class)
   public String createComment(String target, String context, String olderAnnotation, String title, String mimeType,
-                              String body, String ciStatement, boolean isPublic, AmbraUser user) throws Exception {
+                              String body, String ciStatement, boolean isPublic, UserProfile user) throws Exception {
     if (log.isDebugEnabled()) {
       log.debug("creating Comment for target: " + target + "; context: " + context +
           "; supercedes: " + olderAnnotation + "; title: " + title + "; mimeType: " +
@@ -470,7 +460,7 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
 
   @Override
   @Transactional(rollbackFor = Throwable.class)
-  public String createFlag(String target, String reasonCode, String body, String mimeType, AmbraUser user) throws Exception {
+  public String createFlag(String target, String reasonCode, String body, String mimeType, UserProfile user) throws Exception {
     final String flagBody = FlagUtil.createFlagBody(reasonCode, body);
     return createComment(target, null, null, null, mimeType, flagBody, null, true, user);
   }

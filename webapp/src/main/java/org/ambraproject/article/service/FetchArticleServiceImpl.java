@@ -93,6 +93,7 @@ public class FetchArticleServiceImpl extends HibernateServiceImpl implements Fet
    */
   public String getURIAsHTML(final String articleURI, final String authId) throws Exception {
 
+    //TODO: Remove this; it adds unnecessary db queries since this is coming from FetchArticleAction which also calls getArticle()
     // quick way to check for permission and the state of the article
     // we don't want to return a cached result when we should not
     articleService.getArticle(articleURI, authId);

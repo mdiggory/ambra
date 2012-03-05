@@ -26,7 +26,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertEqualsNoOrder;
 import static org.testng.Assert.assertNotNull;
 
 /**
@@ -251,7 +250,7 @@ public class ArticleAssetServiceTest extends BaseTest {
     unpubbed.setDoi("id:unpubbedForListFiguresTables");
     unpubbed.setState(Article.STATE_UNPUBLISHED);
     dummyDataStore.store(unpubbed);
-    
+
     Article disabled = new Article();
     disabled.setDoi("id:disabledForListFiguresTables");
     disabled.setState(Article.STATE_DISABLED);
@@ -262,9 +261,22 @@ public class ArticleAssetServiceTest extends BaseTest {
         {disabled.getDoi(), DEFAULT_ADMIN_AUTHID}
     };
   }
-  
+
   @Test(dataProvider = "badArticles", expectedExceptions = {NoSuchArticleIdException.class})
   public void testListFiguresTablesOnUnpubbedArticle(String doi, String authId) throws NoSuchArticleIdException {
     articleAssetService.listFiguresTables(doi, authId);
+  }
+
+  @Test
+  public void testGetArticleID() {
+    Article article = new Article();
+    article.setDoi("id:test-article-for-asset-get-id");
+    article.setAssets(new ArrayList<ArticleAsset>(1));
+    article.getAssets().add(new ArticleAsset());
+    article.getAssets().get(0).setDoi("id:test-asset-for-get-id");
+    article.getAssets().get(0).setExtension("foo");
+    Long articleID = Long.valueOf(dummyDataStore.store(article));
+    Long result = articleAssetService.getArticleID(article.getAssets().get(0));
+    assertEquals(result, articleID, "Article Asset service returned incorrect id");
   }
 }

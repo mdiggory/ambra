@@ -84,13 +84,50 @@ public class BootstrapMigratorServiceImpl extends HibernateServiceImpl implement
       migrate210();
     }
 
-    /*if(dbVersion < 222) {
-      migrate201();
-    }
-
     if(dbVersion < 223) {
-      migrate202();
-    }*/
+      migrate222();
+    }
+  }
+
+  /*
+  * Run the migration from 222 to 223
+  **/
+  private void migrate222() {
+    log.info("Migration from 222 starting");
+
+    hibernateTemplate.execute(new HibernateCallback() {
+      @Override
+      public Object doInHibernate(Session session) throws HibernateException, SQLException {
+        Version v = new Version();
+        v.setName("Ambra 2.30");
+        v.setVersion(230);
+        v.setUpdateInProcess(true);
+        session.save(v);
+
+        log.debug("Creating new tables.");
+
+        execSQLScript(session, "migrate_ambra_2_2_2_part1.sql");
+
+        log.debug("Tables created, now migrating data.");
+
+        execSQLScript(session, "migrate_ambra_2_2_2_part2.sql");
+
+        log.debug("Cleaning up data");
+
+        execSQLScript(session, "migrate_ambra_2_2_2_part3.sql");
+
+        log.debug("Migrated data, now dropping tables");
+
+        execSQLScript(session, "migrate_ambra_2_2_2_part4.sql");
+
+        v.setUpdateInProcess(false);
+        session.update(v);
+
+        return null;
+      }
+    });
+
+    log.info("Migration from 222 complete");
   }
 
   /*

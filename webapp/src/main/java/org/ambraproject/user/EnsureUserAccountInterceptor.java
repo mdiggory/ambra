@@ -21,31 +21,27 @@ package org.ambraproject.user;
 
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
-
+import org.ambraproject.models.UserLogin;
+import org.ambraproject.models.UserProfile;
+import org.ambraproject.user.service.UserService;
 import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.ambraproject.Constants.AMBRA_USER_KEY;
-import static org.ambraproject.Constants.ReturnCode;
-import static org.ambraproject.Constants.SINGLE_SIGNON_EMAIL_KEY;
-import static org.ambraproject.Constants.SINGLE_SIGNON_RECEIPT;
-import static org.ambraproject.Constants.SINGLE_SIGNON_USER_KEY;
-
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
-import org.ambraproject.ApplicationException;
-import org.ambraproject.user.service.DisplayNameAlreadyExistsException;
-import org.ambraproject.user.service.UserService;
-import org.ambraproject.util.FileUtils;
-
 import org.springframework.util.StringUtils;
 
-import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
+
+import static org.ambraproject.Constants.AMBRA_USER_KEY;
+import static org.ambraproject.Constants.AUTH_KEY;
+import static org.ambraproject.Constants.ReturnCode;
+import static org.ambraproject.Constants.SINGLE_SIGNON_EMAIL_KEY;
+import static org.ambraproject.Constants.SINGLE_SIGNON_RECEIPT;
 
 /**
  * Ensures that the user has a profile if the user does something which requires membership Get the user object for the
@@ -56,130 +52,91 @@ public class EnsureUserAccountInterceptor extends AbstractInterceptor {
   private PlatformTransactionManager transactionManager; //TODO: obviate the need for this.  See transaction interceptor
   private static final Logger log = LoggerFactory.getLogger(EnsureUserAccountInterceptor.class);
 
+  /**
+   * Check for a user matching the SSO ticket, if one exists.  Forwards to new profile page if no matching user exists.
+   * <p/>
+   * The work flow is as such:
+   * <p/>
+   * 1. Check if there is a ticket from CAS
+   * If not, then we do nothing.
+   * If there is, then we:
+   * 2. Check if a user object is in the session.
+   * a. If not, look up the user in the database, and put it in the session.
+   * i.  if the user is not in the database, this must be a new profile.  forward to profile creation page.
+   * 3. Update the database to ensure that the email address on file for this user matches the one from CAS
+   * TODO: this next step may be deprecated
+   * 4. Check if the user object in the session has a display name
+   * a. If not, the user is an old account.  forward to the update profile page
+   *
+   * @param actionInvocation
+   * @return
+   * @throws Exception
+   */
   public String intercept(final ActionInvocation actionInvocation) throws Exception {
-    if (log.isDebugEnabled())
-      log.debug("ensure user account interceptor called");
+    log.debug("ensure user account interceptor called");
 
-    Map sessionMap = actionInvocation.getInvocationContext().getSession();
+    Map<String, Object> session = actionInvocation.getInvocationContext().getSession();
 
-    final String userId = (String) sessionMap.get(SINGLE_SIGNON_USER_KEY);
-
-    if (null == userId) {
+    //STEP 1: check if there is an auth id from cas
+    final String authId = (String) session.get(AUTH_KEY);
+    if (authId == null) {
+      //No auth id, nothing to do here
       if (log.isDebugEnabled()) {
         log.debug("no single sign on user key");
-        log.debug("ticket is: " + sessionMap.get(SINGLE_SIGNON_RECEIPT));
+        log.debug("ticket is: " + session.get(SINGLE_SIGNON_RECEIPT));
       }
       return actionInvocation.invoke();
-    }
-
-    AmbraUser ambraUser = (AmbraUser) sessionMap.get(AMBRA_USER_KEY);
-    if (null != ambraUser) {
-      if (log.isDebugEnabled()) {
-        log.debug("Retrieved user from session with userId: " + ambraUser.getUserId());
-      }
-      return getReturnCodeDependingOnDisplayName(ambraUser, actionInvocation);
     } else {
-      ambraUser = (AmbraUser) new TransactionTemplate(transactionManager).execute(new TransactionCallback() {
-        @Override
-        public Object doInTransaction(TransactionStatus transactionStatus) {
-          try {
-            return userService.getUserByAuthId(userId);
-          } catch (ApplicationException e) {
-            return null;
-          }
-        }
-      });
-      if (log.isDebugEnabled()) {
-        log.debug("UserService : " + userService + " hashcode = " + userService.hashCode());
-        log.debug("Session: " + ServletActionContext.getRequest().getSession().getId());
-      }
-
-      if (null == ambraUser) {
-        // forward to new profile creation page
-        if (log.isDebugEnabled())
-          log.debug("This is a new user with id: " + userId);
-        return ReturnCode.NEW_PROFILE;
-      } else {
-        updateUserEmailAddress(ambraUser, userId, (String) sessionMap.get(SINGLE_SIGNON_EMAIL_KEY));
-        sessionMap.put(AMBRA_USER_KEY, ambraUser);
-        if (log.isDebugEnabled())
-          log.debug("Existing user detected: " + userId);
-        return getReturnCodeDependingOnDisplayName(ambraUser, actionInvocation);
-      }
-    }
-  }
-
-  private String getReturnCodeDependingOnDisplayName(final AmbraUser ambraUser,
-                                                     final ActionInvocation actionInvocation)
-      throws Exception {
-    if (StringUtils.hasText(ambraUser.getDisplayName())) {
-      // forward the user to the page he was initially going to
-      return actionInvocation.invoke();
-    } else {
-      // profile has partial details as the user might have been ported from old application
-      return ReturnCode.UPDATE_PROFILE; //forward to update profile page
-    }
-  }
-
-  public void setUserService(final UserService userService) {
-    this.userService = userService;
-  }
-
-  private void updateUserEmailAddress(final AmbraUser user, String authId, String presetEmail)
-      throws ApplicationException {
-    String emailAddress = fetchUserEmailAddress(authId, presetEmail);
-    if (emailAddress != null) {
-      if (!emailAddress.equals(user.getEmail())) {
-        user.setEmail(emailAddress);
-        new TransactionTemplate(transactionManager).execute(new TransactionCallback() {
+      //STEP 2: check if there's a user object in the session
+      UserProfile ambraUser = (UserProfile) session.get(AMBRA_USER_KEY);
+      if (ambraUser == null) {
+        //No user object, so we must just be returning from CAS.  Look up the user in the db, and record their login
+        final HttpServletRequest request = ServletActionContext.getRequest();
+        ambraUser = (UserProfile) new TransactionTemplate(transactionManager).execute(new TransactionCallback() {
           @Override
           public Object doInTransaction(TransactionStatus transactionStatus) {
-            try {
-              userService.setProfile(user);
-            } catch (ApplicationException e) {
-              transactionStatus.setRollbackOnly();
-            } catch (DisplayNameAlreadyExistsException e) {
-              if (log.isErrorEnabled()) {
-                log.error("Username: " + user.getDisplayName() +
-                    " already exists while trying to update email address for user: " +
-                    user.getUserId(), e);
-              }
-            }
-            return null;
+            return userService.login(authId, new UserLogin(
+                request.getRequestedSessionId(), //session id
+                request.getRemoteAddr(), //ip
+                request.getHeader("user-agent") //user-agent
+            ));
           }
         });
-
+        if (ambraUser == null) {
+          //No matching user in the database. redirect to the profile creation page
+          log.debug("This is a new user with auth id: {}", authId);
+          return ReturnCode.NEW_PROFILE;
+        }
+        //put the user in the session
+        session.put(AMBRA_USER_KEY, ambraUser);
       }
-    } else {
-      if (log.isErrorEnabled()) {
-        log.error("Retrieved a null email address from CAS for userId: " + user.getUserId());
-      }
-    }
-  }
 
-  private String fetchUserEmailAddress(String authId, String presetEmail)
-      throws ApplicationException {
-    if (presetEmail != null)
-      return presetEmail;
-
-    final String emailAddressUrl = (String) new TransactionTemplate(transactionManager).execute(new TransactionCallback() {
-      @Override
-      public Object doInTransaction(TransactionStatus transactionStatus) {
-        return userService.getEmailAddressUrl();
+      //STEP 3: make sure that ambra's email address matches the one from CAS
+      String emailFromCAS = (String) session.get(SINGLE_SIGNON_EMAIL_KEY);
+      if (emailFromCAS == null) {
+        emailFromCAS = userService.fetchUserEmailFromCas(authId);
+        session.put(SINGLE_SIGNON_EMAIL_KEY, emailFromCAS);
       }
-    });
-    final String url = emailAddressUrl + authId;
-    try {
-      return FileUtils.getTextFromUrl(url);
-    } catch (IOException ex) {
-      final String errorMessage = "Failed to fetch the email address using the url:" + url;
-      log.error(errorMessage, ex);
-      throw new ApplicationException(errorMessage, ex);
+      if (ambraUser.getEmail() == null || (!ambraUser.getEmail().equals(emailFromCAS))) {
+        userService.updateEmail(ambraUser.getID(), emailFromCAS);
+      }
+
+      //STEP 4: Check if the user has a display name  (this is only relevant for old users)
+      if (!StringUtils.hasText(ambraUser.getDisplayName())) {
+        return ReturnCode.UPDATE_PROFILE;
+      }
+      //continue with the action invocation
+      return actionInvocation.invoke();
     }
   }
 
   @Required
   public void setTransactionManager(PlatformTransactionManager transactionManager) {
     this.transactionManager = transactionManager;
+  }
+
+  @Required
+  public void setUserService(final UserService userService) {
+    this.userService = userService;
   }
 }

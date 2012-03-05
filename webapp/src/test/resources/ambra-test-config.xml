@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-  $HeadURL:: http://svn.topazproject.org/svn/head/packages/ambra/src/main/resources/ambra.xml    $ 
-  $Id: ambra.xml 7248 2009-02-05 00:26:54Z russ $ 
+  $HeadURL::                                                                                     $ 
+  $Id$ 
 
   Copyright (c) 2007-2008 by Topaz, Inc. 
   http://topazproject.org 
@@ -21,6 +21,7 @@
 <!-- Ambra Configuration file -->
 <config>
   <ambra>
+    <advancedUsageLogging>true</advancedUsageLogging>
     <services>
       <browse>
         <cache>false</cache>
@@ -94,5 +95,14 @@
         <default>true</default>
       </articleType>
     </articleTypeList>
+
+    <userAlerts>
+      <categories>
+        <category key="journal">Journal</category>
+        <category key="journal1">Journal 1</category>
+      </categories>
+      <monthly>journal,journal1</monthly>
+      <weekly>journal</weekly>
+    </userAlerts>
   </ambra>
 </config>

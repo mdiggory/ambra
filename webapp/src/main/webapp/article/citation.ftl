@@ -23,10 +23,17 @@
     <span class="citation_author">et al. </span>
     <#break>
   </#if>
-  <span class="citation_author">${author.surnames!}<#if author.givenNames??>
+  <#if (author_has_next) >
+    <span class="citation_author">${author.surnames!}<#if author.givenNames??>
+        <@abbreviation>${author.givenNames!}</@abbreviation></#if><#if author.suffix??>
+        ${author.suffix?replace(".","")}</#if>,
+    </span>
+  <#else>
+    <span class="citation_author">${author.surnames!}<#if author.givenNames??>
       <@abbreviation>${author.givenNames!}</@abbreviation></#if><#if author.suffix??>
-      ${author.suffix}</#if>,
-  </span>
+      ${author.suffix?replace(".","")}</#if>
+      </span>
+  </#if>
 </#list>
 <#if (authorList?size < 4) >
 <#assign max_index = 4-authorList?size>
@@ -34,13 +41,12 @@
   <#if (collab_index > max_index) >
     <span class="citation_author">et al. </span>
     <#break>
-
   </#if><#-- The following line is so long
    because the browser was picking up tabs and inserting
    spaces in weird spots --><#if (collab_index > 0)><span
   class="citation_author">, ${collab}</span><#else><span class="citation_author">${collab}</span></#if></#list>
 </#if>
-<#if year??><span class="citation_date">${year}</span></#if>
+<#if year??><span class="citation_date">(${year})</span></#if>
 <#if title??><#if !(title?ends_with("?"))><#assign addPunctuation = "."></#if><span class="citation_article_title"><@articleFormat>${title}</@articleFormat><#if addPunctuation??>${addPunctuation}</#if></span></#if>
 <#if journal??><span class="citation_journal_title">${journal}</span></#if><span class="citation_issue"><#if volume??> ${volume}</#if><#if issue??>(${issue})</#if>:</span>
 <#if eLocationId??><span class="citation_start_page">${eLocationId}.</span></#if>

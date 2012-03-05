@@ -19,23 +19,23 @@
  */
 package org.ambraproject.rating.action;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
+import org.ambraproject.models.Article;
+import org.ambraproject.models.UserProfile;
+import org.ambraproject.rating.service.RatingsService;
+import org.ambraproject.rating.service.RatingsService.AverageRatings;
+import org.ambraproject.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.transaction.annotation.Transactional;
-import org.ambraproject.models.Article;
 import org.topazproject.ambra.models.Rating;
 import org.topazproject.ambra.models.RatingContent;
 import org.topazproject.ambra.models.RatingSummary;
 import org.topazproject.ambra.models.RatingSummaryContent;
-import org.ambraproject.rating.service.RatingsService;
-import org.ambraproject.rating.service.RatingsService.AverageRatings;
-import org.ambraproject.user.AmbraUser;
-import org.ambraproject.user.service.UserService;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Rating action class to retrieve all ratings for an Article.
@@ -106,12 +106,12 @@ public class GetArticleRatingsAction extends AbstractRatingAction {
       summary.setArticleTitle(getArticleTitle());
       summary.setCreatorURI(rating.getCreator());
       // get public 'name' for user
-      AmbraUser au = userService.getUserById(rating.getCreator());
+      UserProfile au = userService.getUserByAccountUri(rating.getCreator());
       if (au != null) {
         summary.setCreatorName(au.getDisplayName());
       } else {
         summary.setCreatorName("Unknown");
-        log.error("Unable to look up UserAccount for " + rating.getCreator() +
+        log.error("Unable to look up UserProfile for " + rating.getCreator() +
                   " for Rating " + rating.getId());
       }
       articleRatingSummaries.add(summary);

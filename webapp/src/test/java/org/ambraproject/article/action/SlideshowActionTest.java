@@ -1,5 +1,5 @@
-/* $HeadURL: http://ambraproject.org/svn/ambra/branches/ambra-2.01/ambra/webapp/src/test/java/org/topazproject/ambra/article/action/CreateCitationTest.java $
- * $Id: CreateCitationTest.java 9666 2011-10-07 00:03:23Z akudlick $
+/* $HeadURL$
+ * $Id$
  *
  * Copyright (c) 2006-2010 by Public Library of Science
  * http://plos.org

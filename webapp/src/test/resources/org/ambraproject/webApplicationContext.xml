@@ -22,7 +22,9 @@
   <!--Include all the bean definitions-->
   <import resource="nonWebApplicationContext.xml" />
 
-  <bean id="request" class="org.ambraproject.BaseWebTest" factory-method="getDefaultRequestAttributes"/>
+  <bean id="ambraFreemarkerConfig" class="org.ambraproject.struts2.AmbraFreemarkerConfig">
+    <constructor-arg index="0" ref="configuration"/>
+  </bean>
 
   <!--Ambra Actions and interceptors-->
   <bean id="ensureRoleInterceptor" class="org.ambraproject.user.EnsureRoleInterceptor">
@@ -38,24 +40,54 @@
   <bean id="displayUserAction" class="org.ambraproject.user.action.DisplayUserAction">
     <property name="ambraConfiguration" ref="configuration"/>
     <property name="userService" ref="userService"/>
-    <property name="request" ref="request"/>
   </bean>
 
   <bean id="createCitationAction" class="org.ambraproject.article.action.CreateCitation">
     <property name="articleService" ref="articleService"/>
     <property name="ambraConfiguration" ref="configuration"/>
-    <property name="request" ref="request"/>
   </bean>
 
   <bean id="slideshowAction" class="org.ambraproject.article.action.SlideshowAction">
     <property name="articleAssetService" ref="articleAssetService"/>
     <property name="secondaryObjectService" ref="secondaryObjectService"/>
     <property name="ambraConfiguration" ref="configuration"/>
-    <property name="request" ref="request"/>
   </bean>
 
   <bean id="homePageAction" class="org.ambraproject.action.HomePageAction">
     <property name="ambraConfiguration" ref="configuration"/>
     <property name="browseService" ref="browseService"/>
+  </bean>
+
+  <bean id="memberUserProfileAction" class="org.ambraproject.user.action.MemberUserProfileAction">
+    <property name="userService" ref="userService"/>
+    <property name="ambraConfiguration" ref="configuration"/>
+    <property name="profanityCheckingService" ref="profanityCheckingService"/>
+  </bean>
+
+  <bean id="memberUserAlertsAction" class="org.ambraproject.user.action.MemberUserAlertsAction">
+    <property name="ambraConfiguration" ref="configuration"/>
+    <property name="userService" ref="userService"/>
+  </bean>
+
+  <bean id="fetchArticleAction" class="org.ambraproject.article.action.FetchArticleAction">
+    <property name="ratingsService" ref="ratingsService"/>
+    <property name="journalService" ref="journalService"/>
+    <property name="userService" ref="userService"/>
+    <property name="annotationConverter" ref="annotationConverter"/>
+    <property name="trackBackService" ref="trackbackService"/>
+    <property name="ambraFreemarkerConfig" ref="ambraFreemarkerConfig"/>
+    <property name="annotationService" ref="annotationService"/>
+    <property name="ambraConfiguration" ref="configuration"/>
+    <property name="articleService" ref="articleService"/>
+    <property name="replyService" ref="replyService"/>
+    <property name="fetchArticleService" ref="fetchArticleService"/>
+  </bean>
+
+  <bean id="fetchObjectAction" class="org.ambraproject.article.action.FetchObjectAction">
+    <property name="userService" ref="userService"/>
+    <property name="articleAssetService" ref="articleAssetService"/>
+    <property name="xmlService" ref="xmlService"/>
+    <property name="ambraConfiguration" ref="configuration"/>
+    <property name="fileStoreService" ref="fileStoreService"/>
   </bean>
 </beans>

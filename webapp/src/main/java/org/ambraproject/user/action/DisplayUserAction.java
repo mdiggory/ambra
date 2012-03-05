@@ -20,12 +20,10 @@
 
 package org.ambraproject.user.action;
 
+import org.ambraproject.models.UserProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
-import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
-import org.ambraproject.user.AmbraUser;
-import java.util.Collection;
 
 /**
  * Simple class to display a user based on a TopazId
@@ -33,12 +31,19 @@ import java.util.Collection;
  * @author Stephen Cheng
  * 
  */
-public class DisplayUserAction extends UserActionSupport {
+public class DisplayUserAction extends UserProfileAction {
   private static final Logger log = LoggerFactory.getLogger(DisplayUserAction.class);
 
-  private AmbraUser pou;
-  private String userId;
-  private Collection<String> privateFields;
+  private Long userId;
+
+  //TODO: Fetch users by id and not uri.  We need this b/c annotations still have a reference to the account uri
+  private String userAccountUri;
+
+  //We don't need this since we're overriding execute
+  @Override
+  protected String getUserAuthId() {
+    return null;
+  }
 
   /**
    * Returns the user based on the userId passed in.
@@ -46,76 +51,39 @@ public class DisplayUserAction extends UserActionSupport {
    * @return webwork status string
    */
   @Transactional(readOnly = true)
+  @Override
   public String execute() throws Exception {
-    if (log.isDebugEnabled()) {
-      log.debug("retrieving user profile for: " + userId);
-    }
-    pou = new AmbraUserDecorator(userService.getUserWithProfileLoaded(userId));
+    UserProfile user;
 
-    // the user has indicated that they do not want their additional information displayed
-    if (pou.getOrganizationVisibility() == false) {
-
-      String authId = this.getAuthId();
-      boolean isAdminUser = false;
-      if (authId != null) {
-        isAdminUser = userService.allowAdminAction(authId);
-      }
-
-      if (isAdminUser || pou.getAuthId().equals(authId)) {
-        // if you are an admin user, you can see everything
-        // if you are looking at your own profile, you can see everything.
-      } else {
-        // hide the list of additional information fields
-        // organization address
-        // organization type
-        // organization name
-        // your role
-
-        pou.setOrganizationType(null);
-        pou.setOrganizationName(null);
-        pou.setPostalAddress(null);
-        pou.setPositionType(null);
-      }
+    if (userId != null) {
+      user = userService.getUser(userId);
+    } else {
+      user = userService.getUserByAccountUri(userAccountUri);
+      
     }
 
+    final String authId = this.getAuthId();
+
+    // check if the user wants to show private fields
+    boolean showPrivateFields = user.getOrganizationVisibility();
+    if (!showPrivateFields) {
+      //if they said no, still show them to admins and that same user
+      showPrivateFields = userService.allowAdminAction(authId) || user.getAuthId().equals(authId);
+    }
+
+    setFieldsFromProfile(userService.getProfileForDisplay(user, showPrivateFields));
     return SUCCESS;
-  }
-
-  /**
-   * @return Returns the pou.
-   */
-  public AmbraUser getPou() {
-    return pou;
-  }
-
-  /**
-   * @param pou
-   *          The pou to set.
-   */
-  public void setPou(AmbraUser pou) {
-    this.pou = pou;
-  }
-
-  /**
-   * @return Returns the userId.
-   */
-  @RequiredStringValidator(message = "Topaz id is required.")
-  public String getUserId() {
-    return userId;
   }
 
   /**
    * @param userId
    *          The userId to set.
    */
-  public void setUserId(String userId) {
+  public void setUserId(Long userId) {
     this.userId = userId;
   }
 
-  /**
-   * @return the field names that are private.
-   */
-  public Collection<String> getPrivateFields() {
-    return privateFields;
+  public void setUserAccountUri(String userAccountUri) {
+    this.userAccountUri = userAccountUri;
   }
 }

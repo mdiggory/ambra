@@ -19,7 +19,6 @@
  */
 package org.ambraproject.user;
 
-import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +48,7 @@ public class EnsureRoleInterceptor extends AbstractInterceptor {
   public String intercept(final ActionInvocation actionInvocation) throws Exception {
     log.debug("EnsureRoleInterceptor called");
     Map session = actionInvocation.getInvocationContext().getSession();
-    final String authId = (String)session.get(UserAccountsInterceptor.AUTH_KEY);
+    final String authId = (String)session.get(Constants.AUTH_KEY);
     Boolean allowAdminAction = (Boolean) new TransactionTemplate(transactionManager).execute(new TransactionCallback() {
       @Override
       public Object doInTransaction(TransactionStatus transactionStatus) {

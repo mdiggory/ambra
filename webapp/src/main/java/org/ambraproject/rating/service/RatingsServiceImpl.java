@@ -20,6 +20,10 @@
  */
 package org.ambraproject.rating.service;
 
+import org.ambraproject.ApplicationException;
+import org.ambraproject.models.UserProfile;
+import org.ambraproject.permission.service.PermissionsService;
+import org.ambraproject.service.HibernateServiceImpl;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -30,12 +34,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.transaction.annotation.Transactional;
-import org.ambraproject.ApplicationException;
 import org.topazproject.ambra.models.Rating;
 import org.topazproject.ambra.models.RatingSummary;
-import org.ambraproject.permission.service.PermissionsService;
-import org.ambraproject.service.HibernateServiceImpl;
-import org.ambraproject.user.AmbraUser;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -191,11 +191,10 @@ public class RatingsServiceImpl extends HibernateServiceImpl implements RatingsS
    * Get a Rating by Id.
    *
    * @param ratingId Rating Id
-   * @param user current ambra user
    * @return Rating
    */
   @Transactional(readOnly = true)
-  public Rating getRating(final String ratingId, AmbraUser user) {
+  public Rating getRating(final String ratingId) {
     Rating rating = (Rating)hibernateTemplate.load(Rating.class, URI.create(ratingId));
 
     return rating;
@@ -251,20 +250,21 @@ public class RatingsServiceImpl extends HibernateServiceImpl implements RatingsS
 
   @SuppressWarnings("unchecked")
   @Transactional(readOnly = true)
-  public boolean hasRated(final String articleURI, final AmbraUser user) {
-    if (user == null)
+  public boolean hasRated(final String articleURI, final UserProfile user) {
+    if (user == null) {
       return false;
+    }
 
     if (log.isDebugEnabled()) {
       log.debug("retrieving list of user ratings for article: " + articleURI + " and user: " +
-                user.getUserId());
+          user.getAccountUri());
     }
 
-    return (Boolean)hibernateTemplate.execute(new HibernateCallback() {
+    return (Boolean) hibernateTemplate.execute(new HibernateCallback() {
       public Object doInHibernate(Session session) throws HibernateException, SQLException {
         List<Rating> ratingsList = session.createCriteria(Rating.class).
-           add(Restrictions.eq("annotates", articleURI)).
-           add(Restrictions.eq("creator", user.getUserId())).list();
+            add(Restrictions.eq("annotates", articleURI)).
+            add(Restrictions.eq("creator", user.getAccountUri())).list();
 
         return ratingsList.size() > 0;
       }

@@ -47,7 +47,7 @@
         <#assign dsc = comment.annotation.commentTitle>
 
         <@s.url namespace="/annotation" includeParams="none" id="listThreadURL" action="listThread" root="${comment.annotation.id}" inReplyTo="${comment.annotation.id}"/>
-        <@s.url namespace="/user" includeParams="none" id="showUserURL" action="showUser" userId="${comment.annotation.creator}"/>
+        <@s.url namespace="/user" includeParams="none" id="showUserURL" action="showUser" userAccountUri="${comment.annotation.creator}"/>
         <tr>
           <td class="replies">${comment.numReplies} ${label}<br /></td>
           <td class="title"><a href="${listThreadURL}" title="View Full Discussion Thread" class="${class} icon">${dsc}</a></td>

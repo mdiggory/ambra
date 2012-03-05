@@ -42,10 +42,17 @@
     <constructor-arg index="0" ref="articleHtmlEhcache"/>
   </bean>
 
-  <!-- File store stuff  (lazy-init all these)-->
-  <bean id="ingestZip" class="java.util.zip.ZipFile">
-    <constructor-arg index="0" value="src/test/resources/test-ingest.zip"/>
+  <!--The doi for the article that's in the test filestore-->
+  <bean class="java.lang.String" id="articleInFilestore">
+    <constructor-arg index="0" value="info:doi/10.1371/journal.pgen.1000096"/>
   </bean>
+
+  <bean id="fileStoreService" class="org.ambraproject.filestore.impl.FileSystemImpl">
+    <constructor-arg index="0" value="${project.basedir}/target/test-classes/filestore"/>
+    <constructor-arg index="1" value=""/>
+  </bean>
+
+
   <bean id="configuration" class="org.ambraproject.testutils.AmbraTestConfigurationFactory"
         factory-method="getConfiguration">
     <constructor-arg index="0" value="ambra-test-config.xml"/>
@@ -130,8 +137,10 @@
   
   <bean id="userService" class="org.ambraproject.user.service.UserServiceImpl">
     <property name="sessionFactory" ref="sessionFactory"/>
-    <property name="applicationId" ref="applicationId"/>
     <property name="permissionsService" ref="permissionsService"/>
+    <property name="configuration" ref="configuration"/>
+    <property name="emailAddressUrl" value="http://localhost:1234/select"/>
+    <property name="authIdParam" value="guid"/>
   </bean>
 
   <bean id="xmlService" class="org.ambraproject.service.XMLServiceImpl" init-method="init">
@@ -156,7 +165,7 @@
   </util:map>
 
   <bean id="solrFieldConverter" class="org.ambraproject.solr.SolrFieldConversionImpl">
-    <property name="allTimeViewsField" value="all_time_views" />
+  <property name="allTimeViewsField" value="all_time_views" />
     <property name="viewCountingFields">
       <map>
         <entry key="14" value="two_week_field"/>
@@ -164,6 +173,16 @@
       </map>
     </property>
   </bean>
+
+  <bean id="fetchArticleService" class="org.ambraproject.article.service.FetchArticleServiceImpl">
+    <property name="sessionFactory" ref="sessionFactory"/>
+    <property name="articleService" ref="articleService"/>
+    <property name="articleHtmlCache" ref="articleHtmlCache" />
+    <property name="annotationService" ref="annotationService"/>
+    <property name="fileStoreService" ref="fileStoreService"/>
+    <property name="articleTransformService" ref="xmlService"/>
+  </bean>
+
 
   <bean id="profanityCheckingService" class="org.ambraproject.util.ProfanityCheckingServiceImpl">
     <property name="profaneWords" ref="profaneWords" />

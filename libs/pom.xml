@@ -21,6 +21,7 @@
     <module>trackback-util</module>
     <module>dom-ranges-helper</module>
     <module>js</module>
+    <module>password-service</module>
   </modules>
 
 </project>

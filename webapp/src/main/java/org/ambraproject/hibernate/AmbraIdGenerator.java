@@ -1,22 +1,14 @@
 /*
  * $HeadURL$
  * $Id$
- *
- * Copyright (c) 2006-2011 by Public Library of Science
- * http://plos.org
- * http://ambraproject.org
- *
+ * Copyright (c) 2006-2012 by Public Library of Science http://plos.org http://ambraproject.org
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the License. |
+ * limitations under the License.
  */
 
 package org.ambraproject.hibernate;
@@ -29,11 +21,9 @@ import org.hibernate.metadata.ClassMetadata;
 import org.topazproject.ambra.configuration.ConfigurationStore;
 import org.topazproject.ambra.models.AnnotationBlob;
 import org.topazproject.ambra.models.ArticleContributor;
-import org.topazproject.ambra.models.AuthenticationId;
 import org.topazproject.ambra.models.Citation;
 import org.topazproject.ambra.models.CitedPerson;
 import org.topazproject.ambra.models.Comment;
-import org.topazproject.ambra.models.EditorialBoard;
 import org.topazproject.ambra.models.FormalCorrection;
 import org.topazproject.ambra.models.Issue;
 import org.topazproject.ambra.models.Journal;
@@ -48,11 +38,6 @@ import org.topazproject.ambra.models.ReplyBlob;
 import org.topazproject.ambra.models.ReplyThread;
 import org.topazproject.ambra.models.Trackback;
 import org.topazproject.ambra.models.TrackbackContent;
-import org.topazproject.ambra.models.UserAccount;
-import org.topazproject.ambra.models.UserPreference;
-import org.topazproject.ambra.models.UserPreferences;
-import org.topazproject.ambra.models.UserProfile;
-import org.topazproject.ambra.models.UserRole;
 import org.topazproject.ambra.models.Volume;
 
 import java.io.Serializable;
@@ -131,20 +116,12 @@ public class AmbraIdGenerator implements IdentifierGenerator {
     uriPrefixes.put(RatingSummaryContent.class, "ratingSummaryContent");
     uriPrefixes.put(Reply.class, "reply");
     uriPrefixes.put(ReplyThread.class, "reply");
-    //User Accounts / Profiles
-    uriPrefixes.put(UserAccount.class, "account");
-    uriPrefixes.put(UserPreference.class, "preferences");
-    uriPrefixes.put(UserPreferences.class, "preferences");
-    uriPrefixes.put(UserProfile.class, "profile");
-    uriPrefixes.put(UserRole.class, "roles");
     //Aggregations
     uriPrefixes.put(Journal.class, "aggregation");
     uriPrefixes.put(Volume.class, "aggregation");
     uriPrefixes.put(Issue.class, "aggregation");
     //Miscellany
-    uriPrefixes.put(AuthenticationId.class, "authids");
     uriPrefixes.put(Citation.class, "citation");
-    uriPrefixes.put(EditorialBoard.class, "editorialBoard");
     uriPrefixes.put(CitedPerson.class, "citedPerson");
     uriPrefixes.put(ArticleContributor.class, "articleContributor");
     uriPrefixes.put(RelatedArticle.class, "relatedArticle");

@@ -67,7 +67,7 @@ public interface DummyDataStore {
    * @param id    the id of the object to get
    * @return the object with the specified id and class
    */
-  public <T> T get(Class<T> clazz, Serializable id);
+  public <T> T get(final Class<T> clazz, final Serializable id);
 
   /**
    * Return a list of all the stored instances of the specified class

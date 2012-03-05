@@ -13,117 +13,54 @@
 
 package org.ambraproject.permission;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import static org.testng.Assert.*;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
 import org.ambraproject.BaseTest;
-import org.ambraproject.annotation.service.ReplyService;
-import org.topazproject.ambra.models.*;
+import org.ambraproject.models.UserRole;
 import org.ambraproject.permission.service.PermissionsService;
-import org.ambraproject.user.AmbraUser;
+import org.ambraproject.user.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.testng.annotations.Test;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.util.HashSet;
-import java.util.Set;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.fail;
 
 
-public class PermissionServiceTest extends BaseTest{
+public class PermissionServiceTest extends BaseTest {
 
   @Autowired
-  PermissionsService permissionsService;
+  protected PermissionsService permissionsService;
+  @Autowired
+  protected UserService userService;
 
-  final String ADMIN = "admin";
-  final String OTHER_ROLE = "otherrole";
-  final String AUTHID = "authIdUri";
-  final String AUTHID_VALUE = "testvalue";
-  final String USER_ROLE_ID = "testroleuri";
-
-  @DataProvider(name = "loginData")
-  public Object[][] loginData() throws UnsupportedEncodingException {
-    AmbraUser user = new AmbraUser("testuser");
-
-    return new Object[][]{
-     {user}
-    };
+  @Test
+  public void testCheckRoleOnAdmin() {
+    //ensure that the admin auth id is a user
+    assertNotNull(userService.getUserByAuthId(DEFAULT_ADMIN_AUTHID), "Admin auth id was not a user");
+    permissionsService.checkRole(PermissionsService.ADMIN_ROLE, DEFAULT_ADMIN_AUTHID);
   }
 
-   /**
-   * Test for permissionservice.checklLogin()
-   *
-   * @param user AmbraUser
-   */
-
-  @Test(dataProvider = "loginData")
-  public void testCheckLogin(AmbraUser user){
-    try{
-      permissionsService.checkLogin(user.getAuthId());
-    }catch (SecurityException se){
-      fail("user is null");
-    }
+  @Test(expectedExceptions = {SecurityException.class})
+  public void testCheckRoleOnNonAdmin() {
+    //ensure that the user auth id is a user
+    assertNotNull(userService.getUserByAuthId(DEFUALT_USER_AUTHID),"user auth id was not a user");
+    permissionsService.checkRole(PermissionsService.ADMIN_ROLE, DEFUALT_USER_AUTHID);
   }
 
-  @DataProvider(name = "roleData")
-  public Object[][] roleData(){
+  @Test(expectedExceptions = {SecurityException.class})
+  public void testCheckNewRole() {
+    UserRole role = new UserRole("some new role");
+    dummyDataStore.store(role);
 
-    Set<AuthenticationId> ai = new HashSet<AuthenticationId>();
-
-    AuthenticationId authId = new AuthenticationId();
-    authId.setId(URI.create(AUTHID));
-    authId.setValue(AUTHID_VALUE);
-    dummyDataStore.store(authId);
-
-    ai.add(authId);
-
-    Set<UserRole> ur = new HashSet<UserRole>();
-
-    UserRole userRole = new UserRole();
-    userRole.setId(URI.create(USER_ROLE_ID));
-    userRole.setRole(ADMIN);
-    dummyDataStore.store(userRole);
-
-    ur.add(userRole);
-
-    UserAccount ua = new UserAccount();
-    ua.setRoles(ur);
-    ua.setAuthIds(ai);
-
-    dummyDataStore.store(ua);
-
-    return new Object[][]{
-        {ua}
-    };
+    permissionsService.checkRole(role.getRoleName(), DEFAULT_ADMIN_AUTHID);
   }
 
-  /**
-   * Test for permissionservice.checkRole()
-   *
-   * @param ua UserAccount
-   */
-
-  @Test(dataProvider = "roleData")
-  public void testCheckRoleForAdminRole(UserAccount ua){
+  @Test
+  public void testCheckLogin() {
     try {
-      for(AuthenticationId authId: ua.getAuthIds()){
-        permissionsService.checkRole(ADMIN, authId.getValue());  //should not throw security exception
-      }
-    }catch (SecurityException se){
-      fail("this user doesn't have required role");
+      permissionsService.checkLogin(null);
+      fail("Permission Service didn't throw exception on null login");
+    } catch (SecurityException e) {
+      //expected
     }
+    permissionsService.checkLogin(DEFAULT_ADMIN_AUTHID);
   }
-
-  /**
-   * Test for permissionservice.checkRole()
-   * @param ua
-   * @throws SecurityException
-   */
-  @Test(dataProvider = "roleData", expectedExceptions = { SecurityException.class } )
-  public void testCheckRoleForOtherRole(UserAccount ua){
-    for(AuthenticationId authId: ua.getAuthIds()){
-        permissionsService.checkRole(OTHER_ROLE, authId.getValue());
-      }
-
-  }
-
 }

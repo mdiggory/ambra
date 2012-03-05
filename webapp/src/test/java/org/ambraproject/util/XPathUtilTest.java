@@ -87,7 +87,7 @@ public class XPathUtilTest {
     return new Object[][]{
         {"/config/ambra", 1},
         {"//config/ambra/services/*", 3},
-        {"//config/ambra/*", 4},
+        {"//config/ambra/*", 6},
         {"//platform/email/*", 3}
     };
   }

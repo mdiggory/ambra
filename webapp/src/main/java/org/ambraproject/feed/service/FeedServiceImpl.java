@@ -20,31 +20,35 @@
  */
 package org.ambraproject.feed.service;
 
-import org.apache.commons.configuration.Configuration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Required;
 import org.ambraproject.ApplicationException;
 import org.ambraproject.annotation.service.AnnotationService;
 import org.ambraproject.article.action.TOCArticleGroup;
-import org.ambraproject.article.service.*;
+import org.ambraproject.article.service.ArticleService;
+import org.ambraproject.article.service.BrowseService;
+import org.ambraproject.article.service.NoSuchArticleIdException;
 import org.ambraproject.cache.Cache;
 import org.ambraproject.journal.JournalService;
 import org.ambraproject.model.article.ArticleInfo;
-import org.topazproject.ambra.models.Journal;
-import org.topazproject.ambra.models.UserAccount;
 import org.ambraproject.models.Article;
 import org.ambraproject.service.HibernateServiceImpl;
 import org.ambraproject.solr.SolrException;
 import org.ambraproject.solr.SolrFieldConversion;
 import org.ambraproject.solr.SolrHttpService;
+import org.apache.commons.configuration.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Required;
+import org.topazproject.ambra.models.Journal;
 import org.w3c.dom.Document;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The <code>FeedService</code> supplies the API for querying and caching
@@ -330,20 +334,6 @@ public class FeedServiceImpl extends HibernateServiceImpl implements FeedService
   @Required
   public void setFeedCache(Cache feedCache) {
     this.feedCache = feedCache;
-  }
-
-  /**
-   * Get the UserAccount info using the Id.
-   *
-   * @param id  user id
-   * @return  user account
-   */
-  public UserAccount getUserAcctFrmID(String id) {
-    UserAccount ua = (UserAccount)hibernateTemplate.load(UserAccount.class, URI.create(id));
-    if(ua == null) {
-      log.error("Unable to look up UserAccount for " + id);
-    }
-    return ua;
   }
 
   /**

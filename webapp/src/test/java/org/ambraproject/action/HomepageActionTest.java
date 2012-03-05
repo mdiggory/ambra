@@ -70,7 +70,7 @@ public class HomepageActionTest extends BaseWebTest {
     dummyDataStore.store(journal);
 
     Calendar recentDate = Calendar.getInstance();
-    recentDate.add(Calendar.DAY_OF_MONTH, -1);
+    recentDate.add(Calendar.DAY_OF_MONTH, -2);
 
     Calendar lastYear = Calendar.getInstance();
     lastYear.add(Calendar.YEAR, -1);

@@ -21,17 +21,16 @@ package org.ambraproject.feed.service;
 
 import org.ambraproject.ApplicationException;
 import org.ambraproject.article.service.NoSuchArticleIdException;
-import org.topazproject.ambra.models.UserAccount;
+import org.ambraproject.models.Article;
 import org.topazproject.ambra.models.Annotation;
 import org.topazproject.ambra.models.Comment;
 import org.topazproject.ambra.models.FormalCorrection;
-import org.topazproject.ambra.models.Retraction;
-import org.topazproject.ambra.models.Trackback;
+import org.topazproject.ambra.models.MinorCorrection;
 import org.topazproject.ambra.models.Rating;
 import org.topazproject.ambra.models.RatingSummary;
-import org.topazproject.ambra.models.MinorCorrection;
 import org.topazproject.ambra.models.Reply;
-import org.ambraproject.models.Article;
+import org.topazproject.ambra.models.Retraction;
+import org.topazproject.ambra.models.Trackback;
 import org.w3c.dom.Document;
 
 import java.net.URISyntaxException;
@@ -144,14 +143,5 @@ public interface FeedService {
    */
   public List<String> getReplyIds(final AnnotationFeedCacheKey cacheKey)
       throws ApplicationException;
-
-  /**
-   * Get the UserAccount info using the Id.
-   *
-   * @param id user id
-   * @return user account
-   */
-  public UserAccount getUserAcctFrmID(String id);
-
 
 }

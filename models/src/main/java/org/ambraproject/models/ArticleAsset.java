@@ -35,6 +35,16 @@ public class ArticleAsset extends AmbraEntity {
   private String description;
   private long size;
 
+  public ArticleAsset() {
+    super();
+  }
+
+  public ArticleAsset(String doi, String extension) {
+    this();
+    this.doi = doi;
+    this.extension = extension;
+  }
+
   public String getDoi() {
     return doi;
   }

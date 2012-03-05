@@ -19,200 +19,149 @@
  */
 package org.ambraproject.user.service;
 
-import org.ambraproject.ApplicationException;
-import org.topazproject.ambra.models.UserAccount;
-import org.ambraproject.user.AmbraUser;
+import org.ambraproject.models.ArticleView;
+import org.ambraproject.models.UserLogin;
+import org.ambraproject.models.UserProfile;
+import org.ambraproject.user.DuplicateDisplayNameException;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * Class to roll up web services that a user needs in Ambra. Rest of application should generally
  * use AmbraUser to
  *
  * @author Stephen Cheng
- *
  */
 public interface UserService {
 
   /**
-   * Create a new user account and associate a single authentication id with it.
+   * Login the user for the auth id with the given login info.  Return an AmbraUser object for display/caching purposes.
    *
-   * @param authId the user's authentication id from CAS
-   * @return the user's internal id
-   * @throws ApplicationException if the <var>authId</var> is a duplicate
+   * @param authId    the auth id of the user being logged in
+   * @param loginInfo detached UserLogin object holding login information (browser, ip, etc.)
+   * @return the user object
    */
-  public String createUser(final String authId) throws ApplicationException;
+  public UserProfile login(final String authId, final UserLogin loginInfo);
 
   /**
-   * Deletes the given user from the database. Visible for testing only.
-   *
-   * @param userId
-   *          the Topaz User ID
-   * @throws ApplicationException ApplicationException
+   * Get the user specified by the given id
+   * @param userId the id of the given user
+   * @return the user specified by the given id
    */
-  public void deleteUser(final String userId, final String authId) throws ApplicationException;
-
-  /**
-   * Returns the username for a user given a UserId.
-   *
-   * @param userId topazUserId
-   * @return username username
-   * @throws ApplicationException ApplicationException
-   */
-  public String getUsernameById(final String userId) throws ApplicationException;
-
-  /**
-   * Gets the user specified by the userID passed in
-   *
-   * @param userId Topaz User ID
-   * @return user associated with the topazUserId
-   * @throws ApplicationException on access-check failure
-   */
-  public AmbraUser getUserById(final String userId) throws ApplicationException;
-
-  /**
-   * Get the AmbraUser with only the profile loaded.
-   *
-   * @param topazUserId topazUserId
-   * @return AmbraUser
-   * @throws ApplicationException on access-check failure
-   */
-  public AmbraUser getUserWithProfileLoaded(final String topazUserId)
-      throws ApplicationException;
-  /**
-   * Gets the user specified by the authentication ID (CAS ID currently)
-   *
-   * @param authId authentication ID
-   * @return the user associated with the authID
-   * @throws ApplicationException on access-check failure
-   */
-  public AmbraUser getUserByAuthId(final String authId) throws ApplicationException;
+  public UserProfile getUser(Long userId);
 
   /**
    * Gets the user specified by the authentication ID (CAS ID currently)
    *
    * @param authId authentication ID
    * @return the user associated with the authID
-   * @throws ApplicationException on access-check failure
    */
-  public UserAccount getUserAccountByAuthId(String authId) throws ApplicationException;
+  public UserProfile getUserByAuthId(String authId);
 
   /**
-   * Sets the state of the user account
+   * Get the user with the specified account uri
+   * @param accountUri
+   * @return
+   */
+  public UserProfile getUserByAccountUri(String accountUri);
+
+  /**
+   * update the email stored for the given user
    *
-   * @param userId Topaz User ID
-   * @param state  new state of the user
-   * @throws ApplicationException ApplicationException
+   * @param userId the id of the {@link org.ambraproject.models.UserProfile} object to update
+   * @param email  the email to set
    */
-  public void setState(final String userId, final String authId, int state) throws ApplicationException;
+  public void updateEmail(Long userId, String email);
 
   /**
-   * Gets the current state of the user
+   * save a user with information given by the user profile argument, if none exists. If a user with the same auth id as provided exists,
+   * that user will be updated.
    *
-   * @param userId Topaz userID
-   * @return current state of the user
-   * @throws ApplicationException ApplicationException
-   */
-  public int getState(final String userId) throws ApplicationException;
-
-  /**
-   * Retrieves first authentication ID for a given Topaz userID.
+   * Does not overwrite a user's roles, and if some are provided they will be ignored
+   * 
    *
-   * @param userId Topaz userID
-   * @return first authentiation ID associated with the Topaz userID
-   * @throws ApplicationException ApplicationException
+   * @param userProfile a detached {@link org.ambraproject.models.UserProfile} instance with values to save
+   * @return the saved user object
+   * @throws DuplicateDisplayNameException if this is a new auth id and a user with the given display name already exists
    */
-  public String getAuthenticationId(final String userId) throws ApplicationException;
+  public UserProfile saveOrUpdateUser(UserProfile userProfile) throws DuplicateDisplayNameException;
 
   /**
-   * Returns the Topaz userID the authentiation ID passed in is associated with
+   * Save the given alerts for the user specified by the given id.
    *
-   * @param authId authentication ID you are looking up
-   * @return Topaz userID for a given authentication ID
-   * @throws ApplicationException on access-check failure
+   * @param userAuthId the auth id of the user to set the alerts on
+   * @param monthlyAlerts a list of the monthly alerts
+   * @param weeklyAlerts a list of the weekly alerts
    */
-  public String lookUpUserByAuthId(final String authId) throws ApplicationException;
+  public void setAlerts(String userAuthId, List<String> monthlyAlerts, List<String> weeklyAlerts);
 
   /**
-   * Returns the Topaz userID the account ID passed in is associated with
+   * Return a copy of the given user profile object with private fields set to null, if applicable, and all html escaped in string fields
    *
-   * @param accountId account ID you are looking up
-   * @return Topaz userID for a given account ID
-   * @throws ApplicationException on access-check failure
+   * @param userProfile the user object to copy
+   * @param showPrivateFields if true, show fields the user has marked as private
+   * @return a copy of the given user profile
    */
-  public String lookUpUserByAccountId(final String accountId) throws ApplicationException;
+  public UserProfile getProfileForDisplay(UserProfile userProfile, boolean showPrivateFields);
 
   /**
-   * Lookup the topaz id of the user with a given email address
-   * @param emailAddress emailAddress
-   * @return topaz id of the user
-   * @throws ApplicationException on access-check failure
-   */
-  public String lookUpUserByEmailAddress(final String emailAddress) throws ApplicationException;
-
-  /**
-   * Lookup the topaz id of the user with a given name
-   * @param name user display name
-   * @return topaz id of the user
-   * @throws ApplicationException on access-check failure
-   */
-  public String lookUpUserByDisplayName(final String name) throws ApplicationException;
-
-  /**
-   * Takes in an Ambra user and write the profile to the store
+   * Return user alert data data which is specified in the configuration. <br>
+   * <p/>
+   * Config FORMAT EXAMPLE:<br>
+   * <p/>
+   * <pre>
+   * &lt;userAlerts&gt;
+   *   &lt;categories&gt;
+   *     &lt;category key=&quot;biology&quot;&gt;PLoS Biology&lt;/category&gt;
+   *     &lt;category key=&quot;computational_biology&quot;&gt;PLoS Computational Biology&lt;/category&gt;
+   *     &lt;category key=&quot;clinical_trials&quot;&gt;PLoS Hub for Clinical Trials&lt;/category&gt;
+   *     &lt;category key=&quot;genetics&quot;&gt;PLoS Genetics&lt;/category&gt;
+   *     &lt;category key=&quot;medicine&quot;&gt;PLoS Medicine&lt;/category&gt;
+   *     &lt;category key=&quot;pathogens&quot;&gt;PLoS Pathogens&lt;/category&gt;
+   *     &lt;category key=&quot;plosntds&quot;&gt;PLoS Neglected Tropical Diseases&lt;/category&gt;
+   *     &lt;category key=&quot;plosone&quot;&gt;PLoS ONE&lt;/category&gt;
+   *     &lt;/categories&gt;
+   *     &lt;monthly&gt;biology, clinical_trials, computational_biology, genetics, medicine, pathogens, plosntds&lt;/monthly&gt;
+   *     &lt;weekly&gt;biology, clinical_trials, computational_biology, genetics, medicine, pathogens, plosntds, plosone&lt;/weekly&gt;
+   * &lt;/userAlerts&gt;
+   * </pre>
    *
-   * @param inUser write profile of this user to the store
-   * @throws ApplicationException ApplicationException
-   * @throws DisplayNameAlreadyExistsException DisplayNameAlreadyExistsException
+   * @return All available user alerts
    */
-  public void setProfile(final AmbraUser inUser)
-      throws ApplicationException, DisplayNameAlreadyExistsException;
+  public List<UserAlert> getAvailableAlerts();
 
   /**
-   * Write the specified user profile and associates it with the specified user ID
+   * Checks if the user specified by the given auth id should be allowed to perform admin actions
    *
-   * @param inUser  topaz user object with the profile
-   * @param userNameIsRequired whether a username in the profile is required
-   * @throws ApplicationException ApplicationException
-   * @throws DisplayNameAlreadyExistsException DisplayNameAlreadyExistsException
-   */
-  public void setProfile(final AmbraUser inUser, final boolean userNameIsRequired)
-      throws ApplicationException, DisplayNameAlreadyExistsException;
-
-  /**
-   * Writes the preferences for the given user to the store
-   *
-   * @param inUser
-   *          User whose preferences should be written
-   * @throws ApplicationException ApplicationException
-   */
-  public void setPreferences(final AmbraUser inUser) throws ApplicationException;
-
-  /**
-   * @see org.ambraproject.user.service.UserService#setRole(String, String[], String)
-   */
-  public void setRole(final String topazId, final String roleId, final String authId) throws ApplicationException;
-
-  /**
-   * Set the roles for the user.
-   *
-   * @param topazId the user's id
-   * @param roleIds the new roles
-   * @throws ApplicationException if the user doesn't exist
-   */
-  public void setRole(final String topazId, final String[] roleIds, final String authId) throws ApplicationException;
-
-  /**
-   * Get the roles for the user.
-   * @param topazId topazId
-   * @return roles
-   * @throws ApplicationException
-   */
-  public String[] getRole(final String topazId) throws ApplicationException;
-
-  /**
-   * Checks the action guard.
-   * @return boolean
+   * @param authId the auth id of the user to check
+   * @return boolean true if the user is allowed to perform admin actions, false if not
    */
   public boolean allowAdminAction(final String authId);
 
-  public String getEmailAddressUrl();
+  /**
+   * Get the email address that CAS has stored for the user
+   *
+   * @param authId the user to lookup
+   * @return the email from CAS
+   */
+  public String fetchUserEmailFromCas(final String authId);
+
+  /**
+   * Record an article view by the given user
+   * @param userId the id of the user
+   * @param articleId the id of the article
+   * @param type the type of view (e.g. Article view, XML download, etc.)
+   * @return the id of the article view that was stored
+   */
+  public Long recordArticleView(Long userId, Long articleId, ArticleView.Type type);
+
+  /**
+   * Record a search performed by the given user
+   * @param userProfileID the id of the user
+   * @param searchTerms the search terms entered
+   * @param searchParams all other parameters serialized
+   * @return the id of the log entry created
+   */
+  public Long recordUserSearch(Long userProfileID, String searchTerms, String searchParams);
 }

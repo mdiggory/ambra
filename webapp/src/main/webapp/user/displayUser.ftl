@@ -19,71 +19,76 @@
   limitations under the License.
 -->
 <#assign defaultValue = "<em>No answer</em>">
-<#if pou.surnames?has_content>
-	<#assign surnames = pou.surnames>
+<#if surnames?has_content>
+	<#assign surnames = surnames>
 <#else>
 	<#assign surnames = defaultValue>
 </#if>
-<#if pou.city?has_content>
-	<#assign city = pou.city>
+<#if givenNames?has_content>
+	<#assign givenNames = givenNames>
+<#else>
+	<#assign givenNames = defaultValue>
+</#if>
+<#if city?has_content>
+	<#assign city = city>
 <#else>
 	<#assign city = defaultValue>
 </#if>
-<#if pou.country?has_content>
-	<#assign country = pou.country>
+<#if country?has_content>
+	<#assign country = country>
 <#else>
 	<#assign country = "">
 </#if>
-<#if pou.postalAddress?has_content>
-	<#assign postalAddress = pou.postalAddress>
+<#if postalAddress?has_content>
+	<#assign postalAddress = postalAddress>
 <#else>
 	<#assign postalAddress = defaultValue>
 </#if>
-<#if pou.title?has_content>
-	<#assign title = pou.title>
+<#if title?has_content>
+	<#assign title = title>
 <#else>
 	<#assign title = defaultValue>
 </#if>
-<#if pou.organizationName?has_content>
-	<#assign orgName = pou.organizationName>
+<#if organizationName?has_content>
+	<#assign orgName = organizationName>
 <#else>
 	<#assign orgName = defaultValue>
 </#if>
-<#if pou.organizationType?has_content>
-	<#assign orgType = pou.organizationType>
+<#if organizationType?has_content>
+	<#assign orgType = organizationType>
 <#else>
 	<#assign orgType = defaultValue>
 </#if>
-<#if pou.positionType?has_content>
-	<#assign positionType = pou.positionType>
+<#if positionType?has_content>
+	<#assign positionType = positionType>
 <#else>
 	<#assign positionType = defaultValue>
 </#if>
 
-<#if pou.biographyText?has_content>
-	<#assign bio = pou.biographyText>
+<#if biographyText?has_content>
+	<#assign bio = biographyText>
 <#else>
 	<#assign bio = defaultValue>
 </#if>
-<#if pou.researchAreasText?has_content>
-	<#assign research = pou.researchAreasText>
+<#if researchAreasText?has_content>
+	<#assign research = researchAreasText>
 <#else>
 	<#assign research = defaultValue>
 </#if>
-<#if pou.interestsText?has_content>
-	<#assign interests = pou.interestsText>
+<#if interestsText?has_content>
+	<#assign interests = interestsText>
 <#else>
 	<#assign interests = defaultValue>
 </#if>
-<#if pou.homePage?has_content>
-	<#assign homePage = pou.homePage>
+<#if homePage?has_content>
+	<#assign homePageText = homePage>
 <#else>
-	<#assign homePage = defaultValue>
+	<#assign homePageText = defaultValue>
 </#if>
-<#if pou.weblog?has_content>
-	<#assign weblog = pou.weblog>
+<#if weblog?has_content>
+	<#assign weblogText = weblog>
 <#else>
-	<#assign weblog= defaultValue>
+	<#assign weblogText = defaultValue>
 </#if>
 
 
@@ -91,11 +96,11 @@
 <div id="content" class="profile">
 
 <img src="${freemarker_config.context}/images/avatar.png" />
-<h1>${pou.displayName}</h1>
+<h1>${displayName!}</h1>
 
 <ol>
     <li><span class="heading">Title</span><span class="text">${title}</span></li>
-    <li><span class="heading">Full Name</span><span class="text">${pou.givenNames} ${surnames}</span></li>
+    <li><span class="heading">Full Name</span><span class="text">${givenNames} ${surnames}</span></li>
 
 <li><span class="heading">Location</span><span class="text">${city}<#if country == ""><#else>, ${country}</#if></span></li>
 
@@ -113,20 +118,20 @@
 <li><span class="heading">Interests</span><span class="text">${interests}</span></li>
 
 <li><span class="heading">Website URL</span>
-<#if pou.homePage?has_content>
-    <@s.url id="homePageLink" value="${homePage}"/>
-    <span class="text"><a href="${homePageLink}">${homePage}</a></span>
+<#if homePage?has_content>
+    <@s.url id="homePageLink" value="${homePageText}"/>
+    <span class="text"><a href="${homePageLink}">${homePageText}</a></span>
 <#else>
-    <span class="text">${homePage}</span>
+    <span class="text">${homePageText}</span>
 </#if>
 </li>
 
 <li><span class="heading">Blog URL</span>
-<#if pou.weblog?has_content>
-    <@s.url id="weblogLink" value="${weblog}"/>
-    <span class="text"><a href="${weblogLink}">${weblog}</a></span>
+<#if weblog?has_content>
+    <@s.url id="weblogLink" value="${weblogText}"/>
+    <span class="text"><a href="${weblogLink}">${weblogText}</a></span>
 <#else>
-    <span class="text">${weblog}</span>
+    <span class="text">${weblogText}</span>
 </#if>
 </li>
 </ol>

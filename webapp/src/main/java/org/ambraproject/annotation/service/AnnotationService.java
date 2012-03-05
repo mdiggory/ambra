@@ -19,9 +19,9 @@
  */
 package org.ambraproject.annotation.service;
 
+import org.ambraproject.models.UserProfile;
 import org.topazproject.ambra.models.Annotation;
 import org.topazproject.ambra.models.ArticleAnnotation;
-import org.ambraproject.user.AmbraUser;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
@@ -189,7 +189,7 @@ public interface AnnotationService extends BaseAnnotationService {
                                  final String mimeType, final String target,
                                  final String context, final String olderAnnotation,
                                  final String title, final String body, final String ciStatement,
-                                 boolean isPublic, AmbraUser user)
+                                 boolean isPublic, UserProfile user)
       throws Exception;
 
   /**
@@ -210,7 +210,7 @@ public interface AnnotationService extends BaseAnnotationService {
   public String createComment(final String target, final String context,
                               final String olderAnnotation, final String title,
                               final String mimeType, final String body, final String ciStatement,
-                              final boolean isPublic, AmbraUser user) throws Exception;
+                              final boolean isPublic, UserProfile user) throws Exception;
 
   /**
    * Create a flag against an annotation or a reply
@@ -224,6 +224,6 @@ public interface AnnotationService extends BaseAnnotationService {
    * @throws Exception on an error
    */
   public String createFlag(final String target, final String reasonCode,
-                           final String body, final String mimeType, AmbraUser user) throws Exception;
+                           final String body, final String mimeType, UserProfile user) throws Exception;
 
 }

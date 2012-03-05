@@ -26,8 +26,8 @@
   <#assign loginURL = "${freemarker_config.context}/user/secure/secureRedirect.action?goTo=${global.thisPage}">
 </#if>
   <#macro writeReplyDetails reply replyToAuthorId replyToAuthorName>
-    <@s.url namespace="/user" includeParams="none" id="showUserURL" action="showUser" userId="${reply.creator}"/>
-    <@s.url namespace="/user" includeParams="none" id="authorURL" action="showUser" userId="${replyToAuthorId}"/>
+    <@s.url namespace="/user" includeParams="none" id="showUserURL" action="showUser" userAccountUri="${reply.creator}"/>
+    <@s.url namespace="/user" includeParams="none" id="authorURL" action="showUser" userAccountUri="${replyToAuthorId}"/>
       <div class="response">
         <div class="hd">
           <!-- begin response title -->
@@ -100,7 +100,7 @@
         <h3><a name="${baseAnnotation.id}">${baseAnnotation.commentTitle}</a></h3>
         <!-- end : response title -->
         <!-- begin : response poster detail -->
-        <@s.url namespace="/user" includeParams="none" id="baseAuthorURL" action="showUser" userId="${baseAnnotation.creator}"/>
+        <@s.url namespace="/user" includeParams="none" id="baseAuthorURL" action="showUser" userAccountUri="${baseAnnotation.creator}"/>
 
         <div class="detail">Posted by <a href="${baseAuthorURL}" title="Annotation Author" class="user icon">${baseAnnotation.creatorName}</a> on <strong>${baseAnnotation.createdAsDate?string("dd MMM yyyy '</strong>at<strong>' HH:mm zzz")}</strong>
         </div>

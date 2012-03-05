@@ -249,11 +249,11 @@ public class AnnotationConverterImpl implements AnnotationConverter {
 
   private String lookupCreatorName(final Annotea<?> annotea) {
     String creator = annotea.getCreator();
-    if (creator == null)
+    if (creator == null) {
       creator = "anonymous";
-    else {
+    } else {
       try {
-        creator = userService.getUsernameById(creator);
+        creator = userService.getUserByAccountUri(creator).getDisplayName();
       } catch (Exception e) {
         log.warn("Failed to lookup display name for creator <" + creator + ">", e);
       }

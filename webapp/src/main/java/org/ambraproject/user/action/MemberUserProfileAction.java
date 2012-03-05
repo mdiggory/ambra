@@ -19,42 +19,24 @@
  */
 package org.ambraproject.user.action;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import org.ambraproject.Constants;
-import org.ambraproject.user.AmbraUser;
-
-import static org.ambraproject.Constants.AMBRA_USER_KEY;
+import org.ambraproject.models.UserProfile;
 
 /**
  * User Profile Action that is called by the member user to update their profile
  * (distinct from the one that might be called by admin to edit a user profile)
  */
 public class MemberUserProfileAction extends UserProfileAction {
-  /**
-   * Save the user and save the AmbraUser into Session
-   * @return webwork status code
-   * @throws Exception
-   */
   @Override
-  @Transactional(rollbackFor = { Throwable.class })
-  public String executeSaveUser() throws Exception {
-    final String statusCode = super.executeSaveUser();
-
-    if (SUCCESS.equals(statusCode)) {
-      session.put(AMBRA_USER_KEY, super.getSavedAmbraUser());
-    }
-
-    return statusCode;
+  protected String getUserAuthId() {
+    return (String) session.get(Constants.AUTH_KEY);
   }
 
+  //Have to cache the user after saving because, if it was an old user with no display name and they just added one,
+  // EnsureUserAccountInterceptor needs to know
   @Override
-  protected AmbraUser getAmbraUserToUse() {
-    return getCurrentUser();
-  }
-
-  @Override
-  protected String getUserIdToFetchEmailAddressFor() {
-    return (String) session.get(Constants.SINGLE_SIGNON_USER_KEY);
+  @SuppressWarnings("unchecked")
+  protected void afterSave(UserProfile savedUser) {
+    session.put(Constants.AMBRA_USER_KEY, savedUser);
   }
 }

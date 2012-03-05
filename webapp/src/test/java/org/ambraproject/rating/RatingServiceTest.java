@@ -12,19 +12,19 @@
 
 package org.ambraproject.rating;
 
+import org.ambraproject.ApplicationException;
+import org.ambraproject.BaseTest;
 import org.ambraproject.models.Article;
+import org.ambraproject.models.UserProfile;
+import org.ambraproject.rating.service.RatingsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateObjectRetrievalFailureException;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.ambraproject.ApplicationException;
-import org.ambraproject.BaseTest;
 import org.topazproject.ambra.models.Rating;
 import org.topazproject.ambra.models.RatingContent;
 import org.topazproject.ambra.models.RatingSummary;
 import org.topazproject.ambra.models.RatingSummaryContent;
-import org.ambraproject.rating.service.RatingsService;
-import org.ambraproject.testutils.MockAmbraUser;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -87,7 +87,7 @@ public class RatingServiceTest extends BaseTest{
   @Test(dataProvider = "ratingToDelete", expectedExceptions = HibernateObjectRetrievalFailureException.class)
   public void testDeleteRatings(URI ratingId) throws ApplicationException{
     ratingsService.deleteRating(ratingId.toString(), DEFAULT_ADMIN_AUTHID);
-    Rating rating = ratingsService.getRating(ratingId.toString(), new MockAmbraUser("test"));
+    Rating rating = ratingsService.getRating(ratingId.toString());
   }
 
   @DataProvider(name = "ratingList")
@@ -182,8 +182,10 @@ public class RatingServiceTest extends BaseTest{
    */
 
   @Test(dataProvider = "ratingList")
-  public void testHasRated(String articleUri, String creator){
-    boolean hasRated = ratingsService.hasRated(articleUri, new MockAmbraUser(creator));
+  public void testHasRated(String articleUri, String creator) {
+    UserProfile user = new UserProfile();
+    user.setAccountUri(creator);
+    boolean hasRated = ratingsService.hasRated(articleUri, user);
     assertTrue(hasRated, "should return true");
   }
 
@@ -221,7 +223,7 @@ public class RatingServiceTest extends BaseTest{
 
   @Test(dataProvider = "rating")
   public void testGetRating(URI ratingId, String creator){
-    Rating rating = ratingsService.getRating(ratingId.toString(), new MockAmbraUser(creator));
+    Rating rating = ratingsService.getRating(ratingId.toString());
     assertNotNull(rating, "null list of rating ");
   }
 

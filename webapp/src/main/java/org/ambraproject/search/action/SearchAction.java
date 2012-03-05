@@ -20,6 +20,7 @@
  */
 package org.ambraproject.search.action;
 
+import org.ambraproject.user.service.UserService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +61,7 @@ public class SearchAction extends BaseSessionAwareActionSupport {
   private SearchResultSinglePage resultsSinglePage;
 
   private SearchService searchService;
+  private UserService userService;
   private AmbraFreemarkerConfig ambraFreemarkerConfig;
   
   // Used for display of search results
@@ -95,7 +97,8 @@ public class SearchAction extends BaseSessionAwareActionSupport {
       return INPUT;
     } else {
       try {
-        resultsSinglePage = searchService.simpleSearch(getSearchParameters());
+        SearchParameters params = getSearchParameters();
+        resultsSinglePage = searchService.simpleSearch(params);
 
         //  TODO: take out these intermediary objects and pass "SearchResultSinglePage" to the FTL
         totalNoOfResults = resultsSinglePage.getTotalNoOfResults();
@@ -109,6 +112,10 @@ public class SearchAction extends BaseSessionAwareActionSupport {
         // Recent Searches must have both a Request URI and a Request Query String, else the URL is useless.
         if (doSearch() && getRequestURL() != null && getRequestQueryString() != null) {
           addRecentSearch(queryString, getRequestURL() + "?" + getRequestQueryString());
+        }
+
+        if(getCurrentUser() != null) {
+          userService.recordUserSearch(getCurrentUser().getID(), params.getQuery(), params.toString());
         }
       } catch (ApplicationException e) {
         addActionError("Search failed");
@@ -154,7 +161,8 @@ public class SearchAction extends BaseSessionAwareActionSupport {
       return INPUT;
     } else {
       try {
-        resultsSinglePage = searchService.advancedSearch(getSearchParameters());
+        SearchParameters params = getSearchParameters();
+        resultsSinglePage = searchService.advancedSearch(params);
 
         //  TODO: take out these intermediary objects and pass "SearchResultSinglePage" to the FTL
         totalNoOfResults = resultsSinglePage.getTotalNoOfResults();
@@ -167,6 +175,10 @@ public class SearchAction extends BaseSessionAwareActionSupport {
         // Recent Searches must have both a Request URI and a Request Query String, else the URL is useless.
         if (doSearch() && getRequestURL() != null && getRequestQueryString() != null) {
           addRecentSearch(queryAsExecuted, getRequestURL() + "?" + getRequestQueryString());
+        }
+
+        if(getCurrentUser() != null) {
+          userService.recordUserSearch(getCurrentUser().getID(), params.getQuery(), params.toString());
         }
       } catch (ApplicationException e) {
         addActionError("Search failed");
@@ -219,7 +231,8 @@ public class SearchAction extends BaseSessionAwareActionSupport {
     }
 
     try {
-      resultsSinglePage = searchService.findAnArticleSearch(getSearchParameters());
+      SearchParameters params = getSearchParameters();
+      resultsSinglePage = searchService.findAnArticleSearch(params);
 
       // If only ONE result, then send the user to fetchArticle.action for that article
       if (resultsSinglePage.getTotalNoOfResults() == 1) {
@@ -250,6 +263,10 @@ public class SearchAction extends BaseSessionAwareActionSupport {
       // Recent Searches must have both a Request URI and a Request Query String, else the URL is useless.
       if (doSearch() && getRequestURL() != null && getRequestQueryString() != null) {
         addRecentSearch(queryAsExecuted, getRequestURL() + "?" + getRequestQueryString());
+      }
+
+      if(getCurrentUser() != null) {
+        userService.recordUserSearch(getCurrentUser().getID(), params.getQuery(), params.toString());
       }
     } catch (ApplicationException e) {
       addActionError("Search failed");
@@ -393,6 +410,16 @@ public class SearchAction extends BaseSessionAwareActionSupport {
   public List<Map> getArticleTypes()
   {
     return articleTypes;
+  }
+
+  /**
+   * Set the userService
+   *
+   * @param userService userService
+   */
+  @Required
+  public void setUserService(final UserService userService) {
+    this.userService = userService;
   }
 
   /**

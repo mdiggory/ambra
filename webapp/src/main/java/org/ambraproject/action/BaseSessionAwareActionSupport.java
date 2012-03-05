@@ -20,15 +20,14 @@
 
 package org.ambraproject.action;
 
+import org.ambraproject.models.UserProfile;
 import org.apache.struts2.interceptor.SessionAware;
-
-import static org.ambraproject.Constants.AMBRA_USER_KEY;
-import static org.ambraproject.Constants.RECENT_SEARCHES_KEY;
-
-import org.ambraproject.user.AmbraUser;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import static org.ambraproject.Constants.AMBRA_USER_KEY;
+import static org.ambraproject.Constants.RECENT_SEARCHES_KEY;
 
 /**
  * Struts2 action support class that is session aware.
@@ -48,8 +47,8 @@ public class BaseSessionAwareActionSupport extends BaseActionSupport implements 
    *
    * @return Logged in user object
    */
-  protected AmbraUser getCurrentUser() {
-    return (AmbraUser) session.get(AMBRA_USER_KEY);
+  protected UserProfile getCurrentUser() {
+    return (UserProfile) session.get(AMBRA_USER_KEY);
   }
 
   /**

@@ -88,7 +88,7 @@ public class AuthorNameAbbreviationDirective implements TemplateDirectiveModel {
       StringBuilder sb = new StringBuilder();
       for(String givenName :givenNames) {
         if (givenName.length() > 0) {
-          if(givenName.matches(".*\\p{Pd}\\p{Lu}.*")) {
+          if(givenName.matches(".*\\p{Pd}\\p{L}.*")) {
             // Handle names with dash
             String[] sarr = givenName.split("\\p{Pd}");
             for (int i = 0; i < sarr.length; i++) {

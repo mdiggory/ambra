@@ -30,7 +30,8 @@ import java.util.Map;
 public interface Constants {
   String RECENT_SEARCHES_KEY = "RECENT_SEARCHES";
   String AMBRA_USER_KEY = "AMBRA_USER";
-  String SINGLE_SIGNON_USER_KEY = CASFilter.CAS_FILTER_USER;
+  String USER_ID_KEY = "org.ambraproject.user-id";
+  String AUTH_KEY = CASFilter.CAS_FILTER_USER;
   String SINGLE_SIGNON_RECEIPT = CASFilter.CAS_FILTER_RECEIPT;
   String SINGLE_SIGNON_EMAIL_KEY = "org.ambraproject.sso.email";
   /** Authentication method used for anonymous user, otherwise it is normally CAS */

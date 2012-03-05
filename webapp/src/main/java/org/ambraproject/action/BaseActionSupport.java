@@ -20,25 +20,22 @@
 package org.ambraproject.action;
 
 import com.opensymphony.xwork2.ActionSupport;
-
+import org.ambraproject.Constants;
+import org.ambraproject.web.VirtualJournalContext;
+import org.apache.commons.configuration.Configuration;
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.interceptor.RequestAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Required;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.configuration.Configuration;
-import org.apache.struts2.interceptor.RequestAware;
-import org.springframework.beans.factory.annotation.Required;
-import org.ambraproject.user.UserAccountsInterceptor;
-import org.ambraproject.web.VirtualJournalContext;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 /**
  * Base class for all actions.
@@ -167,6 +164,6 @@ public abstract class BaseActionSupport extends ActionSupport implements Request
       throw new RuntimeException("HttpSession is null");
     }
 
-    return (String)httpSession.getAttribute(UserAccountsInterceptor.AUTH_KEY);
+    return (String)httpSession.getAttribute(Constants.AUTH_KEY);
   }
 }

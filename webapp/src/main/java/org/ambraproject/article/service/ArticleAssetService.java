@@ -21,11 +21,9 @@
 
 package org.ambraproject.article.service;
 
-import org.ambraproject.models.Article;
 import org.ambraproject.models.ArticleAsset;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.activation.DataSource;
 import java.util.List;
 
 public interface ArticleAssetService {
@@ -77,5 +75,12 @@ public interface ArticleAssetService {
    */
   @Transactional(readOnly = true)
   public ArticleAssetWrapper[] listFiguresTables(final String articleDoi, final String authId) throws NoSuchArticleIdException;
+
+  /**
+   * Get the Id of the article corresponding to the article asset
+   * @param articleAsset the asset to use
+   * @return the id of the article for which this is an asset
+   */
+  public Long getArticleID(ArticleAsset articleAsset);
 
 }

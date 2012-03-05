@@ -57,7 +57,7 @@
       <table class="directory" cellpadding="0" cellspacing="0">
         <#list commentary as comment>
           <@s.url namespace="/annotation" includeParams="none" id="listThreadURL" action="listThread" root="${comment.annotation.id}" inReplyTo="${comment.annotation.id}"/>
-          <@s.url namespace="/user" includeParams="none" id="showUserURL" action="showUser" userId="${comment.annotation.creator}"/>
+          <@s.url namespace="/user" includeParams="none" id="showUserURL" action="showUser" userAccountUri="${comment.annotation.creator}"/>
 
           <#if ((comment.annotation.context)!"")?length == 0>
             <#assign class="discuss"/>

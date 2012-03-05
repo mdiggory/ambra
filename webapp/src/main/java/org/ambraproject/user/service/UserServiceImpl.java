@@ -21,27 +21,38 @@
 
 package org.ambraproject.user.service;
 
-import org.hibernate.HibernateException;
-import org.hibernate.ObjectNotFoundException;
-import org.hibernate.Query;
-import org.hibernate.Session;
+import org.ambraproject.models.ArticleView;
+import org.ambraproject.models.UserLogin;
+import org.ambraproject.models.UserProfile;
+import org.ambraproject.models.UserSearch;
+import org.ambraproject.permission.service.PermissionsService;
+import org.ambraproject.service.HibernateServiceImpl;
+import org.ambraproject.user.DuplicateDisplayNameException;
+import org.ambraproject.util.FileUtils;
+import org.ambraproject.util.TextUtils;
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.HierarchicalConfiguration;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Required;
-import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.transaction.annotation.Transactional;
-import org.ambraproject.ApplicationException;
-import org.topazproject.ambra.models.*;
-import org.ambraproject.permission.service.PermissionsService;
-import org.ambraproject.service.HibernateServiceImpl;
-import org.ambraproject.user.AmbraUser;
+import org.topazproject.ambra.configuration.ConfigurationStore;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.sql.SQLException;
-import java.util.*;
+import java.beans.PropertyDescriptor;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Class to roll up web services that a user needs in Ambra. Rest of application should generally
@@ -49,471 +60,262 @@ import java.util.*;
  *
  * @author Stephen Cheng
  * @author Joe Osowski
- *
  */
 public class UserServiceImpl extends HibernateServiceImpl implements UserService {
   private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
-
-  private static final String USER_LOCK = "UserCache-Lock-";
-  private static final String USER_KEY = "UserCache-User-";
+  private static final String ALERTS_CATEGORIES_CATEGORY = "ambra.userAlerts.categories.category";
+  private static final String ALERTS_WEEKLY = "ambra.userAlerts.weekly";
+  private static final String ALERTS_MONTHLY = "ambra.userAlerts.monthly";
 
   private PermissionsService permissionsService;
+  private Configuration configuration;
+  private boolean advancedLogging = false;
 
-  private String applicationId;
   private String emailAddressUrl;
+  private String authIdParam;
 
-  /**
-   * Constructor
-   */
-  public UserServiceImpl() {
+  @Override
+  @Transactional(rollbackFor = {Throwable.class})
+  public UserProfile login(final String authId, final UserLogin loginInfo) {
+    log.debug("logging in user with auth id {}", authId);
+    UserProfile user = getUserByAuthId(authId);
+    if (user != null && this.advancedLogging) {
+      loginInfo.setUserProfileID(user.getID());
+      hibernateTemplate.save(loginInfo);
+    }
+    return user;
   }
 
-  /**
-   * Create a new user account and associate a single authentication id with it.
-   *
-   * @param authId the user's authentication id from CAS
-   * @return the user's internal id
-   * @throws ApplicationException if the <var>authId</var> is a duplicate
-   */
-  @Transactional(rollbackFor = { Throwable.class })
-  public String createUser(final String authId) throws ApplicationException {
-    // create account
-    UserAccount ua = new UserAccount();
-    ua.getAuthIds().add(new AuthenticationId(authId));
-
-    hibernateTemplate.saveOrUpdate(ua);
-
-    ua = (UserAccount)hibernateTemplate.load(UserAccount.class, ua.getId());
-
-    return ua.getId().toString();
+  @Override
+  public void updateEmail(Long userId, String email) {
+    UserProfile user = (UserProfile) hibernateTemplate.get(UserProfile.class, userId);
+    if (user != null) {
+      user.setEmail(email);
+      hibernateTemplate.update(user);
+    }
   }
 
-  /**
-   * Deletes the given user from Topaz. Visible for testing only.
-   *
-   * @param userId
-   *          the Topaz User ID
-   * @throws ApplicationException ApplicationException
-   */
-  @Transactional(rollbackFor = { Throwable.class })
-  public void deleteUser(final String userId, String authId) throws ApplicationException {
-    permissionsService.checkRole(PermissionsService.ADMIN_ROLE, authId);
-
+  @Override
+  public UserProfile getUserByAuthId(String authId) {
+    log.debug("Attempting to find user with authID: {}", authId);
     try {
-      UserAccount ua = (UserAccount)hibernateTemplate.load(UserAccount.class, new URI(userId));
-
-      if (ua != null)
-        hibernateTemplate.delete(ua);
-    } catch (URISyntaxException ex) {
-      throw new ApplicationException(ex.getMessage(), ex);
-    }
-  }
-
-  /**
-   * Get the account info for the given user.
-   * @param topazUserId the Topaz User ID
-   * @throws ApplicationException ApplicationException
-   * @return UserAccount
-   */
-  private UserAccount getUserAccount(final String topazUserId) throws ApplicationException {
-    UserAccount ua;
-
-    try {
-      ua = (UserAccount)hibernateTemplate.load(UserAccount.class, new URI(topazUserId));
-    } catch(URISyntaxException ex) {
-      throw new ApplicationException(ex.getMessage(),ex);
-    }
-
-    if (ua == null)
-      throw new ApplicationException("No user-account with id '" + topazUserId + "' found");
-
-    return ua;
-  }
-
-  /**
-   * Returns the username for a user given a Topaz UserId.  Because usernames cannot be changed and
-   * can always be viewed by anyone, we use a simple cache here.
-   *
-   * @param userId topazUserId
-   * @return username username
-   * @throws ApplicationException ApplicationException
-   */
-  @Transactional(readOnly = true)
-  public String getUsernameById(final String userId) throws ApplicationException {
-    try {
-      return getDisplayName(userId);
-    } catch (URISyntaxException ex) {
-      throw new ApplicationException(ex.getMessage(), ex);
-    }
-  }
-
-  private String getDisplayName(final String topazUserId) throws ApplicationException, URISyntaxException {
-    UserAccount ua = (UserAccount)hibernateTemplate.load(UserAccount.class, new URI(topazUserId));
-
-    if(ua == null) {
-      throw new ApplicationException("No user-account with id '" + topazUserId + "' found");
-    } else {
-     return ua.getProfile().getDisplayName();
-    }
-  }
-
-  /**
-   * Gets the user specified by the Topaz userID passed in
-   *
-   * @param userId Topaz User ID
-   * @return user associated with the topazUserId
-   * @throws ApplicationException on access-check failure
-   */
-  @Transactional(readOnly = true)
-  public AmbraUser getUserById(final String userId) throws ApplicationException {
-    return getUserWithProfileLoaded(userId);
-  }
-
-  /**
-   * Get the AmbraUser with only the profile loaded. For getting the preferences also use
-   * getUserById
-   *
-   * @param topazUserId topazUserId
-   * @return AmbraUser
-   * @throws ApplicationException on access-check failure
-   */
-  @Transactional(readOnly = true)
-  public AmbraUser getUserWithProfileLoaded(final String topazUserId)
-      throws ApplicationException {
-
-    UserAccount ua = getUserAccount(topazUserId);
-    return new AmbraUser(ua, applicationId);
-  }
-
-  /**
-   * Gets the us  er specified by the authentication ID (CAS ID currently)
-   *
-   * @param authId authentication ID
-   * @return the user associated with the authID
-   * @throws ApplicationException on access-check failure
-   */
-  @Transactional(readOnly = true)
-  public AmbraUser getUserByAuthId(final String authId) throws ApplicationException {
-    UserAccount ua = getUserAccountByAuthId(authId);
-    if (ua == null)
+      return (UserProfile) hibernateTemplate.findByCriteria(
+          DetachedCriteria.forClass(UserProfile.class)
+              .add(Restrictions.eq("authId", authId))
+          , 0, 1).get(0);
+    } catch (IndexOutOfBoundsException e) {
+      log.warn("Didn't find user for authID: {}", authId);
       return null;
+    }
+  }
 
-    return new AmbraUser(ua, applicationId);
+  @Override
+  public UserProfile getUserByAccountUri(String accountUri) {
+    if (accountUri == null) {
+      throw new IllegalArgumentException("provided null account uri");
+    }
+    try {
+      log.debug("Loading user with account uri: {}", accountUri);
+      return (UserProfile) hibernateTemplate.findByCriteria(
+          DetachedCriteria.forClass(UserProfile.class)
+              .add(Restrictions.eq("accountUri", accountUri)),
+          0, 1).get(0);
+    } catch (IndexOutOfBoundsException e) {
+      log.warn("Didn't find user for accountURI: {}", accountUri);
+      return null;
+    }
+  }
+
+  @Override
+  @Transactional(rollbackFor = {Throwable.class})
+  public UserProfile saveOrUpdateUser(final UserProfile userProfile) throws DuplicateDisplayNameException {
+    //even if you're updating a user, it could be a user with no display name. so we need to make sure they don't pick one that already exists
+    Long count = (Long) hibernateTemplate.findByCriteria(
+        DetachedCriteria.forClass(UserProfile.class)
+            .add(Restrictions.eq("displayName", userProfile.getDisplayName()))
+            .add(Restrictions.not(Restrictions.eq("authId", userProfile.getAuthId())))
+            .setProjection(Projections.rowCount()), 0, 1)
+        .get(0);
+    if (!count.equals(0l)) {
+      throw new DuplicateDisplayNameException();
+    }
+    //check if a user with the same auth id already exists
+    UserProfile existingUser = getUserByAuthId(userProfile.getAuthId());
+    if (existingUser != null) {
+      log.debug("Found a user with authID: {}, updating profile", userProfile.getAuthId());
+      copyFields(userProfile, existingUser);
+      hibernateTemplate.update(existingUser);
+      return existingUser;
+    } else {
+      log.debug("Creating a new user with authID: {}; {}", userProfile.getAuthId(), userProfile);
+      //TODO: We're generating account and profile uris here to maintain backwards compatibility with annotations
+      //once those are refactored we can just call hibernateTemplate.save()
+      String prefix = System.getProperty(ConfigurationStore.SYSTEM_OBJECT_ID_PREFIX);
+      String accountUri = prefix + "account/" + UUID.randomUUID().toString();
+      String profileUri = prefix + "profile/" + UUID.randomUUID().toString();
+      userProfile.setAccountUri(accountUri);
+      userProfile.setProfileUri(profileUri);
+      hibernateTemplate.save(userProfile);
+      return userProfile;
+    }
+  }
+
+  @Override
+  @Transactional
+  public void setAlerts(String userAuthId, List<String> monthlyAlerts, List<String> weeklyAlerts) {
+    UserProfile user = getUserByAuthId(userAuthId);
+
+    log.debug("updating alerts for user: {}; Montly alerts: {}; weekly alerts: {}",
+        new Object[]{user.getDisplayName(), StringUtils.join(monthlyAlerts, ","), StringUtils.join(weeklyAlerts, ",")});
+    List<String> allAlerts;
+
+    if (monthlyAlerts != null && weeklyAlerts != null) {
+      allAlerts = new ArrayList<String>(monthlyAlerts.size() + weeklyAlerts.size());
+      allAlerts.addAll(getAlertsList(monthlyAlerts, UserProfile.MONTHLY_ALERT_SUFFIX));
+      allAlerts.addAll(getAlertsList(weeklyAlerts, UserProfile.WEEKLY_ALERT_SUFFIX));
+    } else if (monthlyAlerts != null) {
+      allAlerts = new ArrayList<String>(monthlyAlerts.size());
+      allAlerts.addAll(getAlertsList(monthlyAlerts, UserProfile.MONTHLY_ALERT_SUFFIX));
+    } else if (weeklyAlerts != null) {
+      allAlerts = new ArrayList<String>(weeklyAlerts.size());
+      allAlerts.addAll(getAlertsList(weeklyAlerts, UserProfile.WEEKLY_ALERT_SUFFIX));
+    } else {
+      allAlerts = new ArrayList<String>(0);
+    }
+    user.setAlertsList(allAlerts);
+    hibernateTemplate.update(user);
   }
 
   /**
-   * Gets the user specified by the authentication ID (CAS ID currently)
+   * return a list of alerts strings with the given suffix added, if they don't already have it
    *
-   * @param authId authentication ID
-   * @return the user associated with the authID
-   * @throws ApplicationException on access-check failure
+   * @param alerts the list of alerts
+   * @param suffix the alerts suffix
+   * @return a list of alerts strings with the given suffix added, if they don't already have it
    */
-  @Transactional(readOnly = true)
-  public UserAccount getUserAccountByAuthId(final String authId) throws ApplicationException {
-    return (UserAccount)hibernateTemplate.execute(new HibernateCallback() {
-      public Object doInHibernate(Session session) throws HibernateException, SQLException {
-        Query q = session.createSQLQuery("select ua.userAccountUri from UserAccount ua " +
-            "join UserAccountAuthIdJoinTable uaajt on uaajt.userAccountUri = ua.userAccountUri " +
-            "join AuthenticationId aid on aid.authenticationIdUri = uaajt.authenticationIdUri " +
-            "where aid.value = :id")
-          .setString("id", authId);
-
-        Iterator r = q.list().iterator();
-
-        try {
-          if(r.hasNext()) {
-            URI accountUri = new URI((String)r.next());
-
-            return session.get(UserAccount.class, accountUri);
-          } else {
-            return null;
-          }
-        } catch(URISyntaxException ex) {
-          throw new HibernateException(ex.getMessage(), ex);
-        }
+  private List<String> getAlertsList(List<String> alerts, String suffix) {
+    List<String> result = new ArrayList<String>(alerts.size());
+    for (String alert : alerts) {
+      if (alert.endsWith(suffix)) {
+        result.add(alert);
+      } else {
+        result.add(alert + suffix);
       }
-    });
+    }
+    return result;
   }
 
-  /**
-   * Sets the state of the user account
-   *
-   * @param userId Topaz User ID
-   * @param state  new state of the user
-   * @throws ApplicationException ApplicationException
-   */
-  @Transactional(rollbackFor = { Throwable.class })
-  public void setState(final String userId, String authId, int state) throws ApplicationException {
-    permissionsService.checkRole(PermissionsService.ADMIN_ROLE, authId);
-
-    UserAccount ua = getUserAccount(userId);
-    ua.setState(state);
-  }
-
-  /**
-   * Gets the current state of the user
-   *
-   * @param userId Topaz userID
-   * @return current state of the user
-   * @throws ApplicationException ApplicationException
-   */
+  @Override
   @Transactional(readOnly = true)
-  public int getState(final String userId) throws ApplicationException {
-    UserAccount ua = getUserAccount(userId);
-    return ua.getState();
-  }
-
-  /**
-   * Retrieves first authentication ID for a given Topaz userID.
-   *
-   * @param userId Topaz userID
-   * @return first authentiation ID associated with the Topaz userID
-   * @throws ApplicationException ApplicationException
-   */
-  @Transactional(readOnly = true)
-  public String getAuthenticationId(final String userId) throws ApplicationException {
-    UserAccount ua = getUserAccount(userId);
-    return ua.getAuthIds().iterator().next().getValue();
-  }
-
-  /**
-   * Returns the Topaz userID the authentiation ID passed in is associated with
-   *
-   * @param authId authentication ID you are looking up
-   * @return Topaz userID for a given authentication ID
-   * @throws ApplicationException on access-check failure
-   */
-  @Transactional(readOnly = true)
-  public String lookUpUserByAuthId(final String authId) throws ApplicationException {
-    return (String)hibernateTemplate.execute(new HibernateCallback() {
-
-      public Object doInHibernate(Session session) throws HibernateException, SQLException {
-        Query q = session.
-            createSQLQuery("select uaajt.userAccountUri from UserAccountAuthIdJoinTable uaajt " +
-              "join AuthenticationId aid on aid.authenticationIdUri = uaajt.authenticationIdUri " +
-              "where aid.value = :id")
-            .setParameter("id", authId);
-
-        Iterator r = q.list().iterator();
-
-        if(r.hasNext()) {
-          return r.next();
-        } else {
-          return null;
-        }
-      }
-    });
-  }
-
-  /**
-   * Returns the Topaz userID the account ID passed in is associated with
-   *
-   * @param accountId account ID you are looking up
-   * @return Topaz userID for a given account ID
-   * @throws ApplicationException on access-check failure
-   */
-  @Transactional(readOnly = true)
-  public String lookUpUserByAccountId(final String accountId) throws ApplicationException {
-    UserAccount account = (UserAccount)hibernateTemplate.get(UserAccount.class, URI.create(accountId));
-
-    if (account != null)
-      return account.getId().toString();
-    else
-      return null;
-  }
-
-  /**
-   * Lookup the topaz id of the user with a given email address
-   * @param emailAddress emailAddress
-   * @return topaz id of the user
-   * @throws ApplicationException on access-check failure
-   */
-  @Transactional(readOnly = true)
-  public String lookUpUserByEmailAddress(final String emailAddress) throws ApplicationException {
-    return lookUpUserByProfile("email", URI.create("mailto:" + emailAddress));
-  }
-
-
-  /**
-   * Lookup the topaz id of the user with a given name
-   * @param name user display name
-   * @return topaz id of the user
-   * @throws ApplicationException on access-check failure
-   */
-  @Transactional(readOnly = true)
-  public String lookUpUserByDisplayName(final String name) throws ApplicationException {
-    return lookUpUserByProfile("displayName", name);
-  }
-
-  private String lookUpUserByProfile(final String field, final Object value)
-      throws ApplicationException {
-
-    //Following a slightly different pattern here that works with unit tests that talk to the hypersonic
-    //We might consider using this pattern for all DB queries.
-
-    DetachedCriteria query = DetachedCriteria.forClass(UserAccount.class)
-      .createCriteria("profile")
-      .add(Restrictions.eq(field, value));
-
-    List list = hibernateTemplate.findByCriteria(query);
-
-    Iterator r = list.iterator();
-
-    if (!r.hasNext())
-      return null;
-
-    return ((UserAccount)r.next()).getId().toString();
-  }
-
-  /**
-   * Takes in an Ambra user and write the profile to the store
-   *
-   * @param inUser write profile of this user to the store
-   * @throws ApplicationException ApplicationException
-   * @throws org.ambraproject.user.service.DisplayNameAlreadyExistsException DisplayNameAlreadyExistsException
-   */
-  @Transactional(rollbackFor = { Throwable.class })
-  public void setProfile(final AmbraUser inUser)
-      throws ApplicationException, DisplayNameAlreadyExistsException {
-    if (inUser != null) {
-      setProfile(inUser, false);
+  public UserProfile getUser(Long userId) {
+    if (userId != null) {
+      log.debug("Looking up user with id: {}", userId);
+      return (UserProfile) hibernateTemplate.get(UserProfile.class, userId);
     } else {
-      throw new ApplicationException("User is null");
+      throw new IllegalArgumentException("Null userId");
     }
   }
 
-  /**
-   * Takes in an Ambra user and write the profile to the store
-   *
-   * @param inUser write profile of this user to the store
-   * @param privateFields fields marked private by the user
-   * @param userNameIsRequired whether userNameIsRequired
-   * @throws ApplicationException ApplicationException
-   * @throws org.ambraproject.user.service.DisplayNameAlreadyExistsException DisplayNameAlreadyExistsException
-   */
-  @Transactional(rollbackFor = { Throwable.class })
-  public void setProfile(final AmbraUser inUser, final String[] privateFields,
-                         final boolean userNameIsRequired)
-      throws ApplicationException, DisplayNameAlreadyExistsException {
-    if (inUser != null) {
-      setProfile(inUser, userNameIsRequired);
-    } else {
-      throw new ApplicationException("User is null");
+  @Override
+  public UserProfile getProfileForDisplay(UserProfile userProfile, boolean showPrivateFields) {
+    UserProfile display = new UserProfile();
+    copyFields(userProfile, display);
+    if (!showPrivateFields) {
+      log.debug("Removing private fields for display on user: {}", userProfile.getDisplayName());
+      display.setOrganizationName(null);
+      display.setOrganizationType(null);
+      display.setPostalAddress(null);
+      display.setPositionType(null);
     }
-  }
 
-  /**
-   * Write the specified user profile and associates it with the specified user ID
-   *
-   * @param inUser  topaz user object with the profile
-   * @param userNameIsRequired whether a username in the profile is required
-   * @throws ApplicationException ApplicationException
-   * @throws org.ambraproject.user.service.DisplayNameAlreadyExistsException DisplayNameAlreadyExistsException
-   */
-  public void setProfile(final AmbraUser inUser, final boolean userNameIsRequired)
-      throws ApplicationException, DisplayNameAlreadyExistsException {
-
-    if (userNameIsRequired) {
-      final String userId = lookUpUserByProfile("displayName", inUser.getDisplayName());
-      if ((null != userId) && !userId.equals(inUser.getUserId())) {
-        throw new DisplayNameAlreadyExistsException();
+    //escape html in all string fields
+    BeanWrapper wrapper = new BeanWrapperImpl(display);
+    for (PropertyDescriptor property : wrapper.getPropertyDescriptors()) {
+      if (String.class.isAssignableFrom(property.getPropertyType())) {
+        String name = property.getName();
+        wrapper.setPropertyValue(name, TextUtils.escapeHtml((String) wrapper.getPropertyValue(name)));
       }
     }
 
-    UserAccount ua = getUserAccount(inUser.getUserId());
-    UserProfile old = null;
 
-    try {
-      old = ua.getProfile();
-    } catch (ObjectNotFoundException ex) {}
+    return display;
+  }
 
-    UserProfile nu = inUser.getUserProfile();
-    // if we are swapping out a profile with another with the same id, evict the old
-    if ((old != null) && (nu != null) && (old != nu) && old.getId().equals(nu.getId())) {
-      if (log.isDebugEnabled())
-        log.debug("Evicting old profile (" + old + ") with id " + old.getId());
-      hibernateTemplate.evict(old);
+  @Override
+  @SuppressWarnings("unchecked")
+  public List<UserAlert> getAvailableAlerts() {
+    List<UserAlert> alerts = new ArrayList<UserAlert>();
+
+    final Map<String, String> categoryNames = new HashMap<String, String>();
+
+    HierarchicalConfiguration hc = (HierarchicalConfiguration) configuration;
+    List<HierarchicalConfiguration> categories = hc.configurationsAt(ALERTS_CATEGORIES_CATEGORY);
+    for (HierarchicalConfiguration c : categories) {
+      String key = c.getString("[@key]");
+      String value = c.getString("");
+      categoryNames.put(key, value);
     }
-    if (nu != null) {
-      ua.setProfile(nu);
-      hibernateTemplate.saveOrUpdate(ua); // force it since 'nu' may have been evicted
-      if (log.isDebugEnabled())
-        log.debug("Evicting nu profile (" + nu + ") with id " + nu.getId());
+
+    final String[] weeklyCategories = hc.getStringArray(ALERTS_WEEKLY);
+    final String[] monthlyCategories = hc.getStringArray(ALERTS_MONTHLY);
+
+    final Set<Map.Entry<String, String>> categoryNamesSet = categoryNames.entrySet();
+
+    for (final Map.Entry<String, String> category : categoryNamesSet) {
+      final String key = category.getKey();
+      boolean weeklyCategoryKey = false;
+      boolean monthlyCategoryKey = false;
+      if (ArrayUtils.contains(weeklyCategories, key)) {
+        weeklyCategoryKey = true;
+      }
+      if (ArrayUtils.contains(monthlyCategories, key)) {
+        monthlyCategoryKey = true;
+      }
+      alerts.add(new UserAlert(key, category.getValue(), weeklyCategoryKey, monthlyCategoryKey));
     }
+    return alerts;
   }
 
   /**
-   * Writes the preferences for the given user to the store
+   * Copy fields for updating or display. Does <b>not</b> copy some fields:
+   * <ul>
+   * <li>ID: never overwrite IDs on hibernate objects</li>
+   * <li>userAccountUri: these don't come down from display layer, so we don't want to overwrite with null</li>
+   * <li>userProfileUri: these don't come down from display layer, so we don't want to overwrite with null</li>
+   * <li>roles: don't want to overwrite a user's roles when updating their profile</li>
+   * </ul>
    *
-   * @param inUser
-   *          User whose preferences should be written
-   * @throws ApplicationException ApplicationException
+   * @param source
+   * @param destination
    */
-  @Transactional(rollbackFor = { Throwable.class })
-  public void setPreferences(final AmbraUser inUser) throws ApplicationException {
-    if (inUser == null)
-      throw new ApplicationException("User is null");
-
-    UserAccount ua = getUserAccount(inUser.getUserId());
-
-    UserPreferences p = ua.getPreferences(applicationId);
-    if (p == null) {
-      p = new UserPreferences();
-      p.setAppId(applicationId);
-      ua.getPreferences().add(p);
-    }
-    inUser.getUserPrefs(p);
-
+  private void copyFields(UserProfile source, UserProfile destination) {
+    destination.setAccountState(source.getAccountState());
+    destination.setAuthId(source.getAuthId());
+    destination.setRealName(source.getRealName());
+    destination.setGivenNames(source.getGivenNames());
+    destination.setSurname(source.getSurname());
+    destination.setTitle(source.getTitle());
+    destination.setGender(source.getGender());
+    destination.setEmail(source.getEmail());
+    destination.setHomePage(source.getHomePage());
+    destination.setWeblog(source.getWeblog());
+    destination.setPublications(source.getPublications());
+    destination.setDisplayName(source.getDisplayName());
+    destination.setSuffix(source.getSuffix());
+    destination.setPositionType(source.getPositionType());
+    destination.setOrganizationName(source.getOrganizationName());
+    destination.setOrganizationType(source.getOrganizationType());
+    destination.setPostalAddress(source.getPostalAddress());
+    destination.setCity(source.getCity());
+    destination.setCountry(source.getCountry());
+    destination.setBiography(source.getBiography());
+    destination.setInterests(source.getInterests());
+    destination.setResearchAreas(source.getResearchAreas());
+    destination.setOrganizationVisibility(source.getOrganizationVisibility());
+    destination.setAlertsJournals(source.getAlertsJournals());
   }
 
-  /**
-   * @see org.ambraproject.user.service.UserServiceImpl#setRole(String, String[], String)
-   */
-  @Transactional(rollbackFor = { Throwable.class })
-  public void setRole(final String topazId, final String roleId, final String authId) throws ApplicationException {
-    setRole(topazId, new String[] { roleId }, authId);
-  }
-
-  /**
-   * Set the roles for the user.
-   *
-   * @param topazId the user's id
-   * @param roleIds the new roles
-   * @throws ApplicationException if the user doesn't exist
-   */
-  @Transactional(rollbackFor = { Throwable.class })
-  public void setRole(final String topazId, final String[] roleIds, final String authId) throws ApplicationException {
-    permissionsService.checkRole(PermissionsService.ADMIN_ROLE, authId);
-
-    UserAccount ua = getUserAccount(topazId);
-    ua.getRoles().clear();
-    for (String r : roleIds)
-      ua.getRoles().add(new UserRole(r));
-    hibernateTemplate.update(ua);
-  }
-
-  /**
-   * Get the roles for the user.
-   * @param topazId topazId
-   * @return roles
-   * @throws ApplicationException
-   */
-  @Transactional(readOnly = true)
-  public String[] getRole(final String topazId) throws ApplicationException {
-    UserAccount ua = getUserAccount(topazId);
-
-    String[] res = new String[ua.getRoles().size()];
-    int idx = 0;
-    for (UserRole ur : ua.getRoles())
-      res[idx++] = ur.getRole();
-
-    return res;
-  }
-
-  /**
-   * Checks the action guard.
-   * @return boolean
-   */
+  @Override
   public boolean allowAdminAction(final String authId) {
     try {
       permissionsService.checkRole(PermissionsService.ADMIN_ROLE, authId);
@@ -523,35 +325,55 @@ public class UserServiceImpl extends HibernateServiceImpl implements UserService
     }
   }
 
-  /**
-   * @return Returns the appId.
-   */
-  public String getApplicationId() {
-    return applicationId;
+  @Override
+  public String fetchUserEmailFromCas(String authId) {
+    String url = emailAddressUrl;
+    if (!url.endsWith("?")) {
+      url += "?";
+    }
+    url += (authIdParam + "=" + authId);
+    try {
+      return FileUtils.getTextFromUrl(url);
+    } catch (IOException ex) {
+      log.error("Failed to fetch the email address using the url:" + url, ex);
+      return null;
+    }
+  }
+
+  @Override
+  @Transactional
+  public Long recordArticleView(Long userId, Long articleId, ArticleView.Type type) {
+    if (this.advancedLogging) {
+      return (Long) hibernateTemplate.save(new ArticleView(userId, articleId, type));
+    } else {
+      return 0L;
+    }
+  }
+
+  @Override
+  @Transactional
+  public Long recordUserSearch(Long userProfileID, String searchTerms, String searchParams) {
+    if (this.advancedLogging) {
+      return (Long) hibernateTemplate.save(new UserSearch(userProfileID, searchTerms, searchParams));
+    } else {
+      return 0L;
+    }
   }
 
   /**
-   * @param appId
-   *          The appId to set.
+   * @param emailAddressUrl The url from which the email address of the given guid can be fetched
    */
   @Required
-  public void setApplicationId(String appId) {
-    this.applicationId = appId;
-  }
-
-  /**
-   * @return the url from which the email address of the given guid can be fetched
-   */
-  public String getEmailAddressUrl() {
-    return emailAddressUrl;
-  }
-
-  /**
-   * @param emailAddressUrl
-   *          The url from which the email address of the given guid can be fetched
-   */
   public void setEmailAddressUrl(final String emailAddressUrl) {
     this.emailAddressUrl = emailAddressUrl;
+  }
+
+  /**
+   * @param authIdParam the name of the auth id param to pass to cas in http requests for the user email
+   */
+  @Required
+  public void setAuthIdParam(String authIdParam) {
+    this.authIdParam = authIdParam;
   }
 
   /**
@@ -568,7 +390,18 @@ public class UserServiceImpl extends HibernateServiceImpl implements UserService
    *
    * @param permissionsService Value to set for property 'permissionsService'.
    */
+  @Required
   public void setPermissionsService(final PermissionsService permissionsService) {
     this.permissionsService = permissionsService;
+  }
+
+  @Required
+  public void setConfiguration(Configuration configuration) {
+    this.configuration = configuration;
+
+    Object val = configuration.getProperty(ConfigurationStore.ADVANCED_USAGE_LOGGING);
+    if (val != null && val.equals("true")) {
+      advancedLogging = true;
+    }
   }
 }

@@ -22,10 +22,29 @@ package org.ambraproject.struts2;
 
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.Result;
-import com.sun.syndication.feed.atom.*;
+import com.sun.syndication.feed.atom.Content;
+import com.sun.syndication.feed.atom.Entry;
+import com.sun.syndication.feed.atom.Feed;
+import com.sun.syndication.feed.atom.Link;
+import com.sun.syndication.feed.atom.Person;
 import com.sun.syndication.io.WireFeedOutput;
+import org.ambraproject.ApplicationException;
+import org.ambraproject.annotation.service.AnnotationService;
+import org.ambraproject.annotation.service.ReplyService;
+import org.ambraproject.article.service.ArticleAssetService;
+import org.ambraproject.article.service.NoSuchObjectIdException;
+import org.ambraproject.feed.service.ArticleFeedCacheKey;
+import org.ambraproject.feed.service.FeedService;
+import org.ambraproject.feed.service.FeedService.FEED_TYPES;
+import org.ambraproject.model.article.ArticleType;
+import org.ambraproject.models.Article;
 import org.ambraproject.models.ArticleAsset;
 import org.ambraproject.models.ArticleAuthor;
+import org.ambraproject.models.UserProfile;
+import org.ambraproject.service.XMLService;
+import org.ambraproject.user.service.UserService;
+import org.ambraproject.util.TextUtils;
+import org.ambraproject.web.VirtualJournalContext;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.ServletActionContext;
@@ -34,17 +53,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.transaction.annotation.Transactional;
-import org.ambraproject.ApplicationException;
-import org.ambraproject.annotation.service.AnnotationService;
-import org.ambraproject.annotation.service.ReplyService;
-import org.ambraproject.article.service.ArticleAssetService;
-import org.ambraproject.article.service.NoSuchObjectIdException;
 import org.topazproject.ambra.configuration.ConfigurationStore;
-import org.ambraproject.feed.service.ArticleFeedCacheKey;
-import org.ambraproject.feed.service.FeedService;
-import org.ambraproject.feed.service.FeedService.FEED_TYPES;
-import org.ambraproject.models.Article;
-import org.ambraproject.model.article.ArticleType;
 import org.topazproject.ambra.models.Annotation;
 import org.topazproject.ambra.models.Annotea;
 import org.topazproject.ambra.models.ArticleAnnotation;
@@ -56,10 +65,6 @@ import org.topazproject.ambra.models.RatingContent;
 import org.topazproject.ambra.models.Reply;
 import org.topazproject.ambra.models.Retraction;
 import org.topazproject.ambra.models.Trackback;
-import org.topazproject.ambra.models.UserAccount;
-import org.ambraproject.service.XMLService;
-import org.ambraproject.util.TextUtils;
-import org.ambraproject.web.VirtualJournalContext;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -72,7 +77,14 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URI;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * The <code>class AmbraFeedResult</code> creates and serializes the query results from the
@@ -109,6 +121,7 @@ public class AmbraFeedResult extends Feed implements Result {
   private AnnotationService annotationService;
   private XMLService secondaryObjectService;
   private ArticleAssetService articleAssetService;
+  private UserService userService;
 
   private boolean includeformatting = false;
 
@@ -366,8 +379,8 @@ public class AmbraFeedResult extends Feed implements Result {
       } else {
         Person person = new Person();
         String creator = annot.getCreator();
-        if(creator!=null){
-          UserAccount ua = feedService.getUserAcctFrmID(annot.getCreator());
+        if(creator!=null) {
+          UserProfile ua = userService.getUserByAccountUri(creator);
           if (ua != null) {
             person.setName(getUserName(ua));
           } else {
@@ -479,21 +492,21 @@ public class AmbraFeedResult extends Feed implements Result {
     return body;
   }
 
-  private String getUserName(UserAccount ua) {
+  private String getUserName(UserProfile ua) {
     StringBuilder name = new StringBuilder();
 
-    if (ua.getProfile().getGivenNames() != null && !ua.getProfile().getGivenNames().equals("")) {
-      name.append(ua.getProfile().getGivenNames());
+    if (ua.getGivenNames() != null && !ua.getGivenNames().equals("")) {
+      name.append(ua.getGivenNames());
     }
 
-    if (ua.getProfile().getSurnames() != null && !ua.getProfile().getSurnames().equals("")) {
+    if (ua.getSurname() != null && !ua.getSurname().equals("")) {
       if (name.length() > 0)
         name.append(' ');
-      name.append(ua.getProfile().getSurnames());
+      name.append(ua.getSurname());
     }
 
     if (name.length() == 0)
-      name.append(ua.getProfile().getDisplayName());
+      name.append(ua.getDisplayName());
 
     return name.toString();
   }
@@ -1520,6 +1533,11 @@ public class AmbraFeedResult extends Feed implements Result {
   @Required
   public void setReplyService(ReplyService replyService) {
     this.replyService = replyService;
+  }
+
+  @Required
+  public void setUserService(UserService userService) {
+    this.userService = userService;
   }
 }
 

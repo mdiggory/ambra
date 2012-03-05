@@ -28,12 +28,18 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.topazproject.ambra.models.*;
+import org.topazproject.ambra.models.Comment;
+import org.topazproject.ambra.models.FormalCorrection;
+import org.topazproject.ambra.models.Issue;
+import org.topazproject.ambra.models.MinorCorrection;
 
 import java.io.Serializable;
 import java.net.URI;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author Alex Kudlick Date: 5/27/11
@@ -54,7 +60,6 @@ public class AmbraIdGeneratorTest extends AbstractTestNGSpringContextTests {
         {new Comment(), URI.class, idGenerator.getPrefix() + "annotation/" },
         {new MinorCorrection(), URI.class, idGenerator.getPrefix() + "annotation/" },
         {new FormalCorrection(), URI.class, idGenerator.getPrefix() + "annotation/" },
-        {new UserPreference(), URI.class, idGenerator.getPrefix() + "preferences/"},
         {new Issue(), URI.class, idGenerator.getPrefix() + "aggregation/"}
     };
   }

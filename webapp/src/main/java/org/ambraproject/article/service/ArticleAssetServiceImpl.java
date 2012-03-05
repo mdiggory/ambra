@@ -25,13 +25,19 @@ import org.ambraproject.models.Article;
 import org.ambraproject.models.ArticleAsset;
 import org.ambraproject.permission.service.PermissionsService;
 import org.ambraproject.service.HibernateServiceImpl;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.dao.DataAccessException;
+import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.Serializable;
+import java.math.BigInteger;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -172,6 +178,23 @@ public class ArticleAssetServiceImpl extends HibernateServiceImpl implements Art
       }
     }
     return results.toArray(new ArticleAssetWrapper[results.size()]);
+  }
+
+  @Override
+  public Long getArticleID(ArticleAsset articleAsset) {
+    final Long assetID = articleAsset.getID();
+    Object result = hibernateTemplate.execute(new HibernateCallback() {
+      @Override
+      public Object doInHibernate(Session session) throws HibernateException, SQLException {
+        return session.createSQLQuery("select articleID from articleAsset where articleAssetID = ?")
+            .setParameter(0, assetID).list().get(0);
+      }
+    });
+    if (result instanceof BigInteger) {
+      return ((BigInteger) result).longValue();
+    } else {
+      return (Long) result;
+    }
   }
 
   /**

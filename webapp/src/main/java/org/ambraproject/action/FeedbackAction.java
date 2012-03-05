@@ -19,14 +19,13 @@
  */
 package org.ambraproject.action;
 
-import org.apache.struts2.ServletActionContext;
+import org.ambraproject.models.UserProfile;
+import org.ambraproject.service.AmbraMailer;
+import org.ambraproject.user.action.UserActionSupport;
 import org.apache.commons.collections.EnumerationUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.EmailValidator;
-
-import org.ambraproject.service.AmbraMailer;
-import org.ambraproject.user.AmbraUser;
-import org.ambraproject.user.action.UserActionSupport;
+import org.apache.struts2.ServletActionContext;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -60,11 +59,11 @@ public class FeedbackAction extends UserActionSupport {
   }
 
   private void setUserDetailsFromSession() {
-    final AmbraUser ambraUser = getCurrentUser();
+    final UserProfile ambraUser = getCurrentUser();
     if (null != ambraUser) {
       name = ambraUser.getDisplayName();
       fromEmailAddress = ambraUser.getEmail();
-      topazId = ambraUser.getUserId();
+      topazId = ambraUser.getAccountUri();
     }
   }
 

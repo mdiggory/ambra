@@ -32,7 +32,7 @@
         extension varchar(255) not null,
         contextElement varchar(255),
         contentType varchar(255),
-        title varchar(255),
+        title longtext,
         description varchar(255),
         size bigint,
         articleID bigint,
@@ -158,6 +158,72 @@
         unique (doi, target)
     );
 
+    create table userArticleView (
+        userArticleViewID bigint not null auto_increment,
+        created datetime not null,
+        articleID bigint not null,
+        userProfileID bigint not null,
+        type varchar(255) not null,
+        primary key (userArticleViewID)
+    );
+
+    create table userLogin (
+        userLoginID bigint not null auto_increment,
+        created datetime not null,
+        userProfileID bigint not null,
+        sessionID varchar(255),
+        IP varchar(255),
+        userAgent varchar(255),
+        primary key (userLoginID)
+    );
+
+    create table userProfile (
+        userProfileID bigint not null auto_increment,
+        lastModified datetime not null,
+        created datetime not null,
+        email varchar(255) unique,
+        displayName varchar(255) unique,
+        authId longtext unique,
+        userAccountURI varchar(100),
+        userProfileURI varchar(100),
+        accountState integer not null,
+        realName longtext,
+        givenNames varchar(255),
+        surName varchar(15),
+        title varchar(255),
+        gender varchar(15),
+        homePage longtext,
+        weblog longtext,
+        publications varchar(255),
+        suffix varchar(255),
+        positionType varchar(255),
+        organizationName longtext,
+        organizationType varchar(255),
+        city varchar(255),
+        country varchar(255),
+        organizationVisibility bit not null,
+        researchAreas longtext,
+        postalAddress longtext,
+        alertsJournals longtext,
+        biography longtext,
+        interests longtext,
+        primary key (userProfileID)
+    );
+
+    create table userProfileRoleJoinTable (
+        userProfileID bigint not null,
+        userRoleID bigint not null,
+        primary key (userProfileID, userRoleID)
+    );
+
+    create table userRole (
+        userRoleID bigint not null auto_increment,
+        lastModified datetime not null,
+        created datetime not null,
+        roleName varchar(255) not null unique,
+        primary key (userRoleID)
+    );
+
     create table version (
         versionID bigint not null auto_increment,
         lastModified datetime not null,
@@ -227,3 +293,15 @@
         add constraint FK29A133A28F1352A1 
         foreign key (citedArticleID) 
         references citedArticle (citedArticleID);
+
+    alter table userProfileRoleJoinTable 
+        add index FK57F48A3078B0DAE3 (userProfileID), 
+        add constraint FK57F48A3078B0DAE3 
+        foreign key (userProfileID) 
+        references userProfile (userProfileID);
+
+    alter table userProfileRoleJoinTable 
+        add index FK57F48A30DDEDF391 (userRoleID), 
+        add constraint FK57F48A30DDEDF391 
+        foreign key (userRoleID) 
+        references userRole (userRoleID);

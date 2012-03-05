@@ -51,6 +51,11 @@
     <mapping resource="org/ambraproject/models/Category.hbm.xml" />
     <mapping resource="org/ambraproject/models/Syndication.hbm.xml" />
     <mapping resource="org/ambraproject/models/Version.hbm.xml" />
+    <mapping resource="org/ambraproject/models/UserProfile.hbm.xml" />
+    <mapping resource="org/ambraproject/models/UserRole.hbm.xml" />
+    <mapping resource="org/ambraproject/models/UserLogin.hbm.xml" />
+    <mapping resource="org/ambraproject/models/ArticleView.hbm.xml" />
+    <mapping resource="org/ambraproject/models/UserSearch.hbm.xml" />
 
   </session-factory>
 </hibernate-configuration>

@@ -150,8 +150,6 @@ public class WebAnnotation extends BaseAnnotation<ArticleAnnotation> {
     // init lazy-loaded fields
     Citation citation = getCitation();
     if (citation != null) {
-      citation.getEditors();
-      citation.getAuthors();
       citation.getCollaborativeAuthors();
     }
   }

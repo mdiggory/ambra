@@ -2,7 +2,7 @@
  * $HeadURL$
  * $Id$
  *
- * Copyright (c) 2006-2010 by Public Library of Science
+ * Copyright (c) 2006-2010 by Library of Science
  *     http://plos.org
  *     http://ambraproject.org
  *
@@ -21,6 +21,7 @@
 
 package org.ambraproject.annotation.service;
 
+import org.ambraproject.models.Article;
 import org.ambraproject.models.ArticleAuthor;
 import org.ambraproject.models.ArticleEditor;
 import org.hibernate.criterion.DetachedCriteria;
@@ -30,27 +31,26 @@ import org.topazproject.ambra.models.Annotation;
 import org.topazproject.ambra.models.ArticleContributor;
 import org.topazproject.ambra.models.Citation;
 import org.topazproject.ambra.models.FormalCorrection;
-import org.ambraproject.models.Article;
 import org.topazproject.ambra.models.Retraction;
-import org.topazproject.ambra.models.UserProfile;
 
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * TODO: remove this class and move all functionality to the annotation service bean
  * @author Alex Kudlick Date: 4/18/11
  *         <p/>
  *         org.ambraproject.annotation.service
  */
-public class HibernateAnnotationUtil {
+class HibernateAnnotationUtil {
   /**
    * Create default citation on formal correction based on article's citation.
    * @param correction Formal correction
    * @param template hibernate template
    * @throws Exception if migration fails
    */
-  public static void createDefaultCitation(FormalCorrection correction, Citation articleCitation, HibernateTemplate template) throws Exception {
+  static void createDefaultCitation(FormalCorrection correction, Citation articleCitation, HibernateTemplate template) throws Exception {
     Citation citation = createFormalCorrectionCitation(correction.getId().toString(), articleCitation, template);
     template.saveOrUpdate(citation);
     correction.setBibliographicCitation(citation);
@@ -62,7 +62,7 @@ public class HibernateAnnotationUtil {
    * @param template hibernate template
    * @throws Exception if migration fails
    */
-  public static void createDefaultCitation(Retraction retraction, Citation articleCitation, HibernateTemplate template) throws Exception {
+  static void createDefaultCitation(Retraction retraction, Citation articleCitation, HibernateTemplate template) throws Exception {
     Citation citation = createRetractionCitation(retraction.getId().toString(), articleCitation, template);
     template.saveOrUpdate(citation);
     retraction.setBibliographicCitation(citation);
@@ -110,32 +110,12 @@ public class HibernateAnnotationUtil {
     citation.setKey(articleCitation.getKey());
     citation.setNote(articleCitation.getNote());
 
-    if (articleCitation.getAuthors() != null) {
-      citation.setAuthors(new ArrayList<UserProfile>());
-      for (UserProfile userProfile : articleCitation.getAuthors()) {
-        UserProfile newProfile = userProfile.clone();
-        newProfile.setId(null);
-        template.saveOrUpdate(newProfile);
-        citation.getAuthors().add(newProfile);
-      }
-    }
-
     if (articleCitation.getCollaborativeAuthors() != null && articleCitation.getCollaborativeAuthors().size() > 0) {
       ArrayList<String> collaborativeAuthors = new ArrayList<String>(articleCitation.getCollaborativeAuthors().size());
       for (String collabAuthor : articleCitation.getCollaborativeAuthors()) {
         collaborativeAuthors.add(collabAuthor);
       }
       citation.setCollaborativeAuthors(collaborativeAuthors);
-    }
-
-    if (articleCitation.getEditors() != null) {
-      citation.setEditors(new ArrayList<UserProfile>());
-      for (UserProfile editor : articleCitation.getEditors()) {
-        UserProfile newProfile = editor.clone();
-        newProfile.setId(null);
-        template.saveOrUpdate(newProfile);
-        citation.getEditors().add(newProfile);
-      }
     }
 
     Annotation annotation = (Annotation) template.get(Annotation.class, URI.create(annotationId));

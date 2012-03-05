@@ -22,13 +22,6 @@
         <value>hbm/RelatedArticle.hbm.xml</value>
         <value>hbm/License.hbm.xml</value>
 
-        <value>hbm/UserProfile.hbm.xml</value>
-        <value>hbm/UserAccount.hbm.xml</value>
-        <value>hbm/UserRole.hbm.xml</value>
-        <value>hbm/UserPreferences.hbm.xml</value>
-        <value>hbm/UserPreference.hbm.xml</value>
-        <value>hbm/AuthenticationId.hbm.xml</value>
-
         <value>hbm/Citation.hbm.xml</value>
 
         <value>hbm/Annotation.hbm.xml</value>
@@ -39,7 +32,6 @@
         <value>hbm/Reply.hbm.xml</value>
 
         <value>hbm/Aggregations.hbm.xml</value>
-        <value>hbm/EditorialBoard.hbm.xml</value>
         <value>hbm/CitedPerson.hbm.xml</value>
         <value>hbm/ArticleContributor.hbm.xml</value>
 

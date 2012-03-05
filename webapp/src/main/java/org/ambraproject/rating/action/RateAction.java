@@ -19,30 +19,26 @@
  */
 package org.ambraproject.rating.action;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Date;
-import java.util.List;
-import java.text.DateFormat;
-import java.text.ParseException;
-
+import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
+import org.ambraproject.models.UserProfile;
+import org.ambraproject.permission.service.PermissionsService;
+import org.ambraproject.util.ProfanityCheckingService;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.commons.lang.StringUtils;
-
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
-
 import org.topazproject.ambra.models.Rating;
 import org.topazproject.ambra.models.RatingContent;
 import org.topazproject.ambra.models.RatingSummary;
 import org.topazproject.ambra.models.RatingSummaryContent;
-import org.ambraproject.permission.service.PermissionsService;
-import org.ambraproject.user.AmbraUser;
-import org.ambraproject.util.ProfanityCheckingService;
 
-import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.Date;
+import java.util.List;
 
 /**
  * General Rating action class to store and retrieve a users's rating
@@ -76,7 +72,7 @@ public class RateAction extends AbstractRatingAction {
   @SuppressWarnings("unchecked")
   @Transactional(rollbackFor = { Throwable.class })
   public String rateArticle() {
-    final AmbraUser user = getCurrentUser();
+    final UserProfile user = getCurrentUser();
     final Date      now  = new Date(System.currentTimeMillis());
     final URI       annotatedArticle;
 
@@ -171,18 +167,18 @@ public class RateAction extends AbstractRatingAction {
 
     if (log.isDebugEnabled()) {
       log.debug("Retrieving user Ratings for article: " + articleURI + " and user: " +
-                user.getUserId());
+                user.getAccountUri());
     }
 
     // Ratings by this User for Article
-    List<Rating> ratingsList = ratingsService.getRatingsList(articleURI, user.getUserId());
+    List<Rating> ratingsList = ratingsService.getRatingsList(articleURI, user.getAccountUri());
 
     if (ratingsList.size() == 0) {
       newRating = true;
       articleRating = new Rating();
       articleRating.setAnnotates(annotatedArticle);
       articleRating.setContext("");
-      articleRating.setCreator(user.getUserId());
+      articleRating.setCreator(user.getAccountUri());
       articleRating.setCreated(now);
       articleRating.setBody(new RatingContent());
 
@@ -192,7 +188,7 @@ public class RateAction extends AbstractRatingAction {
     } else {
       // should never happen
       String errorMessage = "Multiple Ratings, " + ratingsList.size() + ", for Article, " +
-                            articleURI + ", for user, " + user.getUserId();
+                            articleURI + ", for user, " + user.getAccountUri();
       log.error(errorMessage);
       throw new RuntimeException(errorMessage);
     }
@@ -307,7 +303,7 @@ public class RateAction extends AbstractRatingAction {
   @SuppressWarnings("unchecked")
   @Transactional(readOnly = true)
   public String retrieveRatingsForUser() {
-    final AmbraUser user = getCurrentUser();
+    final UserProfile user = getCurrentUser();
 
     if (user == null) {
       log.info("User is null for retrieving user ratings");
@@ -316,10 +312,10 @@ public class RateAction extends AbstractRatingAction {
       return ERROR;
     }
 
-    List<Rating> ratingsList = ratingsService.getRatingsList(articleURI, user.getUserId());
+    List<Rating> ratingsList = ratingsService.getRatingsList(articleURI, user.getAccountUri());
 
     if (ratingsList.size() < 1) {
-      log.debug("didn't find any matching ratings for user: " + user.getUserId());
+      log.debug("didn't find any matching ratings for user: " + user.getAccountUri());
       addActionError("No ratings for user");
       return ERROR;
     }

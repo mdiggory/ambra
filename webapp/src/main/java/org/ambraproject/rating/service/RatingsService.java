@@ -19,12 +19,11 @@
  */
 package org.ambraproject.rating.service;
 
-import com.google.inject.internal.Finalizer;
 import org.ambraproject.ApplicationException;
+import org.ambraproject.models.UserProfile;
 import org.topazproject.ambra.models.Rating;
 import org.topazproject.ambra.models.RatingContent;
 import org.topazproject.ambra.models.RatingSummary;
-import org.ambraproject.user.AmbraUser;
 
 import java.io.Serializable;
 import java.util.List;
@@ -59,10 +58,9 @@ public interface RatingsService {
    * Get a Rating by Id.
    *
    * @param ratingId Rating Id
-   * @param user current ambra user
    * @return Rating
    */
-  public Rating getRating(final String ratingId, AmbraUser user) ;
+  public Rating getRating(final String ratingId) ;
 
   /**
    * Get rating summary list for the given article
@@ -99,7 +97,7 @@ public interface RatingsService {
 
   public AverageRatings getAverageRatings(final String articleURI);
 
-  public boolean hasRated(String articleURI, AmbraUser user);
+  public boolean hasRated(String articleURI, UserProfile user);
 
   public static class Average implements Serializable {
     private static final long serialVersionUID = -2890067268188424471L;

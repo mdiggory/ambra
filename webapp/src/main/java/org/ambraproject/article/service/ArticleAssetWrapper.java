@@ -1,5 +1,5 @@
-/* $HeadURL:: http://ambraproject.org/svn/ambra/branches/ambra-2.2/ambra/webapp/src/main#$
- * $Id: SecondaryObject.java 9820 2011-11-23 21:14:43Z ssterling $
+/* $HeadURL::                                                                            $
+ * $Id$
  *
  * Copyright (c) 2006-2010 by Public Library of Science
  * http://plos.org

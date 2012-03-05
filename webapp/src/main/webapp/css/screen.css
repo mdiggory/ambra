@@ -842,8 +842,8 @@ div.toc dl.related dt { float:none; color:#666 }
 div.toc dl.related dt em { font-style:normal }
 
 /*--- Browse Form ---- */
-div#browseNav form.browseForm { margin: 0; background: #fff url(../images/tools_bg.gif) no-repeat top left; padding: 10px 0 0 0; color: #666; position: relative; }
-div#browseNav form.browseForm fieldset { margin: 0; padding: 0 0 10px 0; border: none; background: #fff url(../images/tools_bg.gif) no-repeat bottom left; width: 100%; position: relative; }
+div#browseNav form.browseForm { margin: 0; background: #fff url(../images/tools_bg_browse.gif) no-repeat top left; padding: 10px 0 0 0; color: #666; position: relative; }
+div#browseNav form.browseForm fieldset { margin: 0; padding: 0 0 10px 0; border: none; background: #fff url(../images/tools_bg_browse.gif) no-repeat bottom left; width: 100%; position: relative; }
 
 div#browseNav div { padding-bottom: 18px; background-color: #fff; }
 div#browseNav .browseForm legend { display: none;}

@@ -52,7 +52,7 @@
       </div>
 
       <#list articleRatingSummaries as articleRatingSummary>
-        <@s.url id="fetchUserURL" namespace="/user" action="showUser" userId="${articleRatingSummary.creatorURI}"/>
+        <@s.url id="fetchUserURL" namespace="/user" action="showUser" userAccountUri="${articleRatingSummary.creatorURI}"/>
         <div class="response ratingComment">
           <a name="${articleRatingSummary.ratingId}"/>
           <div class="hd">

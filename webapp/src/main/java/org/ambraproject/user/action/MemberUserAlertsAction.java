@@ -19,7 +19,7 @@
  */
 package org.ambraproject.user.action;
 
-import org.ambraproject.user.AmbraUser;
+import org.ambraproject.Constants;
 
 /**
  * User Alerts Action that is called by the member user to update their alerts preferences
@@ -27,12 +27,8 @@ import org.ambraproject.user.AmbraUser;
  */
 public class MemberUserAlertsAction extends UserAlertsAction {
 
-  /**
-   * Get logged in user
-   * @return currently logged in user object
-   */
   @Override
-  protected AmbraUser getAmbraUserToUse() {
-    return getCurrentUser();
+  protected String getUserAuthId() {
+    return (String) session.get(Constants.AUTH_KEY);
   }
 }

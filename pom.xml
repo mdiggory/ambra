@@ -186,13 +186,10 @@
     <module>models</module>
     <module>webapp</module>
     <module>cas-mod</module>
-    <module>doi-resolver</module>
     <module>libs</module>
     <module>scripts</module>
-    <module>registration</module>
     <module>ecqs-bundle</module>
     <module>journals</module>
-    <module>plos-cas</module>
   </modules>
 
   <dependencyManagement>

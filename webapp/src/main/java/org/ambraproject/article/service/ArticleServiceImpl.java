@@ -32,12 +32,11 @@ import org.ambraproject.models.Article;
 import org.ambraproject.models.ArticleAuthor;
 import org.ambraproject.models.ArticleRelationship;
 import org.ambraproject.models.Category;
+import org.ambraproject.models.UserProfile;
 import org.ambraproject.permission.service.PermissionsService;
 import org.ambraproject.service.HibernateServiceImpl;
 import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
 import org.hibernate.HibernateException;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
@@ -52,7 +51,6 @@ import org.topazproject.ambra.models.FormalCorrection;
 import org.topazproject.ambra.models.Issue;
 import org.topazproject.ambra.models.Journal;
 import org.topazproject.ambra.models.Retraction;
-import org.topazproject.ambra.models.UserAccount;
 import org.topazproject.ambra.models.Volume;
 
 import java.net.URI;
@@ -196,11 +194,9 @@ public class ArticleServiceImpl extends HibernateServiceImpl implements ArticleS
     if ((state == Article.STATE_UNPUBLISHED ||
           state == Article.STATE_DISABLED)
         && log.isInfoEnabled()) {
-      DetachedCriteria criteria = DetachedCriteria.forClass(UserAccount.class)
-          .createAlias("profile","profile")
-          .setProjection(Projections.property("profile.displayName"))
-          .createCriteria("authIds")
-          .add(Restrictions.eq("value",authId));
+      DetachedCriteria criteria = DetachedCriteria.forClass(UserProfile.class)
+          .setProjection(Projections.property("displayName"))
+          .add(Restrictions.eq("authId",authId));
       String userName = (String) hibernateTemplate.findByCriteria(criteria, 0, 1).get(0);
       userName = userName == null ? "UNKNOWN" : userName;
       log.info("User '{}' {} the article {}",

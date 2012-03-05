@@ -19,34 +19,32 @@
  */
 package org.ambraproject.article.action;
 
-import org.ambraproject.models.Article;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.apache.commons.validator.EmailValidator;
-
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.beans.factory.annotation.Required;
-
 import org.ambraproject.ApplicationException;
-import org.ambraproject.util.TextUtils;
 import org.ambraproject.article.service.ArticleService;
 import org.ambraproject.article.service.NoSuchArticleIdException;
-import org.topazproject.ambra.email.impl.FreemarkerTemplateMailer;
+import org.ambraproject.models.Article;
+import org.ambraproject.models.UserProfile;
 import org.ambraproject.service.AmbraMailer;
 import org.ambraproject.service.XMLService;
-import org.ambraproject.user.AmbraUser;
 import org.ambraproject.user.action.UserActionSupport;
+import org.ambraproject.util.TextUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.validator.EmailValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Required;
+import org.springframework.transaction.annotation.Transactional;
+import org.topazproject.ambra.email.impl.FreemarkerTemplateMailer;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URLDecoder;
-import java.io.UnsupportedEncodingException;
 
 /**
  * Email the article to another user.
@@ -76,7 +74,7 @@ public class EmailArticleAction extends UserActionSupport {
     if (!validatesArticleURI())
       return INPUT;
 
-    final AmbraUser ambraUser = getCurrentUser();
+    final UserProfile ambraUser = getCurrentUser();
     if (null != ambraUser) {
       senderName = ambraUser.getDisplayName();
       emailFrom = ambraUser.getEmail();

@@ -21,6 +21,10 @@
 
 package org.ambraproject.testutils;
 
+import org.ambraproject.BaseTest;
+import org.ambraproject.models.UserProfile;
+import org.ambraproject.models.UserRole;
+import org.ambraproject.permission.service.PermissionsService;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -29,18 +33,12 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.LocalSessionFactoryBean;
-import org.ambraproject.BaseTest;
 import org.topazproject.ambra.configuration.ConfigurationStore;
-import org.topazproject.ambra.models.AuthenticationId;
-import org.topazproject.ambra.models.UserAccount;
-import org.topazproject.ambra.models.UserProfile;
-import org.topazproject.ambra.models.UserRole;
-import org.ambraproject.permission.service.PermissionsService;
 
 import java.io.IOException;
-import java.net.URI;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashSet;
 
 
 /**
@@ -66,31 +64,23 @@ public class HibernateTestSessionFactory extends LocalSessionFactoryBean {
     try {
       HibernateTemplate hibernateTemplate = new HibernateTemplate((SessionFactory) getObject());
       // Create an admin user to test admin functions
-      UserAccount ua = new UserAccount();
-      ua.setId(URI.create("AdminAccountID"));
+      UserRole adminRole = new UserRole(PermissionsService.ADMIN_ROLE);
+      hibernateTemplate.save(adminRole);
 
-      UserRole ur = new UserRole();
-      ur.setRole(PermissionsService.ADMIN_ROLE);
-      ua.getRoles().add(ur);
-      UserProfile up = new UserProfile();
-      up.setRealName("Foo user");
-      ua.setProfile(up);
-      ua.getAuthIds().add(new AuthenticationId(BaseTest.DEFAULT_ADMIN_AUTHID));
+      UserProfile admin = new UserProfile();
+      admin.setAuthId(BaseTest.DEFAULT_ADMIN_AUTHID);
+      admin.setEmail("admin@test.org");
+      admin.setDisplayName("testAdmin");
+      admin.setRoles(new HashSet<UserRole>(1));
+      admin.getRoles().add(adminRole);
+      hibernateTemplate.save(admin);
 
-      hibernateTemplate.save(ua);
 
-      // Create a dummy joe blow user
-      ua = new UserAccount();
-      ua.setId(URI.create("DummyTestUserID"));
-      up = new UserProfile();
-      up.setRealName("Dummy user");
-      up.setEmailFromString("testcase@topazproject.org");
-      up.setCity("my city");
-      ua.setProfile(up);
-      ua.getAuthIds().add(new AuthenticationId(BaseTest.DEFUALT_USER_AUTHID));
-
-      hibernateTemplate.save(ua);
-
+      UserProfile nonAdmin = new UserProfile();
+      nonAdmin.setAuthId(BaseTest.DEFUALT_USER_AUTHID);
+      nonAdmin.setEmail("nonAdmin@test.org");
+      nonAdmin.setDisplayName("testNonAdmin");
+      hibernateTemplate.save(nonAdmin);
       //save the default journal
       hibernateTemplate.save(BaseTest.defaultJournal);
 

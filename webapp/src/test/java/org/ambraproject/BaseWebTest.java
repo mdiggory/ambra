@@ -24,9 +24,10 @@ import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
 import org.ambraproject.action.BaseActionSupport;
-import org.ambraproject.user.UserAccountsInterceptor;
+import org.ambraproject.models.UserProfile;
 import org.ambraproject.web.VirtualJournalContext;
 import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ContextConfiguration;
@@ -36,6 +37,7 @@ import org.testng.annotations.BeforeMethod;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -66,6 +68,9 @@ public abstract class BaseWebTest extends BaseTest {
     setupUserContext();
     if (getAction() != null) {
       getAction().setRequest(getDefaultRequestAttributes());
+      if (getAction() instanceof SessionAware) {
+        ((SessionAware) getAction()).setSession(ActionContext.getContext().getSession());
+      }
     }
   }
 
@@ -74,9 +79,28 @@ public abstract class BaseWebTest extends BaseTest {
     if (getAction() != null) {
       getAction().setActionMessages(new HashSet<String>());
       getAction().setActionErrors(new HashSet<String>());
+      getAction().setFieldErrors(new HashMap<String, List<String>>());
     }
+    ActionContext.getContext().getSession().clear();
   }
 
+  protected void putInSession(String key, Object value) {
+    ActionContext.getContext().getSession().put(key, value);
+  }
+
+  protected void removeFromSession(String key) {
+    ActionContext.getContext().getSession().remove(key);
+  }
+
+  protected Object getFromSession(String key) {
+    return ActionContext.getContext().getSession().get(key);
+  }
+
+  protected void login(UserProfile user) {
+    putInSession(Constants.AMBRA_USER_KEY, user);
+    putInSession(Constants.AUTH_KEY, user.getAuthId());
+    putInSession(Constants.SINGLE_SIGNON_EMAIL_KEY, user.getEmail());
+  }
 
   /**
    * Set up struts container / context with an admin request.  This is for unit tests that need to access attributes
@@ -84,7 +108,7 @@ public abstract class BaseWebTest extends BaseTest {
    */
   protected void setupAdminContext() {
     Map<String, Object> sessionAttributes = new HashMap<String, Object>();
-    sessionAttributes.put(UserAccountsInterceptor.AUTH_KEY, DEFAULT_ADMIN_AUTHID);
+    sessionAttributes.put(Constants.AUTH_KEY, DEFAULT_ADMIN_AUTHID);
 
     setupContext(sessionAttributes);
   }
@@ -95,11 +119,11 @@ public abstract class BaseWebTest extends BaseTest {
    */
   protected void setupUserContext() {
     Map<String, Object> sessionAttributes = new HashMap<String, Object>();
-    sessionAttributes.put(UserAccountsInterceptor.AUTH_KEY, DEFUALT_USER_AUTHID);
+    sessionAttributes.put(Constants.AUTH_KEY, DEFUALT_USER_AUTHID);
     setupContext(sessionAttributes);
   }
 
-  private void setupContext(Map<String, Object> sessionAttributes) {
+  protected void setupContext(Map<String, Object> sessionAttributes) {
     MockHttpServletRequest request = new MockHttpServletRequest();
     MockHttpSession session = new MockHttpSession();
     for (String attr : sessionAttributes.keySet()) {

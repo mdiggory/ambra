@@ -122,7 +122,7 @@ public class DummySSOFilter implements Filter {
     }
 
     if (wrap) {
-      String authId = (String) req.getSession().getAttribute(Constants.SINGLE_SIGNON_USER_KEY);
+      String authId = (String) req.getSession().getAttribute(Constants.AUTH_KEY);
       req = wrapRequest(req, authId);
     }
 
@@ -148,7 +148,7 @@ public class DummySSOFilter implements Filter {
     CASReceipt receipt = new CASReceipt();
     receipt.setPgtIou("foo" + System.currentTimeMillis());
 
-    session.setAttribute(Constants.SINGLE_SIGNON_USER_KEY,  authId);
+    session.setAttribute(Constants.AUTH_KEY,  authId);
     // FIXME: storing non-serializable CASReceipt into HttpSession
     session.setAttribute(Constants.SINGLE_SIGNON_RECEIPT,   receipt);
     session.setAttribute(Constants.SINGLE_SIGNON_EMAIL_KEY, email);

@@ -19,85 +19,131 @@
  */
 package org.ambraproject.user;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.mock.MockActionInvocation;
-import org.ambraproject.action.BaseActionSupport;
+import com.opensymphony.xwork2.Action;
+import org.ambraproject.BaseInterceptorTest;
+import org.ambraproject.models.UserLogin;
+import org.ambraproject.models.UserProfile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
-import org.ambraproject.BaseWebTest;
 import org.ambraproject.Constants;
 
-import static org.testng.Assert.assertEquals;
+import java.util.List;
 
-public class EnsureUserAccountInterceptorTest extends BaseWebTest {
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
+
+public class EnsureUserAccountInterceptorTest extends BaseInterceptorTest {
 
   @Autowired
   protected EnsureUserAccountInterceptor interceptor;
 
   @Test
-  public void testShouldForwardToCreateNewAccount() throws Exception {
-    final MockActionInvocation actionInvocation = new MockActionInvocation();
-    ActionContext.getContext().getSession().remove(Constants.AMBRA_USER_KEY);
-    ActionContext.getContext().getSession().put(Constants.SINGLE_SIGNON_USER_KEY, "ASDASDASD12312313EDB");
-    actionInvocation.setAction(null);
-    actionInvocation.setInvocationContext(ActionContext.getContext());
-
-    final String result = interceptor.intercept(actionInvocation);
-    assertEquals(result, Constants.ReturnCode.NEW_PROFILE, "Interceptor didn't redirect correctly");
-    ActionContext.getContext().getSession().remove(Constants.SINGLE_SIGNON_USER_KEY);
+  public void testInterceptWithNoCASReciept() throws Exception {
+    removeFromSession(Constants.AUTH_KEY);
+    String result = interceptor.intercept(actionInvocation);
+    assertEquals(result, Action.SUCCESS, "interceptor didn't forward to action invocation");
   }
 
   @Test
-  public void testShouldForwardToUpdateNewAccount() throws Exception {
+  public void testInterceptNewUser() throws Exception {
+    putInSession(Constants.AUTH_KEY, "ASDASDASD12312313EDB");
+    actionInvocation.setAction(null);
+
+    final String result = interceptor.intercept(actionInvocation);
+    assertEquals(result, Constants.ReturnCode.NEW_PROFILE, "Interceptor didn't redirect to new profile page");
+  }
+
+  @Test
+  public void testInterceptUserWithNoDisplayName() throws Exception {
     final String GUID = "ASDASDASD12312313EDB";
-    final AmbraUser ambraUser = new AmbraUser(GUID);
-    ambraUser.setUserId("topazId");
+    final UserProfile ambraUser = new UserProfile();
+    ambraUser.setAuthId(GUID);
     ambraUser.setEmail("viru@home.com");
     ambraUser.setDisplayName(null); //Display name is not set
     ambraUser.setRealName("virender");
 
-    ActionContext.getContext().getSession().put(
-        Constants.SINGLE_SIGNON_USER_KEY, "SINGLE_SIGNON_KEY_ASDASDASD12312313EDB");
-    ActionContext.getContext().getSession().put(Constants.AMBRA_USER_KEY, ambraUser);
-    final MockActionInvocation actionInvocation = new MockActionInvocation();
-    actionInvocation.setInvocationContext(ActionContext.getContext());
+    putInSession(Constants.AUTH_KEY, ambraUser.getAuthId());
+    putInSession(Constants.SINGLE_SIGNON_EMAIL_KEY, ambraUser.getEmail());
+    putInSession(Constants.AMBRA_USER_KEY, ambraUser);
 
     final String result = interceptor.intercept(actionInvocation);
     assertEquals(result, Constants.ReturnCode.UPDATE_PROFILE, "Interceptor didn't redirect correctly");
-    ActionContext.getContext().getSession().remove(Constants.SINGLE_SIGNON_USER_KEY);
-    ActionContext.getContext().getSession().remove(Constants.AMBRA_USER_KEY);
   }
 
   @Test
   public void testShouldForwardToOriginalAction() throws Exception {
-    setupAdminContext();
     final String GUID = "ASDASDASD12312313EDB";
-    final AmbraUser ambraUser = new AmbraUser(GUID);
-    ambraUser.setUserId("topazId");
+    final UserProfile ambraUser = new UserProfile();
+    ambraUser.setAuthId(GUID);
     ambraUser.setEmail("viru@home.com");
     ambraUser.setDisplayName("Viru");  //Display name is already set
     ambraUser.setRealName("virender");
 
-    final String actionCalledStatus = "actionCalled";
-    final MockActionInvocation actionInvocation = new MockActionInvocation() {
-      public String invoke() throws Exception {
-        return actionCalledStatus;
-      }
-    };
-    actionInvocation.setInvocationContext(ActionContext.getContext());
-    ActionContext.getContext().getSession().put(
-        Constants.SINGLE_SIGNON_USER_KEY, "SINGLE_SIGNON_KEY_ASDASDASD12312313EDB");
-    ActionContext.getContext().getSession().put(Constants.AMBRA_USER_KEY, ambraUser);
+    putInSession(Constants.AUTH_KEY, ambraUser.getAuthId());
+    putInSession(Constants.SINGLE_SIGNON_EMAIL_KEY, ambraUser.getEmail());
+    putInSession(Constants.AMBRA_USER_KEY, ambraUser);
 
     final String result = interceptor.intercept(actionInvocation);
-    assertEquals(result, actionCalledStatus, "Interceptor didn't allow action invocation to proceed");
-    ActionContext.getContext().getSession().remove(Constants.SINGLE_SIGNON_USER_KEY);
-    ActionContext.getContext().getSession().remove(Constants.AMBRA_USER_KEY);
+    assertEquals(result, Action.SUCCESS, "Interceptor didn't allow action invocation to proceed");
   }
 
-  @Override
-  protected BaseActionSupport getAction() {
-    return null;
+  @Test
+  public void testLookupUserAndLogin() throws Exception {
+    UserProfile user = new UserProfile();
+    user.setDisplayName("displayNameForUserAccountInterceptor");
+    user.setEmail("email@UserAccountInterceptor.org");
+    user.setAuthId("123432534jhlkdsghlakkh");
+    dummyDataStore.store(user);
+
+    putInSession(Constants.AUTH_KEY, user.getAuthId());
+    putInSession(Constants.SINGLE_SIGNON_EMAIL_KEY, user.getEmail());
+    //make sure there's no ambra user in session (which forces the interceptor to look it up from the db)
+    assertNull(getFromSession(Constants.AMBRA_USER_KEY), "Session already had an ambra user in it");
+
+    String result = interceptor.intercept(actionInvocation);
+    assertEquals(result, Action.SUCCESS, "Interceptor didn't forward to action");
+    UserProfile cachedUser = (UserProfile) getFromSession(Constants.AMBRA_USER_KEY);
+    assertNotNull(cachedUser, "interceptor didn't cache a user in session");
+    assertEquals(cachedUser.getID(), user.getID(), "Session cached incorrect user");
+    assertEquals(cachedUser.getEmail(), user.getEmail(), "cached user had incorrect email");
+    assertEquals(cachedUser.getDisplayName(), user.getDisplayName(), "cached user had incorrect display name");
+    assertEquals(cachedUser.getAuthId(), user.getAuthId(), "cached user had incorrect auth id");
+
+    //check that the user got a login object saved
+    assertEquals(countLogins(user.getID()), 1,
+        "Interceptor didn't store a login object for the user");
+  }
+
+  @Test
+  public void testUpdateEmailFromCAS() throws Exception {
+    UserProfile user = new UserProfile();
+    user.setDisplayName("displayNameForInterceptorUpdateEmail");
+    user.setEmail("old_email@UserAccountInterceptor.org");
+    user.setAuthId("aslkfjwoihegvfn29854");
+    dummyDataStore.store(user);
+
+    String newEmail = "new_email@UserAccountInterceptor.org";
+    putInSession(Constants.AUTH_KEY, user.getAuthId());
+    putInSession(Constants.SINGLE_SIGNON_EMAIL_KEY, newEmail); //email from CAS doesn't match the db
+
+    String result = interceptor.intercept(actionInvocation);
+    assertEquals(result, Action.SUCCESS, "Interceptor didn't allow action invocation to continue");
+
+    String storedEmail = dummyDataStore.get(UserProfile.class, user.getID()).getEmail();
+    assertEquals(storedEmail, newEmail, "Interceptor didn't update user's email");
+  }
+
+  private int countLogins(Long userId) {
+    List<UserLogin> allLogins = dummyDataStore.getAll(UserLogin.class);
+    int count = 0;
+    for (UserLogin login : allLogins) {
+      if (login.getUserProfileID().equals(userId)) {
+        count++;
+      }
+    }
+    return count;
   }
 }
 

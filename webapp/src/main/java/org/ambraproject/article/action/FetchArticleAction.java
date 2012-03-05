@@ -37,9 +37,12 @@ import org.ambraproject.journal.JournalService;
 import org.ambraproject.model.article.ArticleInfo;
 import org.ambraproject.model.article.ArticleType;
 import org.ambraproject.models.Article;
+import org.ambraproject.models.ArticleView;
 import org.ambraproject.models.Category;
+import org.ambraproject.models.UserProfile;
 import org.ambraproject.rating.service.RatingsService;
 import org.ambraproject.struts2.AmbraFreemarkerConfig;
+import org.ambraproject.user.service.UserService;
 import org.ambraproject.util.TextUtils;
 import org.ambraproject.util.UriUtil;
 import org.slf4j.Logger;
@@ -67,22 +70,21 @@ import java.util.Set;
  * This class fetches the information from the service tier for the artcle
  * Tabs.  Common data is defined in the setCommonData.  One method is defined
  * for each tab.
- *
+ * <p/>
  * Freemarker builds rest like URLs, inbound and outbound as
  * defined in the /WEB-INF/urlrewrite.xml file. These URLS then map to the
  * methods are referenced in the struts.xml file.
- *
+ * <p/>
  * ex: http://localhost/article/related/info%3Adoi%2F10.1371%2Fjournal.pone.0299
- *
+ * <p/>
  * Gets rewritten to:
- *
+ * <p/>
  * http://localhost/fetchRelatedArticle.action&amp;articleURI=info%3Adoi%2F10.1371%2Fjournal.pone.0299
- *
+ * <p/>
  * Struts picks this up and translates it call the FetchArticleRelated method
  * ex: &lt;action name="fetchRelatedArticle"
- *    class="org.ambraproject.article.action.FetchArticleAction"
- *    method="FetchArticleRelated"&gt;
- * 
+ * class="org.ambraproject.article.action.FetchArticleAction"
+ * method="FetchArticleRelated"&gt;
  */
 public class FetchArticleAction extends BaseSessionAwareActionSupport {
   private static final Logger log = LoggerFactory.getLogger(FetchArticleAction.class);
@@ -123,22 +125,23 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
   private ArticleService articleService;
   private TrackbackService trackbackService;
   private AmbraFreemarkerConfig ambraFreemarkerConfig;
+  private UserService userService;
 
   private Set<Journal> journalList;
   private RatingsService.AverageRatings averageRatings;
 
   /**
    * Fetch common data the article HTML text
+   *
    * @return "success" on succes, "error" on error
    */
-  @Transactional(readOnly = true)
+  @Transactional
   public String fetchArticle() {
     try {
 
       setCommonData();
 
       transformedArticle = fetchArticleService.getURIAsHTML(articleURI, getAuthId());
-
     } catch (NoSuchArticleIdException e) {
       messages.add("No article found for id: " + articleURI);
       log.info("Could not find article: " + articleURI, e);
@@ -148,11 +151,22 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
       log.error("Error retrieving article: " + articleURI, e);
       return ERROR;
     }
+
+    //If the user is logged in, record this as an article view
+    UserProfile user = getCurrentUser();
+    if (user != null) {
+      try {
+        userService.recordArticleView(user.getID(), articleInfo.getID(), ArticleView.Type.ARTICLE_VIEW);
+      } catch (Exception e) {
+        log.error("Error recording an article view for user: " + user.getID() + " and article: " + articleInfo.getID());
+      }
+    }
     return SUCCESS;
   }
 
   /**
    * Fetch common data and annotations
+   *
    * @return "success" on succes, "error" on error
    */
   @Transactional(readOnly = true)
@@ -177,6 +191,7 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
 
   /**
    * Fetch common data and article corrections
+   *
    * @return "success" on succes, "error" on error
    */
   @Transactional(readOnly = true)
@@ -201,6 +216,7 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
 
   /**
    * Fetches common data and the trackback list.
+   *
    * @return "success" on succes, "error" on error
    */
   @Transactional(readOnly = true)
@@ -227,6 +243,7 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
 
   /**
    * Fetches common data and the trackback list.
+   *
    * @return "success" on succes, "error" on error
    */
   @Transactional(readOnly = true)
@@ -250,6 +267,7 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
 
   /**
    * Fetches common data and nothing else
+   *
    * @return "success" on succes, "error" on error
    */
   @Transactional(readOnly = true)
@@ -271,19 +289,19 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
   /**
    * Sets up data used by the right hand column in the freemarker templates
    *
-   * @throws ApplicationException when there is an error talking to the OTM
+   * @throws ApplicationException     when there is an error talking to the OTM
    * @throws NoSuchArticleIdException when the article can not be found
    */
   private void setCommonData() throws ApplicationException, NoSuchArticleIdException {
     try {
       UriUtil.validateUri(articleURI, "articleURI=<" + articleURI + ">");
-    } catch(Exception e) {
+    } catch (Exception e) {
       throw new NoSuchArticleIdException(articleURI, e.getMessage(), e);
     }
 
     articleInfoX = articleService.getArticleInfo(articleURI, getAuthId());
     averageRatings = ratingsService.getAverageRatings(articleURI);
-    journalList  = journalService.getJournalsForObject(articleURI);
+    journalList = journalService.getJournalsForObject(articleURI);
     isResearchArticle = articleService.isResearchArticle(articleURI, getAuthId());
     hasRated = ratingsService.hasRated(articleURI, getCurrentUser());
     articleIssues = articleService.getArticleIssues(articleURI);
@@ -309,7 +327,7 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
     articleType = ArticleType.getDefaultArticleType();
     for (String artType : this.articleInfo.getTypes()) {
       URI articleTypeUri = URI.create(artType);
-      if (ArticleType.getKnownArticleTypeForURI(articleTypeUri)!= null) {
+      if (ArticleType.getKnownArticleTypeForURI(articleTypeUri) != null) {
         articleType = ArticleType.getKnownArticleTypeForURI(articleTypeUri);
         break;
       }
@@ -317,12 +335,12 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
 
     String pages = this.articleInfo.getPages();
 
-    if(pages != null && pages.indexOf("-") > 0 && pages.split("-").length > 1) {
+    if (pages != null && pages.indexOf("-") > 0 && pages.split("-").length > 1) {
       String t = pages.split("-")[1];
 
       try {
         pageCount = Integer.parseInt(t);
-      } catch(NumberFormatException ex) {
+      } catch (NumberFormatException ex) {
         log.warn("Not able to parse page count from citation pages property with value of (" + t + ")");
         pageCount = 0;
       }
@@ -332,14 +350,14 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
     authorExtras = this.fetchArticleService.getAuthorAffiliations(doc);
     references = this.fetchArticleService.getReferences(doc);
     journalAbbrev = this.fetchArticleService.getJournalAbbreviation(doc);
-    
+
     /**
-      An article can be cross published, but we want the source journal.
-      If in this collection an article eIssn matches the article's eIssn keep that value.
-      freemarker_config.getDisplayName(journalContext)}">
-    **/
+     An article can be cross published, but we want the source journal.
+     If in this collection an article eIssn matches the article's eIssn keep that value.
+     freemarker_config.getDisplayName(journalContext)}">
+     **/
     for (Journal j : journalList) {
-      if(articleInfo.geteIssn().equals(j.geteIssn())) {
+      if (articleInfo.geteIssn().equals(j.geteIssn())) {
         publishedJournal = ambraFreemarkerConfig.getDisplayName(j.getKey());
       }
     }
@@ -347,6 +365,7 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
 
   /**
    * Grabs annotations from the service tier
+   *
    * @param annotationTypeClasses The type of annotation to grab.
    */
   private void setAnnotations(Set<Class<? extends ArticleAnnotation>> annotationTypeClasses) {
@@ -363,8 +382,8 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
 
         try {
           annotationConverter.convert(replyService.listAllReplies(annotations[i].getId(),
-                                                        annotations[i].getId()), com, false,
-                                                         false);
+              annotations[i].getId()), com, false,
+              false);
         } catch (SecurityException t) {
           // don't error if you can't list the replies
           com.setNumReplies(0);
@@ -376,7 +395,9 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
     }
   }
 
-  /** Set the fetch article service
+  /**
+   * Set the fetch article service
+   *
    * @param articleService articleService
    */
   @Required
@@ -384,7 +405,9 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
     this.articleService = articleService;
   }
 
-    /** Set the fetch article service
+  /**
+   * Set the fetch article service
+   *
    * @param fetchArticleService fetchArticleService
    */
   @Required
@@ -447,6 +470,7 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
 
   /**
    * Set articleURI to fetch the article for.
+   *
    * @param articleURI articleURI
    */
   public void setArticleURI(final String articleURI) {
@@ -462,20 +486,21 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
 
   /**
    * Get the type of annotations currently being listed
+   *
    * @return the annotation set either "comments" or "corrections"
    */
   public String getAnnotationSet() {
-     return annotationSet;
+    return annotationSet;
   }
 
   /**
    * Return the ArticleInfo from the Browse cache.
-   *
+   * <p/>
    * TODO: convert all usages of "articleInfo" (ObjectInfo) to use the Browse cache version of
    * ArticleInfo.  Note that for all templates to use ArticleInfo, it will have to
    * be enhanced.  articleInfo and articleInfoX are both present, for now, to support:
-   *   - existing templates/services w/o a large conversion
-   *   - access to RelatedArticles
+   * - existing templates/services w/o a large conversion
+   * - access to RelatedArticles
    *
    * @return Returns the articleInfoX.
    */
@@ -499,6 +524,7 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
 
   /**
    * Get the article object
+   *
    * @return Returns article.
    */
   public Article getArticleInfo() {
@@ -507,6 +533,7 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
 
   /**
    * Gets the article Type
+   *
    * @return Returns articleType
    */
   public ArticleType getArticleType() {
@@ -526,8 +553,8 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
 
   /**
    * @return Returns the names and URIs of all of the Journals, Volumes, and Issues
-   *   to which this Article has been attached.  This includes "collections", but does not
-   *   include the 
+   *         to which this Article has been attached.  This includes "collections", but does not
+   *         include the
    */
   public List<List<String>> getArticleIssues() {
     return articleIssues;
@@ -560,6 +587,7 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
 
   /**
    * Get the total number of user comments
+   *
    * @return total number of user comments
    */
   public int getTotalComments() {
@@ -619,17 +647,16 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
     return trackbackList;
   }
 
-  public String getPublishedJournal()
-  {
+  public String getPublishedJournal() {
     return publishedJournal;
   }
 
   /**
    * If available, return the current count of pages.
+   *
    * @return the current article's page count
-   **/
-  public int getPageCount()
-  {
+   */
+  public int getPageCount() {
     return pageCount;
   }
 
@@ -643,10 +670,10 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
 
     //Fixed for JIRA Id: NHOPE-88
 
-    for(AuthorExtra author: authorExtras) {
-       if (sb.length() > 0) {
-         sb.append(", ");
-       }
+    for (AuthorExtra author : authorExtras) {
+      if (sb.length() > 0) {
+        sb.append(", ");
+      }
 
       sb.append(author.getAuthorName());
     }
@@ -657,44 +684,44 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
   /**
    * @return an array of formal corrections
    */
-  public List<WebAnnotation> getFormalCorrections()
-  {
+  public List<WebAnnotation> getFormalCorrections() {
     return this.formalCorrections;
   }
 
   /**
    * @return an array of retractions
    */
-  public List<WebAnnotation> getRetractions()
-  {
+  public List<WebAnnotation> getRetractions() {
     return this.retractions;
   }
 
   /**
    * Return a list of this article's main categories
+   *
    * @return a Set<String> of category names
    * @throws ApplicationException when the article has not been set
    */
   public List<String> getMainCategories() throws ApplicationException {
     Set<String> mainCats = new HashSet<String>();
 
-    if(articleInfo == null) {
+    if (articleInfo == null) {
       throw new ApplicationException("Article not set");
     }
 
-    for(Category curCategory : articleInfo.getCategories()) {
+    for (Category curCategory : articleInfo.getCategories()) {
       mainCats.add(curCategory.getMainCategory());
     }
 
     List<String> mainCatsList = new LinkedList<String>(mainCats);
     Collections.sort(mainCatsList);
-    
+
     return mainCatsList;
   }
 
   /**
    * Set the config class containing all of the properties used by the Freemarker templates so
    * those values can be used within this Action class.
+   *
    * @param ambraFreemarkerConfig All of the configuration properties used by the Freemarker templates
    */
   @Required
@@ -702,8 +729,14 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
     this.ambraFreemarkerConfig = ambraFreemarkerConfig;
   }
 
+  @Required
+  public void setUserService(UserService userService) {
+    this.userService = userService;
+  }
+
   /**
    * Returns a list of author affiliations
+   *
    * @return author affiliations
    */
   public ArrayList<AuthorExtra> getAuthorExtras() {
@@ -712,6 +745,7 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
 
   /**
    * Returns a list of citation references
+   *
    * @return citation references
    */
   public ArrayList<CitationReference> getReferences() {
@@ -720,6 +754,7 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
 
   /**
    * Returns abbreviated journal name
+   *
    * @return abbreviated journal name
    */
   public String getJournalAbbrev() {
@@ -728,7 +763,7 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
 
   /**
    * Returns article description
-   *
+   * <p/>
    * //TODO: This is a pretty heavy weight function that gets called for every article request to
    * get a value that rarely changes.  Should we just make the value in the database correct on ingest?
    *

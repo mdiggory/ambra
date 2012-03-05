@@ -19,8 +19,8 @@
  */
 package org.ambraproject.annotation.service;
 
+import org.ambraproject.models.UserProfile;
 import org.topazproject.ambra.models.Reply;
-import org.ambraproject.user.AmbraUser;
 
 import java.net.URISyntaxException;
 import java.text.ParseException;
@@ -48,7 +48,7 @@ public interface ReplyService extends BaseAnnotationService {
    * @throws Exception on an error
    */
   public String createReply(final String root, final String inReplyTo, final String title,
-                            final String mimeType, final String body, final String ciStatement, AmbraUser user)
+                            final String mimeType, final String body, final String ciStatement, UserProfile user)
                      throws Exception;
 
   /**

@@ -21,8 +21,12 @@ package org.topazproject.ambra.models;
 
 import org.topazproject.otm.CascadeType;
 import org.topazproject.otm.CollectionType;
-import org.topazproject.otm.annotations.*;
+import org.topazproject.otm.annotations.Entity;
+import org.topazproject.otm.annotations.GeneratedValue;
+import org.topazproject.otm.annotations.Id;
+import org.topazproject.otm.annotations.Predicate;
 import org.topazproject.otm.annotations.Predicate.PropType;
+import org.topazproject.otm.annotations.UriPrefix;
 
 import java.io.Serializable;
 import java.net.URI;
@@ -56,8 +60,6 @@ public class Citation implements Serializable {
   private String eLocationId;
   private String journal;
   private String note;
-  private List<UserProfile> editors = new ArrayList<UserProfile>();
-  private List<UserProfile> authors = new ArrayList<UserProfile>();
   private List<String> collaborativeAuthors = new ArrayList<String>();
   private String url;
   private String doi;
@@ -369,72 +371,6 @@ public class Citation implements Serializable {
   @Predicate(uri = "bibtex:hasNote", dataType = "xsd:string")
   public void setNote(String note) {
     this.note = note;
-  }
-
-  /**
-   * TODO: Remove this field
-   * <p/>
-   * There are some gotchas with this field.  Articles link to a citation (via dublin core), but the citations for
-   * articles will <b>not</b> link to any UserProfiles for authors and editors.  Annotations also link to a Citation
-   * (again via DublinCore), and these <b>will</b> link to authors and editors.  So code that is querying citaiton
-   * objects needs to know whether the citation is for an article or for an annotation if it wants to look up authors
-   * and / or editors.  There is no way from just looking at the citation object to tell if it comes from an article or
-   * an annotation, however, so that complicates matters.
-   *
-   * @return the authors of this citation
-   */
-  public List<UserProfile> getEditors() {
-    return editors;
-  }
-
-  /**
-   * TODO: Remove this field
-   * <p/>
-   * There are some gotchas with this field.  Articles link to a citation (via dublin core), but the citations for
-   * articles will <b>not</b> link to any UserProfiles for authors and editors.  Annotations also link to a Citation
-   * (again via DublinCore), and these <b>will</b> link to authors and editors.  So code that is querying citaiton
-   * objects needs to know whether the citation is for an article or for an annotation if it wants to look up authors
-   * and / or editors.  There is no way from just looking at the citation object to tell if it comes from an article or
-   * an annotation, however, so that complicates matters.
-   *
-   * @return the authors of this citation
-   */
-  @Predicate(uri = "plos:hasEditorList", collectionType = CollectionType.RDFSEQ,
-      cascade = {CascadeType.child})
-  public void setEditors(List<UserProfile> editors) {
-    this.editors = editors;
-  }
-
-  /**
-   * TODO: Remove this field
-   * <p/>
-   * There are some gotchas with this field.  Articles link to a citation (via dublin core), but the citations for
-   * articles will <b>not</b> link to any UserProfiles for authors and editors.  Annotations also link to a Citation
-   * (again via DublinCore), and these <b>will</b> link to authors and editors.  So code that is querying citaiton
-   * objects needs to know whether the citation is for an article or for an annotation if it wants to look up authors
-   * and / or editors.  There is no way from just looking at the citation object to tell if it comes from an article or
-   * an annotation, however, so that complicates matters.
-   *
-   * @return the authors of this citation
-   */
-  public List<UserProfile> getAuthors() {
-    return authors;
-  }
-
-  @Predicate(uri = "plos:hasAuthorList", collectionType = CollectionType.RDFSEQ,
-      cascade = {CascadeType.child})
-  /**
-   * TODO: Remove this field
-   * <p/>
-   * There are some gotchas with this field.  Articles link to a citation (via dublin core), but the citations for
-   * articles will <b>not</b> link to any UserProfiles for authors and editors.  Annotations also link to a Citation
-   * (again via DublinCore), and these <b>will</b> link to authors and editors.  So code that is querying citaiton
-   * objects needs to know whether the citation is for an article or for an annotation if it wants to look up authors
-   * and / or editors.  There is no way from just looking at the citation object to tell if it comes from an article or
-   * an annotation, however, so that complicates matters.
-   */
-  public void setAuthors(List<UserProfile> authors) {
-    this.authors = authors;
   }
 
   /**

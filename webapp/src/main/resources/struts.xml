@@ -72,7 +72,6 @@
     <interceptors>
       <interceptor name="ensureUserAccount" class="org.ambraproject.user.EnsureUserAccountInterceptor"/>
       <interceptor name="ensureAdmin" class="org.ambraproject.user.EnsureRoleInterceptor"/>
-      <interceptor name="ambraUserLookup" class="org.ambraproject.user.UserAccountsInterceptor"/>
       <interceptor name="json" class="org.apache.struts2.json.JSONInterceptor"/>
       <interceptor name="transactionInterceptor" class="org.ambraproject.struts2.TransactionInterceptor"/>
 
@@ -106,23 +105,20 @@
 
       <interceptor-stack name="ambraBaseStack">
         <interceptor-ref name="strutsBaseStack"/>
-        <interceptor-ref name="ambraUserLookup"/>
         <interceptor-ref name="transactionInterceptor" />
       </interceptor-stack>
 
       <!--We're duplicating interceptors from ambraBaseStack because we need to ensure that
-      transactionInterceptor gets called after ensureUserAccount, ambraUserLookup, etc., since those
+      transactionInterceptor gets called after ensureUserAccount, etc., since those
       have their own transactions-->
       <interceptor-stack name="ambraUserStack">
         <interceptor-ref name="strutsBaseStack"/>
-        <interceptor-ref name="ambraUserLookup"/>
         <interceptor-ref name="ensureUserAccount" />
         <interceptor-ref name="transactionInterceptor" />
       </interceptor-stack>
 
       <interceptor-stack name="ambraAdminStack">
         <interceptor-ref name="strutsBaseStack"/>
-        <interceptor-ref name="ambraUserLookup"/>
         <interceptor-ref name="ensureUserAccount" />
         <interceptor-ref name="ensureAdmin" />
         <interceptor-ref name="transactionInterceptor" />
@@ -286,11 +282,6 @@
         <param name="status">500</param>
         <param name="templateFile">/static/searchError.ftl</param>
       </result>
-    </action>
-
-    <action name="indexAllArticlesUnprotected" class="org.ambraproject.admin.action.IndexArticlesAction" method="indexAll">
-      <result name="success">/admin/allIndexedArticles.ftl</result>
-      <result name="error">/admin/indexAllArticlesFailed.ftl</result>
     </action>
 
   </package>
@@ -878,7 +869,7 @@
       </result>
      </action>
 
-    <action name="editProfile" class="org.ambraproject.user.action.MemberUserProfileAction" method="executeRetrieveUserProfile">
+    <action name="editProfile" class="org.ambraproject.user.action.MemberUserProfileAction" >
       <result name="success" type="user">
         <param name="templateFile">/user/editUser.ftl</param>
       </result>
@@ -896,7 +887,7 @@
       </result>
     </action>
 
-    <action name="editAjaxProfile" class="org.ambraproject.user.action.MemberUserProfileAction" method="executeRetrieveUserProfile">
+    <action name="editAjaxProfile" class="org.ambraproject.user.action.MemberUserProfileAction" >
       <result name="success" type="ambraFreemarker">
         <param name="location">/user/user.ftl</param>
         <param name="noCache">true</param>
@@ -931,7 +922,7 @@
       </result>
     </action>
 
-    <action name="retrieveUserProfile" class="org.ambraproject.user.action.MemberUserProfileAction" method="executeRetrieveUserProfile">
+    <action name="retrieveUserProfile" class="org.ambraproject.user.action.MemberUserProfileAction">
       <result name="success" type="user">
         <param name="templateFile">/user/createNewUser.ftl</param>
       </result>
@@ -953,7 +944,7 @@
 
     <default-action-ref name="pageNotFound" />
 
-    <action name="prePopulateNewUser" class="org.ambraproject.user.action.MemberUserProfileAction" method="prePopulateUserDetails">
+    <action name="prePopulateNewUser" class="org.ambraproject.user.action.MemberUserProfileAction">
       <result name="new-profile" type="user">
         <param name="templateFile">/user/createNewUser.ftl</param>
       </result>

@@ -21,11 +21,11 @@
 
 package org.ambraproject.annotation.service;
 
+import org.ambraproject.BaseTest;
+import org.ambraproject.models.UserProfile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.ambraproject.BaseTest;
-import org.ambraproject.testutils.MockAmbraUser;
 import org.topazproject.ambra.models.Comment;
 import org.topazproject.ambra.models.Reply;
 import org.topazproject.ambra.models.ReplyBlob;
@@ -33,9 +33,20 @@ import org.topazproject.ambra.models.ReplyThread;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertEqualsNoOrder;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 /**
  * Test for ReplyService implementations.  One thing to note is that every Reply in ambra is actually a ReplyThread ...
@@ -93,6 +104,9 @@ public class ReplyServiceTest extends BaseTest {
    */
   @Test(dataProvider = "dummy replies")
   public void testCreateReply(Reply reply) throws Exception {
+    UserProfile user = new UserProfile();
+    user.setAccountUri(reply.getCreator());
+    user.setAuthId("someFakeAuthIdJustSoYouThinkImLoggedIn");
     String id = replyService.createReply(
         reply.getRoot(),
         reply.getInReplyTo(),
@@ -100,7 +114,7 @@ public class ReplyServiceTest extends BaseTest {
         "text/plain",
         "Test body with hash code: " + reply.hashCode(),
         "ci statement",
-        new MockAmbraUser(reply.getCreator())
+        user
     );
     assertNotNull(id, "generated null Id for reply");
     assertFalse(id.isEmpty(), "generated empty id for reply");
@@ -297,7 +311,18 @@ public class ReplyServiceTest extends BaseTest {
 
   }
 
-  @Test(dataProvider = "root and inReplyTo list")
+  @Test(dataProvider = "root and inReplyTo list",expectedExceptions = {SecurityException.class})
+  public void testDeleteRepliesByNonAdmin1(String root, String inReplyTo, String[] deletedReplyIds) {
+    replyService.deleteReplies(root, DEFUALT_USER_AUTHID, inReplyTo);
+  }
+
+  @Test(dataProvider = "root and inReplyTo list",expectedExceptions = {SecurityException.class})
+  public void testDeleteRepliesByNonAdmin2(String root, String inReplyTo, String[] deletedReplyIds) {
+    replyService.deleteReplies(root, DEFUALT_USER_AUTHID);
+  }
+
+  @Test(dataProvider = "root and inReplyTo list",
+      dependsOnMethods = {"testDeleteRepliesByNonAdmin1","testDeleteRepliesByNonAdmin2"})
   public void testDeleteReplies(String root, String inReplyTo, String[] deletedReplyIds) {
 
     replyService.deleteReplies(root, DEFAULT_ADMIN_AUTHID, inReplyTo);
