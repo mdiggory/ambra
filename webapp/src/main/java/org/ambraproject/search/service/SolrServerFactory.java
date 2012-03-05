@@ -48,6 +48,8 @@ public class SolrServerFactory {
     if (serverUrl != null) {
       log.info("Creating SolrServer instance at " + serverUrl);
       server = new CommonsHttpSolrServer(serverUrl);
+      ((CommonsHttpSolrServer) server).setConnectionManagerTimeout(60000l);
+      ((CommonsHttpSolrServer) server).setSoTimeout(60000);
     } else {
       log.warn(URL_CONFIG_PARAM + " not set. SolrServer instance will not be created.");
     }
