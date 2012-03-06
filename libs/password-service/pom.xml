@@ -9,8 +9,8 @@
 
   <parent>
     <groupId>org.ambraproject</groupId>
-    <artifactId>ambra-registration</artifactId>
-    <version>2.2.1</version>
+    <artifactId>ambra-libs</artifactId>
+    <version>2.2.3-SNAPSHOT</version>
   </parent>
 
   <dependencies>
