@@ -3,14 +3,14 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.ambraproject</groupId>
   <artifactId>journals</artifactId>
-  <version>2.2.3</version>
+  <version>2.2.3-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Sample Journals</name>
 
   <parent>
     <groupId>org.ambraproject</groupId>
     <artifactId>ambra</artifactId>
-    <version>2.2.3</version>
+    <version>2.2.3-SNAPSHOT</version>
   </parent>
 
   <build>
