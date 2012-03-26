@@ -110,6 +110,31 @@
     </virtualJournals>
 
     <services>
+
+      <ingest>
+        <default>org/ambraproject/article/service/pmc2obj.xslt</default>
+        <dtd_2_3>org/ambraproject/article/service/pmc2obj.xslt</dtd_2_3>
+        <dtd_3_0>org/ambraproject/article/service/pmc2obj-v3.xslt</dtd_3_0>
+      </ingest>
+
+      <articletransform>
+        <default>/articleTransform.xsl</default>
+        <dtd_2_3>/articleTransform.xsl</dtd_2_3>
+        <dtd_3_0>/articleTransform-v3.xsl</dtd_3_0>
+      </articletransform>
+
+      <fulldoitransform>
+        <default>/fullDOI.xsl</default>
+        <dtd_2_3>/fullDOI.xsl</dtd_2_3>
+        <dtd_3_0>/fullDOI.xsl</dtd_3_0>
+      </fulldoitransform>
+
+      <objinfotransform>
+        <default>/objInfo.xsl</default>
+        <dtd_2_3>/objInfo.xsl</dtd_2_3>
+        <dtd_3_0>/objInfo-v3.xsl</dtd_3_0>
+      </objinfotransform>
+
       <browse>
         <sortOptions>
           <option displayName="Date\, newest first">publication_date desc\, id desc</option>

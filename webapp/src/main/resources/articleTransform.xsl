@@ -34,6 +34,9 @@
         encoding="UTF-8"
         omit-xml-declaration="yes"/>
 
+    <!--1/28/10: plos modifications (to counter viewnlm strip-space="*") -->
+    <xsl:preserve-space elements="*"/>
+
     <!-- 10/8/09: plos modifications (added elements) -->
     <xsl:strip-space elements="abstract ack address annotation app app-group
         array article article-categories article-meta
@@ -51,9 +54,6 @@
         table-wrap-foot table-wrap-group tbody term tfoot thead
         title-group tr trans-abstract verse-group
         "/>
-
-    <!--1/28/10: plos modifications (to counter viewnlm strip-space="*") -->
-    <xsl:preserve-space elements="*"/>
 
     <!-- 10/8/09: viewnlm contains preserve-space and runtime parameters -->
 

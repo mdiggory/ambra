@@ -92,19 +92,6 @@ public class XPathUtilTest {
     };
   }
 
-  @Test(dataProvider = "nodeLists")
-  public void testSelectNodes(String xpath, int expectedNodeCount) throws XPathExpressionException, FileNotFoundException {
-    NodeList nodes = xPathUtil.selectNodes(testXml, xpath);
-    assertNotNull(nodes, "returned null node list");
-    assertEquals(nodes.getLength(), expectedNodeCount, "returned node list had incorrect number of child nodes");
-
-    //test the input source method
-    InputSource inputSource = new InputSource(new FileInputStream(testXmlFile));
-    nodes = xPathUtil.selectNodes(inputSource, xpath);
-    assertNotNull(nodes, "returned null node list");
-    assertEquals(nodes.getLength(), expectedNodeCount, "returned node list had incorrect number of child nodes");
-  }
-
   @DataProvider(name = "expressions")
   public Object[][] getExpressions() {
     return new Object[][]{
@@ -141,28 +128,6 @@ public class XPathUtilTest {
         {"//config/ambra/platform/email/*/text()", XPathConstants.NODESET, NodeList.class, false},
         {"//config/ambra/platform/../platform/email/*/text()", XPathConstants.NODESET, NodeList.class, false},
     };
-  }
-
-
-  @Test(dataProvider = "expressionsWithQName")
-  public <T> void testEvaluateWithQName(String xpath, QName qName, Class<T> expectedClass, T expectedResult) throws XPathExpressionException, FileNotFoundException {
-    Object result = xPathUtil.evaluate(testXml, xpath, qName);
-    assertNotNull(result, "return null result");
-    assertTrue(expectedClass.isAssignableFrom(result.getClass()), "Result was incorrect class;" +
-        " expected " + expectedClass + " but got " + result.getClass());
-    if (!qName.equals(XPathConstants.NODE) && !qName.equals(XPathConstants.NODESET)) {
-      assertEquals(result, expectedResult, "returned incorrect result");
-    }
-
-    //test the input source method
-    InputSource inputSource = new InputSource(new FileInputStream(testXmlFile));
-    result = xPathUtil.evaluate(inputSource, xpath, qName);
-    assertNotNull(result, "return null result");
-    assertTrue(expectedClass.isAssignableFrom(result.getClass()), "Result was incorrect class;" +
-        " expected " + expectedClass + " but got " + result.getClass());
-    if (!qName.equals(XPathConstants.NODE) && !qName.equals(XPathConstants.NODESET)) {
-      assertEquals(result, expectedResult, "returned incorrect result");
-    }
   }
 
   @DataProvider(name = "subselects")

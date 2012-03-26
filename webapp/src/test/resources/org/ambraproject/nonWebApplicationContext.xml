@@ -143,16 +143,44 @@
     <property name="authIdParam" value="guid"/>
   </bean>
 
-  <bean id="xmlService" class="org.ambraproject.service.XMLServiceImpl" init-method="init">
+  <util:map id="xslArticleTransformStyleSheetMap">
+    <entry key="default"
+           value="${project.basedir}/src/main/resources/viewnlm-v2.xsl"/>
+    <entry key="2.0"
+           value="${project.basedir}/src/main/resources/viewnlm-v2.xsl"/>
+    <entry key="3.0"
+           value="${project.basedir}/src/main/resources/viewnlm-v2.xsl"/>
+  </util:map>
+
+  <bean id="viewNLMService" class="org.ambraproject.service.XMLServiceImpl" init-method="init">
     <property name="articleRep" value="XML"/>
-    <property name="xslTemplate" value="${project.basedir}/src/main/resources/viewnlm-v2.xsl"/>
+    <property name="xslDefaultTemplate" value="${project.basedir}/src/main/resources/viewnlm-v2.xsl"/>
+    <property name="xslTemplateMap" ref="xslArticleTransformStyleSheetMap"/>
     <property name="ambraConfiguration" ref="configuration"/>
     <property name="xmlFactoryProperty" ref="xmlFactoryProperties"/>
   </bean>
 
+  <bean id="xmlService" class="org.ambraproject.service.XMLServiceImpl" init-method="init">
+    <property name="articleRep" value="XML"/>
+    <property name="xslDefaultTemplate" value="${project.basedir}/src/main/resources/viewnlm-v2.xsl"/>
+    <property name="xslTemplateMap" ref="xslArticleTransformStyleSheetMap"/>
+    <property name="ambraConfiguration" ref="configuration"/>
+    <property name="xmlFactoryProperty" ref="xmlFactoryProperties"/>
+  </bean>
+
+  <util:map id="xslObjTransformStyleSheetMap">
+    <entry key="default"
+           value="${project.basedir}/src/main/resources/objInfo.xsl"/>
+    <entry key="2.0"
+           value="${project.basedir}/src/main/resources/objInfo.xsl"/>
+    <entry key="3.0"
+           value="${project.basedir}/src/main/resources/objInfo.xsl"/>
+  </util:map>
+
   <bean id="secondaryObjectService" class="org.ambraproject.service.XMLServiceImpl" init-method="init">
     <property name="articleRep" value="XML"/>
-    <property name="xslTemplate" value="${project.basedir}/src/main/resources/objInfo.xsl"/>
+    <property name="xslDefaultTemplate" value="${project.basedir}/src/main/resources/objInfo.xsl"/>
+    <property name="xslTemplateMap" ref="xslObjTransformStyleSheetMap"/>
     <property name="ambraConfiguration" ref="configuration"/>
     <property name="xmlFactoryProperty" ref="xmlFactoryProperties"/>
   </bean>

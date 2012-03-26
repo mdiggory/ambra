@@ -29,9 +29,12 @@ import org.custommonkey.xmlunit.XMLUnit;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.ambraproject.ApplicationException;
 import org.ambraproject.article.service.NoSuchArticleIdException;
 import org.ambraproject.article.service.NoSuchObjectIdException;
+import org.ambraproject.BaseTest;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -51,7 +54,7 @@ import static org.testng.Assert.assertTrue;
  * @author Dragisa Krsmanovic
  * @author Joe Osowski
  */
-public class XMLServiceTest {
+public class XMLServiceTest extends BaseTest {
   private static final String OBJINFO_NAMESPACES = "xmlns:mml=\"http://www.w3.org/1998/Math/MathML\" " +
       "xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" " +
       "xmlns:fo=\"http://www.w3.org/1999/XSL/Format\" " +
@@ -59,21 +62,24 @@ public class XMLServiceTest {
       "xmlns:xlink=\"http://www.w3.org/1999/xlink\" " +
       "xmlns:util=\"http://dtd.nlm.nih.gov/xsl/util\"";
 
-  private XMLServiceImpl secondaryObjectService;
-  private XMLServiceImpl viewNLMService;
+  @Autowired
+  @Qualifier("secondaryObjectService")
+  protected XMLServiceImpl secondaryObjectService;
+  @Autowired
+  @Qualifier("viewNLMService")
+  protected XMLServiceImpl viewNLMService;
 
   @BeforeClass
   protected void setUp() throws Exception {
 
-    DocumentBuilderFactory documentBuilderfactory = DocumentBuilderFactory.newInstance("org.apache.xerces.jaxp.DocumentBuilderFactoryImpl", getClass().getClassLoader());
+    DocumentBuilderFactory documentBuilderfactory =
+        DocumentBuilderFactory.newInstance("org.apache.xerces.jaxp.DocumentBuilderFactoryImpl", getClass().getClassLoader());
     documentBuilderfactory.setNamespaceAware(true);
     documentBuilderfactory.setValidating(false);
     documentBuilderfactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
     Map<String, String> xmlFactoryProperties = new HashMap<String, String>();
-    xmlFactoryProperties.put("javax.xml.transform.TransformerFactory",
-        "net.sf.saxon.TransformerFactoryImpl");
-    xmlFactoryProperties.put("javax.xml.transform.Transformer",
-        "net.sf.saxon.Controller");
+    xmlFactoryProperties.put("javax.xml.transform.TransformerFactory","net.sf.saxon.TransformerFactoryImpl");
+    xmlFactoryProperties.put("javax.xml.transform.Transformer","net.sf.saxon.Controller");
 
     XMLUnit.setControlDocumentBuilderFactory(documentBuilderfactory);
     XMLUnit.setTestDocumentBuilderFactory(documentBuilderfactory);
@@ -86,19 +92,6 @@ public class XMLServiceTest {
     Configuration configiration = new BaseConfiguration();
     configiration.setProperty("ambra.platform.appContext", "test-context");
 
-    secondaryObjectService = new XMLServiceImpl();
-    secondaryObjectService.setArticleRep("XML");
-    secondaryObjectService.setXmlFactoryProperty(xmlFactoryProperties);
-    secondaryObjectService.setAmbraConfiguration(configiration);
-    secondaryObjectService.setXslTemplate("/objInfo.xsl");
-    secondaryObjectService.init();
-
-    viewNLMService = new XMLServiceImpl();
-    viewNLMService.setArticleRep("XML");
-    viewNLMService.setXmlFactoryProperty(xmlFactoryProperties);
-    viewNLMService.setAmbraConfiguration(configiration);
-    viewNLMService.setXslTemplate("/viewnlm-v2.xsl");
-    viewNLMService.init();
   }
 
   @DataProvider(name = "objInfoSamples")
@@ -115,7 +108,6 @@ public class XMLServiceTest {
     };
   }
 
-
   @Test(dataProvider = "objInfoSamples")
   public void testObjInfoTransformation(String source, String expected)
       throws URISyntaxException, ApplicationException, SAXException, IOException,
@@ -126,36 +118,6 @@ public class XMLServiceTest {
     String result = secondaryObjectService.getTransformedDocument(doc);
 
     Diff diff = new Diff(expected, result);
-    assertTrue(diff.identical(), diff.toString());
-  }
-
-
-  @DataProvider(name = "viewNLMFiles")
-  public String[][] createViewNLMSamples() {
-    return new String[][]{
-        {"/article/article1.xml","/article/result1.html"}
-    };
-  }
-
-  @Test(dataProvider = "viewNLMFiles")
-  public void testViewNLMTransformation(String articleFilename, String resultFilename)
-      throws IOException, SAXException, NoSuchArticleIdException, NoSuchObjectIdException,
-      URISyntaxException, ApplicationException, ParserConfigurationException {
-
-    final DocumentBuilder builder = viewNLMService.createDocBuilder();
-    Document doc = builder.parse(new InputSource(new
-        StringReader(getFileAsString(articleFilename))));
-
-    String result = viewNLMService.getTransformedDocument(doc);
-    verify();
-
-    String expected = getFileAsString(resultFilename);
-
-    HTMLDocumentBuilder htmlDocumentBuilder =
-        new HTMLDocumentBuilder(new TolerantSaxDocumentBuilder(XMLUnit.newTestParser()));
-
-    Diff diff = new Diff(htmlDocumentBuilder.parse(expected), htmlDocumentBuilder.parse(result));
-
     assertTrue(diff.identical(), diff.toString());
   }
 

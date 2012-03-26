@@ -55,7 +55,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Fetch article service.
@@ -93,7 +95,6 @@ public class FetchArticleServiceImpl extends HibernateServiceImpl implements Fet
    */
   public String getURIAsHTML(final String articleURI, final String authId) throws Exception {
 
-    //TODO: Remove this; it adds unnecessary db queries since this is coming from FetchArticleAction which also calls getArticle()
     // quick way to check for permission and the state of the article
     // we don't want to return a cached result when we should not
     articleService.getArticle(articleURI, authId);
@@ -272,6 +273,7 @@ public class FetchArticleServiceImpl extends HibernateServiceImpl implements Fet
   public ArrayList<AuthorExtra> getAuthorAffiliations(Document doc) {
 
     ArrayList<AuthorExtra> list = new ArrayList<AuthorExtra>();
+    Map<String, String> affiliateMap = new HashMap<String, String>();
 
     if (doc == null) {
       return list;
@@ -281,75 +283,65 @@ public class FetchArticleServiceImpl extends HibernateServiceImpl implements Fet
       XPathFactory factory = XPathFactory.newInstance();
       XPath xpath = factory.newXPath();
 
-      XPathExpression expr = xpath.compile("//contrib-group/contrib[@contrib-type='author']");
-      Object result = expr.evaluate(doc, XPathConstants.NODESET);
+      XPathExpression affiliationListExpr = xpath.compile("//aff");
+      XPathExpression affiliationAddrExpr = xpath.compile("//addr-line");
 
-      NodeList contribList = (NodeList) result;
+      NodeList affiliationNodeList = (NodeList) affiliationListExpr.evaluate(doc, XPathConstants.NODESET);
 
+      // Map all affiliation id's to their affiliation strings
+      for (int i = 0; i < affiliationNodeList.getLength(); i++) {
+        Node node =  affiliationNodeList.item(i);
+        // Not all <aff>'s have the 'id' attribute.
+        String id = (node.getAttributes().getNamedItem("id") == null) ? "" : node.getAttributes().getNamedItem("id").getTextContent();
+        // Not all <aff> id's are affiliations.
+        if (id.startsWith("aff")) {
+          DocumentFragment df = doc.createDocumentFragment();
+          df.appendChild(node);
+          String address = ((Node)affiliationAddrExpr.evaluate(df, XPathConstants.NODE)).getTextContent();
+          affiliateMap.put(id,address);
+        }
+      }
+
+      XPathExpression authorExpr = xpath.compile("//contrib-group/contrib[@contrib-type='author']");
       XPathExpression surNameExpr = xpath.compile("//name/surname");
       XPathExpression givenNameExpr = xpath.compile("//name/given-names");
       XPathExpression affExpr = xpath.compile("//xref[@ref-type='aff']");
 
-      for (int i = 0; i < contribList.getLength(); i++) {
-        String surName = null;
-        String givenName = null;
-        String affId = null;
-        String affiliation = null;
+      NodeList authorList = (NodeList) authorExpr.evaluate(doc, XPathConstants.NODESET);
 
-        Node contribNode = contribList.item(i);
-
-        // get surname
+      for (int i=0; i < authorList.getLength(); i++) {
+        Node cnode = authorList.item(i);
         DocumentFragment df = doc.createDocumentFragment();
-        df.appendChild(contribNode);
+        df.appendChild(cnode);
+        Node sNode = (Node) surNameExpr.evaluate(df, XPathConstants.NODE);
+        Node gNode = (Node) givenNameExpr.evaluate(df, XPathConstants.NODE);
+        
+        // Either surname or givenName can be blank
+        String surname = (sNode == null) ? "" : sNode.getTextContent();
+        String givenName = (gNode == null) ? "" : gNode.getTextContent(); 
+ 	// If both are null then don't bother to add
+        if ((sNode != null) || (gNode != null)) {
+          NodeList affList = (NodeList) affExpr.evaluate(df, XPathConstants.NODESET);
+	  ArrayList<String> affiliations = new ArrayList<String>();
 
-        Object resultObj = surNameExpr.evaluate(df, XPathConstants.NODE);
-        Node resultNode = (Node) resultObj;
-        if (resultNode != null) {
-          surName = resultNode.getTextContent();
-        }
+          // Build a list of affiliations for this author
+	  for (int j = 0; j < affList.getLength(); j++) {
+	    Node anode = affList.item(j);
+	    String affId = anode.getAttributes().getNamedItem("rid").getTextContent();
+	    affiliations.add(affiliateMap.get(affId));
+	  }
 
-        // get given name
-        resultObj = givenNameExpr.evaluate(df, XPathConstants.NODE);
-        resultNode = (Node) resultObj;
-        if (resultNode != null) {
-          givenName = resultNode.getTextContent();
-        }
-
-        // get affiliation id
-        resultObj = affExpr.evaluate(contribNode, XPathConstants.NODESET);
-        NodeList resultNodeList = (NodeList) resultObj;
-        ArrayList<String> affiliations = new ArrayList<String>();
-        if (resultNodeList != null) {
-          for (int j = 0; j < resultNodeList.getLength(); j++) {
-            Node xrefNode = resultNodeList.item(j);
-            NamedNodeMap nnm = xrefNode.getAttributes();
-            Node rid = nnm.getNamedItem("rid");
-            affId = rid.getTextContent();
-
-            XPathExpression affExpr2 = xpath.compile("//aff[@id='" + affId + "']/addr-line");
-            Object affObj = affExpr2.evaluate(doc, XPathConstants.NODE);
-            Node addrLineNode = (Node) affObj;
-            if (addrLineNode != null) {
-              affiliation = addrLineNode.getTextContent();
-              affiliations.add(affiliation);
-            }
-          }
-        }
-
-        if (surName != null && givenName != null) {
-          AuthorExtra as = new AuthorExtra();
-          as.setAuthorName(givenName + " " + surName);
-          as.setAffiliations(affiliations);
-          list.add(as);
+	  AuthorExtra authorEx = new AuthorExtra();
+	  authorEx.setAuthorName(surname, givenName);
+	  authorEx.setAffiliations(affiliations);
+	  list.add(authorEx);
         }
       }
-
     } catch (Exception e) {
       log.error("Error occurred while gathering the author affiliations.", e);
     }
 
     return list;
-
   }
 
   /**

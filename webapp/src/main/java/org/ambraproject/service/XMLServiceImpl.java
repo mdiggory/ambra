@@ -22,6 +22,7 @@
 package org.ambraproject.service;
 
 import org.apache.commons.configuration.Configuration;
+import org.apache.commons.lang.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
@@ -47,6 +48,7 @@ import java.util.Map;
  * Convenience class to aggregate common methods used to deal with XML transforms on articles.
  * Used to transform article with annotations, captions of tables/figures, and citation information.
  *
+ * @author Bill OConnor
  * @author Stephen Cheng
  * @author Alex Worden
  * @author Joe Osowski
@@ -58,7 +60,8 @@ public class XMLServiceImpl implements XMLService {
 
   private static final Logger log = LoggerFactory.getLogger(XMLServiceImpl.class);
 
-  private File xslTemplate;
+  private File xslDefaultTemplate;
+  private Map<String, String> xslTemplateMap;
   private DocumentBuilderFactory factory;
   private String articleRep;
   private Map<String, String> xmlFactoryProperty;
@@ -84,7 +87,7 @@ public class XMLServiceImpl implements XMLService {
     final TransformerFactory tFactory = TransformerFactory.newInstance();
 
     try {
-      translet = tFactory.newTemplates(new StreamSource(xslTemplate));
+      translet = tFactory.newTemplates(new StreamSource(xslDefaultTemplate));
     } catch (TransformerConfigurationException tce) {
       throw new ApplicationException(tce);
     }
@@ -127,7 +130,7 @@ public class XMLServiceImpl implements XMLService {
         log.debug("Applying XSLT transform to the document...");
 
       final DOMSource domSource = new DOMSource(doc);
-      final Transformer transformer = getTranslet();
+      final Transformer transformer = getTranslet(doc);
       final Writer writer = new StringWriter(1000);
 
       transformer.transform(domSource, new StreamResult(writer));
@@ -140,9 +143,9 @@ public class XMLServiceImpl implements XMLService {
 
   public byte[] getTransformedByArray(byte[] xml) throws ApplicationException {
     try {
-      Transformer transformer = this.getTranslet();
 
       Document doc = createDocBuilder().parse(new ByteArrayInputStream(xml));
+      Transformer transformer = this.getTranslet(doc);
       DOMSource domSource = new DOMSource(doc);
 
       ByteArrayOutputStream bs = new ByteArrayOutputStream();
@@ -156,9 +159,9 @@ public class XMLServiceImpl implements XMLService {
   public InputStream getTransformedInputStream(InputStream xml) throws ApplicationException {
     try {
       final Writer writer = new StringWriter(1000);
-      Transformer transformer = this.getTranslet();
 
       Document doc = createDocBuilder().parse(xml);
+      Transformer transformer = this.getTranslet(doc);
       DOMSource domSource = new DOMSource(doc);
       transformer.transform(domSource, new StreamResult(writer));
       return new ByteArrayInputStream(writer.toString().getBytes("UTF-8"));
@@ -181,7 +184,7 @@ public class XMLServiceImpl implements XMLService {
       final DocumentBuilder builder = createDocBuilder();
       Document desc = builder.parse(new InputSource(new StringReader("<desc>" + description + "</desc>")));
       final DOMSource domSource = new DOMSource(desc);
-      final Transformer transformer = getTranslet();
+      final Transformer transformer = getTranslet(desc);
       final Writer writer = new StringWriter();
 
       transformer.transform(domSource,new StreamResult(writer));
@@ -194,8 +197,6 @@ public class XMLServiceImpl implements XMLService {
     transformedString = transformedString.replace("END_TITLE", "");
     return transformedString;
   }
-
-
 
   /**
    * Convenience method to create a DocumentBuilder with the factory configs
@@ -211,16 +212,35 @@ public class XMLServiceImpl implements XMLService {
   }
 
   /**
-   * Get a translet, compiled stylesheet, for the xslTemplate.
+   * Get a translet, compiled stylesheet, for the xslTemplate. If the doc is null
+   * use the default template. If the doc is not null then get the DTD version.
+   * IF the DTD version does not exist use the default template else use the
+   * template associated with that version.
    *
+   * @param  doc  the dtd version of document
    * @return Translet for the xslTemplate.
    * @throws javax.xml.transform.TransformerException TransformerException.
    */
-  private Transformer getTranslet() throws TransformerException {
+  private Transformer getTranslet(Document doc) throws TransformerException, URISyntaxException {
+    Transformer transformer;
+    // key is "" if the Attribute does not exist
+    String key = (doc == null) ? "default" : doc.getDocumentElement().getAttribute("dtd-version").trim();
 
-    // For each thread, instantiate a new Transformer, and perform the
-    // transformations on that thread from a StreamSource to a StreamResult;
-    Transformer transformer = translet.newTransformer();
+    if ((!xslTemplateMap.containsKey(key)) || (key.equalsIgnoreCase(""))) {
+      transformer = this.translet.newTransformer();
+    } else {
+      Templates translet;
+      String templateName = xslTemplateMap.get(key);
+
+      File file = getAsFile(templateName);
+      if (!file.exists()) {
+        file = new File(templateName);
+      }
+      // set the Templates
+      final TransformerFactory tFactory = TransformerFactory.newInstance();
+      translet = tFactory.newTemplates(new StreamSource(file));
+      transformer = translet.newTransformer();
+    }
     transformer.setParameter("pubAppContext", configuration.getString("ambra.platform.appContext", ""));
     return transformer;
   }
@@ -233,13 +253,25 @@ public class XMLServiceImpl implements XMLService {
    * @throws java.net.URISyntaxException
    */
   @Required
-  public void setXslTemplate(String xslTemplate)  throws URISyntaxException {
+  public void setXslDefaultTemplate(String xslTemplate)  throws URISyntaxException {
     File file = getAsFile(xslTemplate);
     if (!file.exists()) {
       file = new File(xslTemplate);
     }
     log.debug("XSL template location = " + file.getAbsolutePath());
-    this.xslTemplate = file;
+    this.xslDefaultTemplate = file;
+  }
+
+   /**
+   * Setter for XSL Templates.  Takes in a string as the filename and searches for it in resource
+   * path and then as a URI.
+   *
+   * @param xslTemplateMap The xslTemplate to set.
+   * @throws java.net.URISyntaxException
+   */
+  @Required
+  public void setXslTemplateMap(Map<String, String> xslTemplateMap)  throws URISyntaxException {
+    this.xslTemplateMap = xslTemplateMap;
   }
 
   /**
@@ -283,7 +315,7 @@ public class XMLServiceImpl implements XMLService {
    * @return the local or remote file or url as a java.io.File
    */
   public File getAsFile(final String filenameOrURL) throws URISyntaxException {
-    final URL resource = getClass().getResource(filenameOrURL);
+    final URL resource =  getClass().getClassLoader().getResource(filenameOrURL);
     if (null == resource) {
       //access it as a local file resource
       return new File(FileUtils.getFileName(filenameOrURL));

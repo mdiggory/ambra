@@ -59,23 +59,56 @@
     <property name="sessionFactory" ref="hibernateSessionFactory"/>
   </bean>
 
+  <!-- Defined in webapp/src/main/resources/ambra/configuration/defaults.xml -->
+  <util:map id="xslArticleTransformStyleSheetMap">
+    <entry key="default"
+           value="${ambra.services.articletransform.default}"/>
+    <entry key="2.0"
+           value="${ambra.services.articletransform.dtd_2_3}"/>
+    <entry key="3.0"
+           value="${ambra.services.articletransform.dtd_3_0}"/>
+  </util:map>
+
   <bean id="articleTransformService" class="org.ambraproject.service.XMLServiceImpl" init-method="init">
     <property name="articleRep" value="XML"/>
-    <property name="xslTemplate" value="/articleTransform.xsl"/>
+    <property name="xslDefaultTemplate" value="${ambra.services.articletransform.default}"/>
+    <property name="xslTemplateMap" ref="xslArticleTransformStyleSheetMap"/>
     <property name="ambraConfiguration" ref="ambraConfiguration"/>
     <property name="xmlFactoryProperty" ref="xmlFactoryProperties"/>
   </bean>
+
+  <!-- Defined in webapp/src/main/resources/ambra/configuration/defaults.xml -->
+  <util:map id="xslFullDoiStyleSheetMap">
+    <entry key="default"
+           value="${ambra.services.fulldoitransform.default}"/>
+    <entry key="2.0"
+           value="${ambra.services.fulldoitransform.dtd_2_3}"/>
+    <entry key="3.0"
+           value="${ambra.services.fulldoitransform.dtd_3_0}"/>
+  </util:map>
 
   <bean id="xmlService" class="org.ambraproject.service.XMLServiceImpl" init-method="init">
     <property name="articleRep" value="XML"/>
-    <property name="xslTemplate" value="/fullDOI.xsl"/>
+    <property name="xslDefaultTemplate" value="${ambra.services.fulldoitransform.default}"/>
+    <property name="xslTemplateMap" ref="xslFullDoiStyleSheetMap"/>
     <property name="ambraConfiguration" ref="ambraConfiguration"/>
     <property name="xmlFactoryProperty" ref="xmlFactoryProperties"/>
   </bean>
 
+  <!-- Defined in webapp/src/main/resources/ambra/configuration/defaults.xml -->
+  <util:map id="xslObjInfoStyleSheetMap">
+    <entry key="default"
+           value="${ambra.services.objinfotransform.default}"/>
+    <entry key="2.0"
+           value="${ambra.services.objinfotransform.dtd_2_3}"/>
+    <entry key="3.0"
+           value="${ambra.services.objinfotransform.dtd_3_0}"/>
+  </util:map>
+
   <bean id="secondaryObjectService" class="org.ambraproject.service.XMLServiceImpl" init-method="init">
     <property name="articleRep" value="XML"/>
-    <property name="xslTemplate" value="/objInfo.xsl"/>
+    <property name="xslDefaultTemplate" value="${ambra.services.objinfotransform.default}"/>
+    <property name="xslTemplateMap" ref="xslObjInfoStyleSheetMap"/>
     <property name="ambraConfiguration" ref="ambraConfiguration"/>
     <property name="xmlFactoryProperty" ref="xmlFactoryProperties"/>
   </bean>
