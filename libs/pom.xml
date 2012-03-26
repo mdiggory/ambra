@@ -4,14 +4,14 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.ambraproject</groupId>
   <artifactId>ambra-libs</artifactId>
-  <version>2.2.3-SNAPSHOT</version>
+  <version>2.2.3</version>
   <packaging>pom</packaging>
   <name>Ambra Libs</name>
   
   <parent>
     <groupId>org.ambraproject</groupId>
     <artifactId>ambra</artifactId>
-    <version>2.2.3-SNAPSHOT</version>
+    <version>2.2.3</version>
   </parent>
 
   <modules>
