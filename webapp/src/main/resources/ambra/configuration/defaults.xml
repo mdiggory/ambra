@@ -118,21 +118,21 @@
       </ingest>
 
       <articletransform>
-        <default>/articleTransform.xsl</default>
-        <dtd_2_3>/articleTransform.xsl</dtd_2_3>
-        <dtd_3_0>/articleTransform-v3.xsl</dtd_3_0>
+        <default>articleTransform.xsl</default>
+        <dtd_2_3>articleTransform.xsl</dtd_2_3>
+        <dtd_3_0>articleTransform-v3.xsl</dtd_3_0>
       </articletransform>
 
       <fulldoitransform>
-        <default>/fullDOI.xsl</default>
-        <dtd_2_3>/fullDOI.xsl</dtd_2_3>
-        <dtd_3_0>/fullDOI.xsl</dtd_3_0>
+        <default>fullDOI.xsl</default>
+        <dtd_2_3>fullDOI.xsl</dtd_2_3>
+        <dtd_3_0>fullDOI.xsl</dtd_3_0>
       </fulldoitransform>
 
       <objinfotransform>
-        <default>/objInfo.xsl</default>
-        <dtd_2_3>/objInfo.xsl</dtd_2_3>
-        <dtd_3_0>/objInfo-v3.xsl</dtd_3_0>
+        <default>objInfo.xsl</default>
+        <dtd_2_3>objInfo.xsl</dtd_2_3>
+        <dtd_3_0>objInfo-v3.xsl</dtd_3_0>
       </objinfotransform>
 
       <browse>
