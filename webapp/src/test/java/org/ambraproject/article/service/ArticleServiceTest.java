@@ -713,7 +713,7 @@ public class ArticleServiceTest extends BaseTest {
   @Test(dataProvider = "articleInfoDataProvider", dependsOnMethods = {"testGetArticle"})
   public void testGetArticleInfo(String id, Article expectedArticle, String authId, 
                                  Article[] expectedRelatedArticles, URI[] expectedRetractions,
-                                 URI[] expectedCorrections) {
+                                 URI[] expectedCorrections) throws NoSuchArticleIdException {
     ArticleInfo result = articleService.getArticleInfo(id, authId);
     assertNotNull(result, "returned null article info");
 

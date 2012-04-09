@@ -59,6 +59,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -76,20 +77,19 @@ public class ArticleServiceImpl extends HibernateServiceImpl implements ArticleS
   /**
    * Determines if the articleURI is of type researchArticle
    *
-   * @param articleDoi The URI of the article
+   * @param article The URI of the article
    * @param authId the authorization ID of the current user
    * @return True if the article is a research article
    * @throws org.ambraproject.ApplicationException
    *                                  if there was a problem talking to the OTM
    * @throws NoSuchArticleIdException When the article does not exist
    */
-  public boolean isResearchArticle(final String articleDoi, final String authId)
+  public boolean isResearchArticle(final Article article, final String authId)
       throws ApplicationException, NoSuchArticleIdException {
     // resolve article type and supported properties
-    Article artInfo = getArticle(articleDoi, authId);
     ArticleType articleType = ArticleType.getDefaultArticleType();
 
-    for (String artTypeUri : artInfo.getTypes()) {
+    for (String artTypeUri : article.getTypes()) {
       if (ArticleType.getKnownArticleTypeForURI(URI.create(artTypeUri)) != null) {
         articleType = ArticleType.getKnownArticleTypeForURI(URI.create(artTypeUri));
         break;
@@ -97,7 +97,35 @@ public class ArticleServiceImpl extends HibernateServiceImpl implements ArticleS
     }
 
     if (articleType == null) {
-      throw new ApplicationException("Unable to resolve article type for: " + articleDoi);
+      throw new ApplicationException("Unable to resolve article type for: " + article.getDoi());
+    }
+
+    return ArticleType.isResearchArticle(articleType);
+  }
+
+  /**
+   * Determines if the articleURI is of type researchArticle
+   *
+   * @param articleInfo The URI of the article
+   * @param authId the authorization ID of the current user
+   * @return True if the article is a research article
+   * @throws org.ambraproject.ApplicationException
+   *                                  if there was a problem talking to the OTM
+   * @throws NoSuchArticleIdException When the article does not exist
+   */
+  public boolean isResearchArticle(final ArticleInfo articleInfo, final String authId)
+      throws ApplicationException, NoSuchArticleIdException {
+    ArticleType articleType = ArticleType.getDefaultArticleType();
+
+    for (String artTypeUri : articleInfo.getTypes()) {
+      if (ArticleType.getKnownArticleTypeForURI(URI.create(artTypeUri)) != null) {
+        articleType = ArticleType.getKnownArticleTypeForURI(URI.create(artTypeUri));
+        break;
+      }
+    }
+
+    if (articleType == null) {
+      throw new ApplicationException("Unable to resolve article type for: " + articleInfo.getDoi());
     }
 
     return ArticleType.isResearchArticle(articleType);
@@ -116,22 +144,27 @@ public class ArticleServiceImpl extends HibernateServiceImpl implements ArticleS
    * @throws org.ambraproject.ApplicationException
    *
    */
-  public List<Article> getPublishableArticles(String eIssn, String orderField,
+  public List<ArticleInfo> getPublishableArticles(String eIssn, String orderField,
                                               boolean isOrderAscending) throws ApplicationException {
 
-    ArticleServiceSearchParameters params = new ArticleServiceSearchParameters();
+    List<ArticleInfo> articlesInfo = new ArrayList<ArticleInfo>();
+    Order order = isOrderAscending ? Order.asc(orderField) : Order.desc(orderField);
+    List<Object[]> results = hibernateTemplate.findByCriteria(DetachedCriteria.forClass(Article.class)
+        .add(Restrictions.eq("eIssn", eIssn))
+        .add(Restrictions.eq("state",Article.STATE_UNPUBLISHED))
+        .addOrder(order)
+        .setProjection(Projections.projectionList()
+            .add(Projections.property("doi"))
+            .add(Projections.property("date"))));
 
-    params.seteIssn(eIssn);
-    params.setOrderField(orderField);
-    params.setOrderAscending(isOrderAscending);
-    params.setStates(new int[] { Article.STATE_UNPUBLISHED });
-    params.setMaxResults(0);
-
-    try {
-      return getArticles(params);
-    } catch (Exception e) {
-      throw new ApplicationException(e);
+    for(Object[] rows : results) {
+      ArticleInfo articleInfo = new ArticleInfo();
+      articleInfo.setDoi(rows[0].toString());
+      articleInfo.setDate((Date)rows[1]);
+      articlesInfo.add(articleInfo);
     }
+
+    return articlesInfo;
   }
 
   /**
@@ -425,25 +458,25 @@ public class ArticleServiceImpl extends HibernateServiceImpl implements ArticleS
   @Transactional(readOnly = true)
   @Override
   @SuppressWarnings("unchecked")
-  public ArticleInfo getArticleInfo(final String articleDoi, final String authId) {
+  public ArticleInfo getArticleInfo(final String articleDoi, final String authId) throws NoSuchArticleIdException {
     final Article article;
-    try {
-      article = getArticle(articleDoi, authId);
-    } catch (SecurityException se) {
-      log.debug("Filtering URI " + articleDoi + " from Article list due to SecurityException", se);
-      return null;
-    } catch (NoSuchArticleIdException ex) {
-      log.debug("Filtering URI " + articleDoi + " NoSuchArticleIdException", ex);
-      return null;
-    }
+    article = getArticle(articleDoi, authId);
     final ArticleInfo articleInfo = new ArticleInfo();
 
-    articleInfo.setId(URI.create(article.getDoi()));
+    articleInfo.setId(article.getID());
     //Set properties from the dublin core
+    articleInfo.setDoi(article.getDoi());
     articleInfo.setDate(article.getDate());
     articleInfo.setTitle(article.getTitle());
     articleInfo.setDescription(article.getDescription());
     articleInfo.setPublisher(article.getPublisherName());
+    articleInfo.seteIssn(article.geteIssn());
+    articleInfo.setCategories(article.getCategories());
+    articleInfo.setTypes(article.getTypes());
+    articleInfo.setPages(article.getPages());
+    articleInfo.setIssue(article.getIssue());
+    articleInfo.setVolume(article.getVolume());
+    articleInfo.seteLocationId(article.geteLocationId());
     //Set the citation info
     CitationInfo citationInfo = new CitationInfo();
     citationInfo.setId(URI.create(article.getDoi()));
@@ -516,7 +549,7 @@ public class ArticleServiceImpl extends HibernateServiceImpl implements ArticleS
 
     log.debug("loaded ArticleInfo: id={}, articleTypes={}, " +
         "date={}, title={}, authors={}, related-articles={}", 
-        new Object[] {articleInfo.getId(), articleInfo.getArticleTypeForDisplay(), articleInfo.getDate(),
+        new Object[] {articleInfo.getDoi(), articleInfo.getArticleTypeForDisplay(), articleInfo.getDate(),
             articleInfo.getTitle(), Arrays.toString(articleInfo.getAuthors().toArray()), 
             Arrays.toString(articleInfo.getRelatedArticles().toArray())});
     return articleInfo;

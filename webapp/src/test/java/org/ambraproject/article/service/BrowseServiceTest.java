@@ -166,7 +166,7 @@ public class BrowseServiceTest extends BaseTest {
     assertEquals(results.size(), expectedArticleURIs.size(), "returned incorrect number of results");
     List<URI> actualArticleURIs = new ArrayList<URI>(results.size());
     for (ArticleInfo articleInfo : results) {
-      actualArticleURIs.add(articleInfo.getId());
+      actualArticleURIs.add(URI.create(articleInfo.getDoi()));
     }
     assertEqualsNoOrder(actualArticleURIs.toArray(), expectedArticleURIs.toArray(),
         "returned incorrect list of articles");
@@ -411,8 +411,8 @@ public class BrowseServiceTest extends BaseTest {
     assertTrue(csv.length() > 0, "returned empty csv");
     for (TOCArticleGroup articleGroup : articleGroups) {
       for (ArticleInfo articleInfo : articleGroup.getArticles()) {
-        assertTrue(csv.indexOf(articleInfo.getId().toString()) != -1,
-            "csv didn't contain expected article id: " + articleInfo.getId());
+        assertTrue(csv.indexOf(articleInfo.getDoi()) != -1,
+            "csv didn't contain expected article id: " + articleInfo.getDoi());
       }
     }
 

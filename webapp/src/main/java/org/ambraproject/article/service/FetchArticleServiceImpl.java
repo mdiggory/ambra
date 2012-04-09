@@ -58,6 +58,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Fetch article service.
@@ -94,11 +95,6 @@ public class FetchArticleServiceImpl extends HibernateServiceImpl implements Fet
    * @throws org.ambraproject.ApplicationException ApplicationException
    */
   public String getURIAsHTML(final String articleURI, final String authId) throws Exception {
-
-    // quick way to check for permission and the state of the article
-    // we don't want to return a cached result when we should not
-    articleService.getArticle(articleURI, authId);
-    
     final Object lock = (ARTICLE_LOCK + articleURI).intern();  // lock @ Article level
 
     String content = articleHtmlCache.get(articleURI,
@@ -319,22 +315,22 @@ public class FetchArticleServiceImpl extends HibernateServiceImpl implements Fet
         // Either surname or givenName can be blank
         String surname = (sNode == null) ? "" : sNode.getTextContent();
         String givenName = (gNode == null) ? "" : gNode.getTextContent(); 
- 	// If both are null then don't bother to add
+        // If both are null then don't bother to add
         if ((sNode != null) || (gNode != null)) {
           NodeList affList = (NodeList) affExpr.evaluate(df, XPathConstants.NODESET);
-	  ArrayList<String> affiliations = new ArrayList<String>();
+          ArrayList<String> affiliations = new ArrayList<String>();
 
           // Build a list of affiliations for this author
-	  for (int j = 0; j < affList.getLength(); j++) {
-	    Node anode = affList.item(j);
-	    String affId = anode.getAttributes().getNamedItem("rid").getTextContent();
-	    affiliations.add(affiliateMap.get(affId));
-	  }
+          for (int j = 0; j < affList.getLength(); j++) {
+            Node anode = affList.item(j);
+            String affId = anode.getAttributes().getNamedItem("rid").getTextContent();
+            affiliations.add(affiliateMap.get(affId));
+          }
 
-	  AuthorExtra authorEx = new AuthorExtra();
-	  authorEx.setAuthorName(surname, givenName);
-	  authorEx.setAffiliations(affiliations);
-	  list.add(authorEx);
+          AuthorExtra authorEx = new AuthorExtra();
+          authorEx.setAuthorName(surname, givenName);
+          authorEx.setAffiliations(affiliations);
+          list.add(authorEx);
         }
       }
     } catch (Exception e) {

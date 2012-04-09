@@ -107,7 +107,6 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
   private String publishedJournal = "";
 
   private ArticleInfo articleInfoX;
-  private Article articleInfo;
   private ArticleType articleType;
   private Commentary[] commentary;
   private List<List<String>> articleIssues;
@@ -156,9 +155,9 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
     UserProfile user = getCurrentUser();
     if (user != null) {
       try {
-        userService.recordArticleView(user.getID(), articleInfo.getID(), ArticleView.Type.ARTICLE_VIEW);
+        userService.recordArticleView(user.getID(), articleInfoX.getId(), ArticleView.Type.ARTICLE_VIEW);
       } catch (Exception e) {
-        log.error("Error recording an article view for user: " + user.getID() + " and article: " + articleInfo.getID());
+        log.error("Error recording an article view for user: " + user.getID() + " and article: " + articleInfoX.getId());
       }
     }
     return SUCCESS;
@@ -167,7 +166,7 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
   /**
    * Fetch common data and annotations
    *
-   * @return "success" on succes, "error" on error
+   * @return "success" on success, "error" on error
    */
   @Transactional(readOnly = true)
   public String fetchArticleComments() {
@@ -302,7 +301,7 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
     articleInfoX = articleService.getArticleInfo(articleURI, getAuthId());
     averageRatings = ratingsService.getAverageRatings(articleURI);
     journalList = journalService.getJournalsForObject(articleURI);
-    isResearchArticle = articleService.isResearchArticle(articleURI, getAuthId());
+    isResearchArticle = articleService.isResearchArticle(articleInfoX, getAuthId());
     hasRated = ratingsService.hasRated(articleURI, getCurrentUser());
     articleIssues = articleService.getArticleIssues(articleURI);
 
@@ -322,10 +321,8 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
       }
     }
 
-    this.articleInfo = articleService.getArticle(articleURI, getAuthId());
-
     articleType = ArticleType.getDefaultArticleType();
-    for (String artType : this.articleInfo.getTypes()) {
+    for (String artType : this.articleInfoX.getTypes()) {
       URI articleTypeUri = URI.create(artType);
       if (ArticleType.getKnownArticleTypeForURI(articleTypeUri) != null) {
         articleType = ArticleType.getKnownArticleTypeForURI(articleTypeUri);
@@ -333,7 +330,7 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
       }
     }
 
-    String pages = this.articleInfo.getPages();
+    String pages = this.articleInfoX.getPages();
 
     if (pages != null && pages.indexOf("-") > 0 && pages.split("-").length > 1) {
       String t = pages.split("-")[1];
@@ -357,7 +354,7 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
      freemarker_config.getDisplayName(journalContext)}">
      **/
     for (Journal j : journalList) {
-      if (articleInfo.geteIssn().equals(j.geteIssn())) {
+      if (articleInfoX.geteIssn().equals(j.geteIssn())) {
         publishedJournal = ambraFreemarkerConfig.getDisplayName(j.getKey());
       }
     }
@@ -520,15 +517,6 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
    */
   public void setAnnotationId(String annotationId) {
     this.annotationId = annotationId;
-  }
-
-  /**
-   * Get the article object
-   *
-   * @return Returns article.
-   */
-  public Article getArticleInfo() {
-    return articleInfo;
   }
 
   /**
@@ -704,11 +692,11 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
   public List<String> getMainCategories() throws ApplicationException {
     Set<String> mainCats = new HashSet<String>();
 
-    if (articleInfo == null) {
+    if (articleInfoX == null) {
       throw new ApplicationException("Article not set");
     }
 
-    for (Category curCategory : articleInfo.getCategories()) {
+    for (Category curCategory : articleInfoX.getCategories()) {
       mainCats.add(curCategory.getMainCategory());
     }
 

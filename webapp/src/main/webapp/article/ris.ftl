@@ -22,7 +22,7 @@ TY  - JOUR
 T1  - ${title}
 <#assign authorTag = "A1">
 <#list authorList as author>
-<#if author.suffix?exists>
+<#if author.suffix?has_content>
   <#assign authorSuffix = ", " + author.suffix>
 <#else>
   <#assign authorSuffix = "">

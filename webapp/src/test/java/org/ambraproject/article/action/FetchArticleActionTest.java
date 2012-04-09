@@ -59,7 +59,7 @@ public class FetchArticleActionTest extends FetchActionTest {
     action.setArticleURI(article.getDoi());
     String result = action.fetchArticle();
     assertEquals(result, Action.SUCCESS, "Action didn't return success");
-    compareArticles(action.getArticleInfo(), article);
+    compareArticles(action.getArticleInfoX(), article);
 
     assertEquals(dummyDataStore.getAll(ArticleView.class).size(), numArticleViews + 1,
         "Action didn't record this as an article view");

@@ -41,15 +41,28 @@ public interface ArticleService {
   /**
    * Determines if the articleURI is of type researchArticle
    *
-   * @param articleDoi The URI of the article
+   * @param article The URI of the article
    * @param authId the authorization ID of the current user
    * @return True if the article is a research article
    * @throws ApplicationException
    *                                  if there was a problem talking to the OTM
    * @throws NoSuchArticleIdException When the article does not exist
    */
-  public boolean isResearchArticle(final String articleDoi, final String authId)
+  public boolean isResearchArticle(final Article article, final String authId)
     throws NoSuchArticleIdException, ApplicationException;
+
+  /**
+   * Determines if the articleURI is of type researchArticle
+   *
+   * @param articleInfo The URI of the article
+   * @param authId the authorization ID of the current user
+   * @return True if the article is a research article
+   * @throws ApplicationException
+   *                                  if there was a problem talking to the OTM
+   * @throws NoSuchArticleIdException When the article does not exist
+   */
+  public boolean isResearchArticle(final ArticleInfo articleInfo, final String authId)
+      throws NoSuchArticleIdException, ApplicationException;
 
   /**
    * Returns a Map of publishable articles in the order indicated.  The key of each element is the DOI (URI) of the
@@ -63,7 +76,7 @@ public interface ArticleService {
    * @throws org.ambraproject.ApplicationException
    *
    */
-  public List<Article> getPublishableArticles(String eIssn, String orderField,
+  public List<ArticleInfo> getPublishableArticles(String eIssn, String orderField,
                                               boolean isOrderAscending) throws ApplicationException;
 
   /**
@@ -153,6 +166,6 @@ public interface ArticleService {
    * @param authId the authorization ID of the current user
    * @return articleInfo
    */
-  public ArticleInfo getArticleInfo(final String articleDoi, final String authId);
+  public ArticleInfo getArticleInfo(final String articleDoi, final String authId) throws NoSuchArticleIdException;
 
 }

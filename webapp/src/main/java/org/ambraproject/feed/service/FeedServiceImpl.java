@@ -185,7 +185,7 @@ public class FeedServiceImpl extends HibernateServiceImpl implements FeedService
 
     for(TOCArticleGroup ag : articleGroups)
       for(ArticleInfo article : ag.articles)
-        articleList.add( article.id.toString());
+        articleList.add( article.doi);
 
     return articleList;
   }

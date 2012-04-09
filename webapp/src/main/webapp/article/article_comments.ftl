@@ -20,10 +20,10 @@
 -->
 <#import "article_variables.ftl" as article>
 <@s.url id="thisPageURL" includeParams="get" includeContext="true" encode="false"/>
-<@s.url namespace="/article" includeParams="none" id="articleURL" action="fetchArticle" articleURI="${articleInfo.doi}"/>
-<@s.url namespace="/annotation/secure" includeParams="none" id="startDiscussionUrl" action="startDiscussion" target="${articleInfo.doi}"/>
-<@s.url namespace="/article" includeParams="none" id="correctionsURL" action="fetchArticleCorrections" articleURI="${articleInfo.doi}"/>
-<@s.url namespace="/article" includeParams="none" id="commentsURL" action="fetchArticleComments" articleURI="${articleInfo.doi}"/>
+<@s.url namespace="/article" includeParams="none" id="articleURL" action="fetchArticle" articleURI="${articleInfoX.doi}"/>
+<@s.url namespace="/annotation/secure" includeParams="none" id="startDiscussionUrl" action="startDiscussion" target="${articleInfoX.doi}"/>
+<@s.url namespace="/article" includeParams="none" id="correctionsURL" action="fetchArticleCorrections" articleURI="${articleInfoX.doi}"/>
+<@s.url namespace="/article" includeParams="none" id="commentsURL" action="fetchArticleComments" articleURI="${articleInfoX.doi}"/>
 
 <div id="content" class="article" style="visibility:visible;">
   <#include "article_rhc.ftl">

@@ -20,6 +20,7 @@
 package org.ambraproject.model.article;
 
 import org.ambraproject.model.UserProfileInfo;
+import org.ambraproject.models.Category;
 import org.topazproject.otm.annotations.Id;
 import org.topazproject.otm.annotations.Projection;
 import org.topazproject.otm.annotations.View;
@@ -49,7 +50,8 @@ public class ArticleInfo implements Serializable {
 
   private static final long serialVersionUID = 3823215602197299918L;
 
-  public URI                     id;
+  public Long                    id;
+  public String                  doi;
   public Date                    date;
   private String                 title;
   public List<RelatedArticleInfo> relatedArticles = new ArrayList<RelatedArticleInfo>();
@@ -62,17 +64,24 @@ public class ArticleInfo implements Serializable {
   private String                 publisher;
   private List<String>           subjects = new LinkedList<String>();
   private String                 description;
+  private Set<String>            types;
+  private String                 eIssn;
+  private String                 pages;
+  private Set<Category>          categories;
+  private String                 eLocationId;
+  private String                 volume;
+  private String                 issue;
 
   private transient String unformattedTitle;
 
   /**
    * Set the ID of this Article. This is the Article DOI. 
    * 
-   * @param id Article ID.
+   * @param doi Article ID.
    */
   @Id
-  public void setId(URI id) {
-    this.id = id;
+  public void setDoi(String doi) {
+    this.doi = doi;
   }
 
   /**
@@ -80,8 +89,8 @@ public class ArticleInfo implements Serializable {
    *
    * @return the id.
    */
-  public URI getId() {
-    return id;
+  public String getDoi() {
+    return doi;
   }
 
   /**
@@ -289,4 +298,67 @@ public class ArticleInfo implements Serializable {
     return articleTypeForDisplay;
   }
 
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public String geteIssn() {
+    return eIssn;
+  }
+
+  public void seteIssn(String eIssn) {
+    this.eIssn = eIssn;
+  }
+
+  public String getPages() {
+    return pages;
+  }
+
+  public void setPages(String pages) {
+    this.pages = pages;
+  }
+
+  public Set<String> getTypes() {
+    return types;
+  }
+
+  public void setTypes(Set<String> types) {
+    this.types = types;
+  }
+
+  public Set<Category> getCategories() {
+    return categories;
+  }
+
+  public void setCategories(Set<Category> categories) {
+    this.categories = categories;
+  }
+
+  public String geteLocationId() {
+    return eLocationId;
+  }
+
+  public void seteLocationId(String eLocationId) {
+    this.eLocationId = eLocationId;
+  }
+
+  public String getVolume() {
+    return volume;
+  }
+
+  public void setVolume(String volume) {
+    this.volume = volume;
+  }
+
+  public String getIssue() {
+    return issue;
+  }
+
+  public void setIssue(String issue) {
+    this.issue = issue;
+  }
 }

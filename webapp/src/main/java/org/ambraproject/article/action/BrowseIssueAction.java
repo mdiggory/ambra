@@ -20,10 +20,12 @@
 package org.ambraproject.article.action;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.io.Serializable;
 
+import org.ambraproject.article.service.NoSuchArticleIdException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +65,7 @@ public class BrowseIssueAction extends BaseActionSupport{
   private XMLService secondaryObjectService;
 
   private VolumeInfo volumeInfo;
+  private final ArrayList<String> messages = new ArrayList<String>();
 
   @Override
   @Transactional(readOnly = true)
@@ -117,12 +120,12 @@ public class BrowseIssueAction extends BaseActionSupport{
       log.error("The currentIssue description was null. Issue DOI='"+issueInfo.getId()+"'");
       issueDescription = "No description found for this issue";
     }
-    articleGroups = browseService.getArticleGrpList(URI.create(issue), getAuthId());
+      articleGroups = browseService.getArticleGrpList(URI.create(issue), getAuthId());
 
-    correctionMap = new MapContainer<URI, FormalCorrection>(
-        browseService.getCorrectionMap(articleGroups));
-    retractionMap = new MapContainer<URI, Retraction>(
-        browseService.getRetractionMap(articleGroups));
+      correctionMap = new MapContainer<URI, FormalCorrection>(
+          browseService.getCorrectionMap(articleGroups));
+      retractionMap = new MapContainer<URI, Retraction>(
+          browseService.getRetractionMap(articleGroups));
 
     return SUCCESS;
   }

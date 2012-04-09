@@ -45,6 +45,6 @@ public class ArticleInfoMostRecentDateComparator implements Comparator<ArticleIn
       return 1;
     }
 
-    return o1.getId().compareTo(o2.getId());
+    return o1.getDoi().compareTo(o2.getDoi());
   }
 }

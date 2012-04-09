@@ -19,6 +19,7 @@
  */
 package org.ambraproject.rating.action;
 
+import org.ambraproject.models.Article;
 import org.springframework.transaction.annotation.Transactional;
 import org.ambraproject.rating.service.RatingsService;
 import org.ambraproject.rating.service.RatingsService.AverageRatings;
@@ -44,9 +45,11 @@ public class GetAverageRatingsAction extends AbstractRatingAction {
   @Override
   @Transactional(readOnly = true)
   public String execute() throws Exception {
+    final Article article = articleService.getArticle(articleURI, getAuthId());
+    assert article != null : "article of URI: " + articleURI + " not found.";
     averageRatings = ratingsService.getAverageRatings(articleURI);
     hasRated = ratingsService.hasRated(articleURI, getCurrentUser());
-    isResearchArticle = articleService.isResearchArticle(articleURI, getAuthId());
+    isResearchArticle = articleService.isResearchArticle(article, getAuthId());
     return SUCCESS;
   }
 

@@ -81,7 +81,9 @@ public abstract class BaseWebTest extends BaseTest {
       getAction().setActionErrors(new HashSet<String>());
       getAction().setFieldErrors(new HashMap<String, List<String>>());
     }
-    ActionContext.getContext().getSession().clear();
+    if (ActionContext.getContext() != null && ActionContext.getContext().getSession() != null) {
+      ActionContext.getContext().getSession().clear();
+    }
   }
 
   protected void putInSession(String key, Object value) {

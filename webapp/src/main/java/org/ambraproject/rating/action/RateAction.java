@@ -20,6 +20,7 @@
 package org.ambraproject.rating.action;
 
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
+import org.ambraproject.models.Article;
 import org.ambraproject.models.UserProfile;
 import org.ambraproject.permission.service.PermissionsService;
 import org.ambraproject.util.ProfanityCheckingService;
@@ -71,11 +72,12 @@ public class RateAction extends AbstractRatingAction {
    */
   @SuppressWarnings("unchecked")
   @Transactional(rollbackFor = { Throwable.class })
-  public String rateArticle() {
+  public String rateArticle() throws Exception{
     final UserProfile user = getCurrentUser();
     final Date      now  = new Date(System.currentTimeMillis());
     final URI       annotatedArticle;
-
+    final Article article = articleService.getArticle(articleURI, getAuthId());
+    assert article != null : "article of URI: " + articleURI + " not found.";
     try {
       annotatedArticle = new URI(articleURI);
     } catch (URISyntaxException ue) {
@@ -94,7 +96,7 @@ public class RateAction extends AbstractRatingAction {
     this.permissionsService.checkLogin(user.getAuthId());
 
     try {
-      isResearchArticle = articleService.isResearchArticle(articleURI, getAuthId());
+      isResearchArticle = articleService.isResearchArticle(article, getAuthId());
     } catch (Exception ae) {
       log.info("Could not get article info for: " + articleURI, ae);
       return ERROR;

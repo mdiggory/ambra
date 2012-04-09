@@ -45,7 +45,7 @@
 <#-- When the current page is displaying article data, add this extra info for Google Scholar -->
 <#if articleInfoX??>
   <meta name="citation_publisher" content="${articleInfoX.publisher}" />
-
+  <meta name="citation_doi" content="${articleInfoX.doi?replace('info:doi/','')}" />
   <#if articleInfoX.unformattedTitle??>
     <meta name="citation_title" content="${articleInfoX.unformattedTitle}"/>
   </#if>
@@ -65,7 +65,7 @@
     <meta name="citation_date" content="${articleInfoX.date?date?string("yyyy/M/d")}"/>
   </#if>
 
-  <#assign pdfURL = "${freemarker_config.doiResolverURL}" + "${articleInfoX.id?replace('info:doi/','')}" + ".pdf" />
+  <#assign pdfURL = "${freemarker_config.doiResolverURL}" + "${articleInfoX.doi?replace('info:doi/','')}" + ".pdf" />
   <meta name="citation_pdf_url" content="${pdfURL}" />
 
   <#if article??>

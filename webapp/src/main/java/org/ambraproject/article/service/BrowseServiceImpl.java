@@ -388,18 +388,18 @@ public class BrowseServiceImpl extends HibernateServiceImpl implements BrowseSer
    * @return List of ArticleInfo objects.
    */
   @Transactional(readOnly = true)
-  public List<ArticleInfo> getArticleInfosForIssue(final URI issueDOI, String authId) {
+  public List<ArticleInfo> getArticleInfosForIssue(final URI issueDOI, String authId){
 
     IssueInfo iInfo = getIssueInfo(issueDOI);
     List<ArticleInfo> aInfos = new ArrayList<ArticleInfo>();
 
     for (URI articleDoi : iInfo.getArticleUriList()) {
-      ArticleInfo ai = articleService.getArticleInfo(articleDoi.toString(), authId);
-      if (ai == null) {
+      try{
+        ArticleInfo ai = articleService.getArticleInfo(articleDoi.toString(), authId);
+        aInfos.add(ai);
+      }catch (NoSuchArticleIdException ex){
         log.warn("Article " + articleDoi + " missing; member of Issue " + issueDOI);
-        continue;
       }
-      aInfos.add(ai);
     }
     return aInfos;
   }
@@ -533,7 +533,7 @@ public class BrowseServiceImpl extends HibernateServiceImpl implements BrowseSer
       // Article Loop
       while (y.hasNext()) {
         ArticleInfo ai = (ArticleInfo) y.next();
-        articleList.append(ai.id.toString());
+        articleList.append(ai.doi);
 
         if (y.hasNext())
           articleList.append(',');
@@ -560,7 +560,7 @@ public class BrowseServiceImpl extends HibernateServiceImpl implements BrowseSer
   /**
    *
    */
-  public List<TOCArticleGroup> getArticleGrpList(Issue issue, String authId) {
+  public List<TOCArticleGroup> getArticleGrpList(Issue issue, String authId){
     List<TOCArticleGroup> groupList = new ArrayList<TOCArticleGroup>();
 
     for (ArticleType at : ArticleType.getOrderedListForDisplay()) {
@@ -574,7 +574,8 @@ public class BrowseServiceImpl extends HibernateServiceImpl implements BrowseSer
   /**
    *
    */
-  public List<TOCArticleGroup> buildArticleGroups(Issue issue, List<TOCArticleGroup> articleGroups, String authId) {
+  public List<TOCArticleGroup> buildArticleGroups(Issue issue, List<TOCArticleGroup> articleGroups,
+                                                  String authId){
     List<ArticleInfo> articlesInIssue = getArticleInfosForIssue(issue.getId(), authId);
     /*
      * For every article that is of the same ArticleType as a TOCArticleGroup, add it to that group.

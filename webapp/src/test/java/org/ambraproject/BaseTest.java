@@ -40,6 +40,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 /**
  * Base class for tests of Ambra Service Beans.  This is provided just so they can all use the same applicationContext
@@ -98,6 +99,21 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
           "date didn't have correct second; expected something in [" + secondMin + "," + secondMax +
               "]; but got " + actualSecond);
     }
+  }
+
+  /**
+   * Helper method to compare article properties
+   *
+   * @param actual   - actual article
+   * @param expected - article with expected properties
+   */
+  protected void compareArticles(ArticleInfo actual, Article expected) {
+    assertNotNull(actual, "returned null article");
+    assertEquals(actual.getDoi(), expected.getDoi(), "Article had incorrect doi");
+    assertEquals(actual.geteIssn(), expected.geteIssn(), "returned incorrect eIssn");
+    assertEquals(actual.getTitle(), expected.getTitle(), "Article had incorrect Title");
+    assertEquals(actual.getDescription(), expected.getDescription(), "Article had incorrect description");
+    assertEqualsNoOrder(actual.getCategories().toArray(), expected.getCategories().toArray(), "Incorrect categories");
   }
 
   /**
@@ -261,7 +277,7 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
                                   Article[] expectedRelatedArticles, URI[] expectedRetractions,
                                   URI[] expectedFormalCorrections) {
     //basic properties
-    assertEquals(actual.getId(), URI.create(expectedArticle.getDoi()), "returned article info with incorrect id");
+    assertEquals(actual.getDoi(), expectedArticle.getDoi(), "returned article info with incorrect id");
     assertEquals(actual.getTitle(), expectedArticle.getTitle(),
         "returned article info with incorrect title");
     assertEquals(actual.getDate(), expectedArticle.getDate(),

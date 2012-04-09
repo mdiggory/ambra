@@ -74,7 +74,7 @@ public class GetArticleRatingsAction extends AbstractRatingAction {
     articleDescription = article.getDescription();
     averageRatings = ratingsService.getAverageRatings(articleURI);
 
-    isResearchArticle = articleService.isResearchArticle(articleURI, getAuthId());
+    isResearchArticle = articleService.isResearchArticle(article, getAuthId());
 
     // assume if valid RatingsPEP.GET_RATINGS, OK to GET_STATS
     // RatingSummary for this Article

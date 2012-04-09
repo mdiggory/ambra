@@ -30,9 +30,9 @@
   from our internal DOI resolver and messing up the formating.
  -->
 <#if articleInfoX??>
-  <#assign shortDOI = "${articleInfoX.id?replace('info:doi/','')}" />
+  <#assign shortDOI = "${articleInfoX.doi?replace('info:doi/','')}" />
   <#assign docURL = "${freemarker_config.doiResolverURL}" + shortDOI />
-  <#assign jDocURL = freemarker_config.getJournalUrl(journalContext) + "/article/" + articleInfoX.id?url />
+  <#assign jDocURL = freemarker_config.getJournalUrl(journalContext) + "/article/" + articleInfoX.doi?url />
   <#assign docTitle = articleInfoX.title />
   <#assign date = articleInfoX.date?string("yyyy-MM-dd") />
   <#assign articlePublisher = articleInfoX.publisher!"" />
@@ -53,7 +53,7 @@
 
 <#assign publisher = "">
 <#list journalList as jour>
-  <#if jour.key != journalContext && articleInfo.eIssn == jour.eIssn>
+  <#if jour.key != journalContext && articleInfoX.eIssn == jour.eIssn>
     <#assign publisher = "Published in <em><a href=\"" + freemarker_config.getJournalUrl(jour.key) + "\">" + jour.title + "</a></em>">
     <#break/>
   <#else>

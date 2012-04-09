@@ -102,7 +102,8 @@
         <h2>${articleHeader!"No Header Defined"}</h2>
         <#list articleGrp.articles as articleInfo>
           <div class="article">
-            <@s.url id="fetchArticleURL" action="fetchArticle" namespace="/article" articleURI="${articleInfo.id}" includeParams="none"/>
+            <@s.url id="fetchArticleURL" action="fetchArticle" namespace="/article" articleURI="${articleInfo.doi}"
+            includeParams="none"/>
             <h3><@s.a href="%{fetchArticleURL}" title="Read Open Access Article"><@articleFormat>${articleInfo.title}</@articleFormat></@s.a></h3>
             <p class="authors"><#list articleInfo.authors as auth><#if auth_index gt 0>, </#if>${auth?trim}</#list></p>
             <@related articleInfo=articleInfo/>

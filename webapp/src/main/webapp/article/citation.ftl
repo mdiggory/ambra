@@ -25,12 +25,12 @@
   </#if>
   <#if (author_has_next) >
     <span class="citation_author">${author.surnames!}<#if author.givenNames??>
-        <@abbreviation>${author.givenNames!}</@abbreviation></#if><#if author.suffix??>
+        <@abbreviation>${author.givenNames!}</@abbreviation></#if><#if author.suffix?has_content>
         ${author.suffix?replace(".","")}</#if>,
     </span>
   <#else>
     <span class="citation_author">${author.surnames!}<#if author.givenNames??>
-      <@abbreviation>${author.givenNames!}</@abbreviation></#if><#if author.suffix??>
+      <@abbreviation>${author.givenNames!}</@abbreviation></#if><#if author.suffix?has_content>
       ${author.suffix?replace(".","")}</#if>
       </span>
   </#if>
