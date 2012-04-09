@@ -4,13 +4,13 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.ambraproject</groupId>
   <artifactId>dom-ranges-helper</artifactId>
-  <version>2.3.1-SNAPSHOT</version>
+  <version>2.3.1</version>
   <name>Ambra DOM ranges helper</name>
 
   <parent>
     <groupId>org.ambraproject</groupId>
     <artifactId>ambra-libs</artifactId>
-    <version>2.3.1-SNAPSHOT</version>
+    <version>2.3.1</version>
   </parent>
 
   <dependencies>
