@@ -16,14 +16,14 @@
   -->
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd"
-    default-lazy-init="true">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+       default-lazy-init="true">
   <!--Include all the bean definitions-->
-  <import resource="nonWebApplicationContext.xml" />
+  <import resource="nonWebApplicationContext.xml"/>
 
   <bean id="ambraFreemarkerConfig" class="org.ambraproject.struts2.AmbraFreemarkerConfig">
-    <constructor-arg index="0" ref="configuration"/>
+    <constructor-arg index="0" ref="ambraConfiguration"/>
   </bean>
 
   <!--Ambra Actions and interceptors-->
@@ -38,34 +38,34 @@
   </bean>
 
   <bean id="displayUserAction" class="org.ambraproject.user.action.DisplayUserAction">
-    <property name="ambraConfiguration" ref="configuration"/>
+    <property name="ambraConfiguration" ref="ambraConfiguration"/>
     <property name="userService" ref="userService"/>
   </bean>
 
   <bean id="createCitationAction" class="org.ambraproject.article.action.CreateCitation">
     <property name="articleService" ref="articleService"/>
-    <property name="ambraConfiguration" ref="configuration"/>
+    <property name="ambraConfiguration" ref="ambraConfiguration"/>
   </bean>
 
   <bean id="slideshowAction" class="org.ambraproject.article.action.SlideshowAction">
     <property name="articleAssetService" ref="articleAssetService"/>
     <property name="secondaryObjectService" ref="secondaryObjectService"/>
-    <property name="ambraConfiguration" ref="configuration"/>
+    <property name="ambraConfiguration" ref="ambraConfiguration"/>
   </bean>
 
   <bean id="homePageAction" class="org.ambraproject.action.HomePageAction">
-    <property name="ambraConfiguration" ref="configuration"/>
+    <property name="ambraConfiguration" ref="ambraConfiguration"/>
     <property name="browseService" ref="browseService"/>
   </bean>
 
   <bean id="memberUserProfileAction" class="org.ambraproject.user.action.MemberUserProfileAction">
     <property name="userService" ref="userService"/>
-    <property name="ambraConfiguration" ref="configuration"/>
+    <property name="ambraConfiguration" ref="ambraConfiguration"/>
     <property name="profanityCheckingService" ref="profanityCheckingService"/>
   </bean>
 
   <bean id="memberUserAlertsAction" class="org.ambraproject.user.action.MemberUserAlertsAction">
-    <property name="ambraConfiguration" ref="configuration"/>
+    <property name="ambraConfiguration" ref="ambraConfiguration"/>
     <property name="userService" ref="userService"/>
   </bean>
 
@@ -73,13 +73,11 @@
     <property name="ratingsService" ref="ratingsService"/>
     <property name="journalService" ref="journalService"/>
     <property name="userService" ref="userService"/>
-    <property name="annotationConverter" ref="annotationConverter"/>
     <property name="trackBackService" ref="trackbackService"/>
     <property name="ambraFreemarkerConfig" ref="ambraFreemarkerConfig"/>
     <property name="annotationService" ref="annotationService"/>
-    <property name="ambraConfiguration" ref="configuration"/>
+    <property name="ambraConfiguration" ref="ambraConfiguration"/>
     <property name="articleService" ref="articleService"/>
-    <property name="replyService" ref="replyService"/>
     <property name="fetchArticleService" ref="fetchArticleService"/>
   </bean>
 
@@ -87,7 +85,31 @@
     <property name="userService" ref="userService"/>
     <property name="articleAssetService" ref="articleAssetService"/>
     <property name="xmlService" ref="xmlService"/>
-    <property name="ambraConfiguration" ref="configuration"/>
+    <property name="ambraConfiguration" ref="ambraConfiguration"/>
     <property name="fileStoreService" ref="fileStoreService"/>
+  </bean>
+
+  <bean id="createAnnotationAction" class="org.ambraproject.annotation.action.CreateAnnotationAction">
+    <property name="annotationService" ref="annotationService"/>
+    <property name="ambraConfiguration" ref="ambraConfiguration"/>
+    <property name="articleHtmlCache" ref="articleHtmlCache"/>
+    <property name="profanityCheckingService" ref="profanityCheckingService"/>
+  </bean>
+
+  <bean id="listReplyAction" class="org.ambraproject.annotation.action.ListReplyAction">
+    <property name="annotationService" ref="annotationService"/>
+    <property name="ambraConfiguration" ref="ambraConfiguration"/>
+    <property name="articleService" ref="articleService"/>
+  </bean>
+
+  <bean id="createFlagAction" class="org.ambraproject.annotation.action.CreateFlagAction">
+    <property name="annotationService" ref="annotationService"/>
+    <property name="ambraConfiguration" ref="ambraConfiguration"/>
+  </bean>
+
+  <bean id="createReplyAction" class="org.ambraproject.annotation.action.CreateReplyAction">
+    <property name="profanityCheckingService" ref="profanityCheckingService"/>
+    <property name="ambraConfiguration" ref="ambraConfiguration"/>
+    <property name="annotationService" ref="annotationService"/>
   </bean>
 </beans>

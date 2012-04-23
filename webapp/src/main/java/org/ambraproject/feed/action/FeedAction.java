@@ -22,6 +22,9 @@ package org.ambraproject.feed.action;
 
 import java.util.List;
 
+import org.ambraproject.feed.service.AnnotationSearchParameters;
+import org.ambraproject.views.AnnotationView;
+import org.ambraproject.views.TrackbackView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +35,6 @@ import org.ambraproject.action.BaseActionSupport;
 import org.ambraproject.feed.service.FeedService;
 import org.ambraproject.feed.service.ArticleFeedCacheKey;
 import org.ambraproject.feed.service.FeedService.FEED_TYPES;
-import org.ambraproject.feed.service.AnnotationFeedCacheKey;
 
 import com.opensymphony.xwork2.ModelDriven;
 import org.w3c.dom.Document;
@@ -108,11 +110,12 @@ import org.w3c.dom.Document;
 public class FeedAction extends BaseActionSupport implements ModelDriven {
   private static final Logger log = LoggerFactory.getLogger(FeedAction.class);
 
-  private FeedService         feedService; // Feed Service Spring injected.
-  private ArticleFeedCacheKey cacheKey;    // The cache key and action data model
-  private List<String>        articleIds;  // List of Article or Annotation IDs; result of search
-  private List<String>        replyIds;    // List of Reply IDs; result of search
-  private Document            resultFromSolr;  // list of articles for the rss feed
+  private FeedService          feedService;     // Feed Service Spring injected.
+  private ArticleFeedCacheKey  cacheKey;        // The cache key and action data model
+  private List<String>         articleIds;      // List of Article IDs; result of search
+  private List<AnnotationView> annotations;     // List of Annotations; result of search
+  private List<TrackbackView>  trackbacks;      // List of tracks; results of search
+  private Document             resultFromSolr;  // list of articles for the rss feed
 
   /**
    * Try and find the query in the feed cache or query the Article OTM Service if nothing
@@ -122,30 +125,41 @@ public class FeedAction extends BaseActionSupport implements ModelDriven {
    */
   @Transactional(readOnly = true)
   public String execute() throws Exception {
+    //TODO: Rename the cacheKey param to be something more logical once we no longer use cache here
     FEED_TYPES t = cacheKey.feedType();
 
     String status = SUCCESS;
     
     switch (t) {
-      case Annotation :
+      case Annotation:
+        //Trackbacks are (logically but not physically) a form of annotation, if this type of feed is selected
+        //We wanted it included
+        trackbacks = feedService.getTrackbacks(new AnnotationSearchParameters(cacheKey));
       case FormalCorrection:
       case MinorCorrection:
       case Retraction:
       case Comment:
+      case Note:
       case Rating:
-      case Trackback:
-        articleIds = feedService.getAnnotationIds(
-            new AnnotationFeedCacheKey(AnnotationFeedCacheKey.Type.ANNOTATIONS, cacheKey));
-        replyIds = feedService.getReplyIds(
-            new AnnotationFeedCacheKey(AnnotationFeedCacheKey.Type.REPLIES, cacheKey));
+      case Reply:
+        //The getAnnotations method performs filters for all of the above types.
+        //(Or not if Annotation is selected) AnnotationSearchParameters will not populate the annotationTypes property
+        //If the type specified is Annotation.  It's also worth noting here, while annotationTypes is a collection
+        //We never allow more then one value to be specified currently though a lot of the code supports it
+        annotations = feedService.getAnnotations(new AnnotationSearchParameters(cacheKey));
         break;
-      case Article :
+      case Trackback:
+        trackbacks = feedService.getTrackbacks(new AnnotationSearchParameters(cacheKey));
+        break;
+      case Article:
         resultFromSolr = feedService.getArticles(cacheKey);
         if (resultFromSolr == null) {
           status = ERROR;
         }
         break;
-      case Issue :
+      case Issue:
+        //TODO: We should stop using IDs, and put the actual issues on the stack for
+        // the AmbraFeedResult class to consume
         articleIds = feedService.getIssueArticleIds(cacheKey, getCurrentJournal(), getAuthId());
         break;
     }
@@ -196,12 +210,21 @@ public class FeedAction extends BaseActionSupport implements ModelDriven {
   }
 
   /**
-   * This is the results of the query which consist of a list of reply ID's.
+   * This is the results of the query which consist of a list of annotations.
    *
-   * @return the list of reply ID's returned from the query.
+   * @return the list of article/annotation ID's returned from the query.
    */
-  public List<String> getReplyIds() {
-    return replyIds;
+  public List<AnnotationView> getAnnotations() {
+    return annotations;
+  }
+
+  /**
+   * This is the results of the query which consist of a list of trackbacks.
+   *
+   * @return the list of article/annotation ID's returned from the query.
+   */
+  public List<TrackbackView> getTrackbacks() {
+    return trackbacks;
   }
 
   /**

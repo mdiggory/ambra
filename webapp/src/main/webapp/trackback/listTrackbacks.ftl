@@ -30,7 +30,7 @@
       <td>${t.title}</td>
       <td>${t.excerpt}</td>
       <td>${t.url}</td>
-      <td>${t.blog_name}</td>
+      <td>${t.blogName}</td>
     </tr>
   </#list>
 </table>

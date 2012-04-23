@@ -48,26 +48,26 @@
 
       <h3>Trackbacks</h3>
       <div>To trackback this article use the following trackback URL:<br/>
-        <@s.url namespace="/" includeParams="none" id="trackbackURL" action="trackback" trackbackId="${articleURI}"/>
+        <@s.url namespace="/" includeParams="none" id="trackbackURL" action="trackback" doi="${articleURI}"/>
         <#assign trackbackLink = Request[freemarker_config.journalContextAttributeKey].baseHostUrl + trackbackURL>
         <div class="trackbackURL"><strong>${trackbackLink}</strong></div>
       </div>
 
       <#list trackbackList as t>
         <div class="trackback">
-          <#if t.title?exists && !(t.title = "")>
+          <#if t.title?has_content>
             <#assign title = t.title>
           <#else>
             <#assign title = t.url>
           </#if>
           <p class="header">
-          <#if t.blog_name?exists>
-          <span class="blog">${t.blog_name}</span>
+          <#if t.blogName?has_content>
+          <span class="blog">${t.blogName}</span>
           <#else>
           An unknown source
           </#if>
            referenced this article in "<a href="${t.url}" title="${t.title?replace('"',"")!""}" class="post">${title}</a>" <span class="timestamp">on <strong>${t.created?string("dd MMM yyyy '</strong>at<strong>' HH:mm zzz")}</strong></span></p>
-          <#if t.excerpt?exists>
+          <#if t.excerpt?has_content>
           <p class="excerpt">"${t.excerpt}"</p>
           </#if>
         </div>

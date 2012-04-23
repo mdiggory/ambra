@@ -22,8 +22,8 @@
 <div id="content" class="static">
   <h1>Release Notes</h1>
   <ul>
-        <li><a href="#features">Features Updates</a></li>
-        <li><a href="#credits">Site Credits</a></li>
+    <li><a href="#features">Features Updates</a></li>
+    <li><a href="#credits">Site Credits</a></li>
   </ul>
   
   <a name="features"></a>
@@ -35,7 +35,40 @@
     become available. This page summarizes features and known bugs in each updated version.
   </p>
 
-    <h2>Ambra 2.20</h2>
+  <h2>Ambra 2.32</h2>
+  <p>Released April 26, 2012</p>
+  <h3>Features Implemented in Ambra 2.32</h3>
+  <ul>
+    <li>Refactored Annotation model</li>
+    <li>Performance improvements</li>
+  </ul>
+
+  <h2>Ambra 2.31</h2>
+  <p>Released April 12, 2012</p>
+  <h3>Features Implemented in Ambra 2.31</h3>
+  <ul>
+    <li>Added partial support for NLM 3.0</li>
+    <li>Upgraded to Saxon 9.3</li>
+    <li>Performance improvements</li>
+  </ul>
+
+  <h2>Ambra 2.22</h2>
+  <p>Released March 8, 2012</p>
+  <h3>Features Implemented in Ambra 2.22</h3>
+  <ul>
+    <li>Refactored User Profile model</li>
+    <li>Updated ALM to call new Tomcat Version of Scopus</li>
+  </ul>
+
+  <h2>Ambra 2.21</h2>
+  <p>Released February 16, 2012</p>
+  <h3>Features Implemented in Ambra 2.21</h3>
+  <ul>
+    <li>Added PMC Data to ALM Metrics chart (Completely revamped the chart look and feel.)</li>
+    <li>Pulled out Administrative functions into a new stand alone web application</li>
+  </ul>
+
+  <h2>Ambra 2.20</h2>
     <p>Released January 13, 2012</p>
     <h3>Features Implemented in Ambra 2.20</h3>
     <ul>
@@ -104,7 +137,7 @@
         <li>A number of bugs were fixed in the RSS feeds:</li>
         <ul>
             <li>The complete list of authors, including collaboration authors, has been added to each article.</li>
-            <li>The article publication time was changed from 2011–04–21T07:00:00Z to 2011–04–21T00:00:00Z .</li>
+            <li>The article publication time was changed from 2011ï¿½04ï¿½21T07:00:00Z to 2011ï¿½04ï¿½21T00:00:00Z .</li>
             <li>HTML formatting has been removed from article titles.</li>
             <li>The main article abstract is now included in the RSS feed.</li>
         </ul>

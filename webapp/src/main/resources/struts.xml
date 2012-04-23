@@ -159,7 +159,7 @@
       <result name="success" type="redirect">/home.action</result>
     </action>
 
-    <action name="trackback" class="org.ambraproject.action.TrackbackAction">
+    <action name="trackback" class="org.ambraproject.trackback.CreateTrackbackAction">
       <result name="success">
         <param name="location">/trackback/success.ftl</param>
         <param name="contentType">application/xml</param>
@@ -298,10 +298,11 @@
   <package name="rate" extends="default" namespace="/rate">
 
     <default-action-ref name="pageNotFound" />
-    <action name="getAverageRatings" class="org.ambraproject.rating.action.GetAverageRatingsAction">
+
+    <!--action name="getAverageRatings" class="org.ambraproject.rating.action.GetAverageRatingsAction">
       <result name="success">/WEB-INF/pages/article/articleRatings.ftl</result>
       <result name="error">/WEB-INF/pages/article/articleRatings.ftl</result>
-    </action>
+    </action-->
     <action name="getUpdatedRatings" class="org.ambraproject.rating.action.GetAverageRatingsAction">
      <result name="success" type="ambraFreemarker">
         <param name="location">/article/article_rhc_rating.ftl</param>
@@ -314,6 +315,7 @@
         <param name="noCache">true</param>
       </result>
     </action>
+
     <action name="getArticleRatings" class="org.ambraproject.rating.action.GetArticleRatingsAction">
       <result name="success" type="ambraFreemarker">
         <param name="templateFile">/rating/index.ftl</param>
@@ -625,26 +627,6 @@
 
     <default-action-ref name="pageNotFound" />
 
-    <action name="listAnnotation" class="org.ambraproject.annotation.action.ListAnnotationAction">
-      <result name="success">/annotation/listAnnotation.ftl</result>
-      <result name="error" type="ambraFreemarker">
-        <param name="status">404</param>
-        <param name="templateFile">/static/pageNotFound.ftl</param>
-      </result>
-    </action>
-
-    <action name="getFormalCorrections" class="org.ambraproject.annotation.action.ListAnnotationAction" method="fetchFormalCorrections">
-      <result name="success" type="json">
-      	<param name="excludeProperties">advisors, callbacks, annotations</param>
-      </result>
-    </action>
-
-    <action name="getRetractions" class="org.ambraproject.annotation.action.ListAnnotationAction" method="fetchRetractions">
-      <result name="success" type="json">
-      	<param name="excludeProperties">advisors, callbacks, annotations</param>
-      </result>
-    </action>
-
     <action name="getAnnotation" class="org.ambraproject.annotation.action.GetAnnotationAction">
       <result name="success" type="json">
         <!--param name="excludeProperties">advisors, callbacks, annotations</param-->
@@ -659,12 +641,15 @@
           currentJournal,
           annotation,
           cisStartDateMillis,
-          annotation.commentTitle,
-          annotation.creator,
+          annotation.id,
+          annotation.annotationUri,
+          annotation.title,
+          annotation.creatorName,
+          annotation.creatorID,
           annotation.createdAsMillis,
-          annotation.escapedTruncatedComment,
           annotation.type,
-          annotation.truncatedCIStatement
+          annotation.truncatedBody,
+          annotation.truncatedCompetingInterestStatement
         </param>
       </result>
     </action>
@@ -677,8 +662,7 @@
       </result>
     </action>
 
-    <action name="listAllReplies" class="org.ambraproject.annotation.action.ListReplyAction"
-      method="listAllReplies">
+    <action name="listAllReplies" class="org.ambraproject.annotation.action.ListReplyAction">
       <result name="success">/annotation/listReply.ftl</result>
       <result name="error" type="ambraFreemarker">
         <param name="status">404</param>
@@ -686,8 +670,7 @@
       </result>
     </action>
 
-    <action name="listThreadedReplies" class="org.ambraproject.annotation.action.ListReplyAction"
-      method="listAllReplies">
+    <action name="listThreadedReplies" class="org.ambraproject.annotation.action.ListReplyAction">
       <result name="success">/annotation/listThreadedReply.ftl</result>
       <result name="error" type="ambraFreemarker">
         <param name="status">404</param>
@@ -695,7 +678,7 @@
       </result>
     </action>
 
-    <action name="listThread" class="org.ambraproject.annotation.action.ListReplyAction" method="listAllReplies">
+    <action name="listThread" class="org.ambraproject.annotation.action.ListReplyAction">
       <result name="success" type="ambraFreemarker">
         <param name="templateFile">/discussion/discussion.ftl</param>
         <param name="noCache">true</param>
@@ -706,29 +689,7 @@
       </result>
     </action>
 
-    <action name="getCommentary" class="org.ambraproject.annotation.action.GetCommentaryAction" method="listComments">
-      <result name="success" type="ambraFreemarker">
-        <param name="templateFile">/discussion/commentary.ftl</param>
-        <param name="noCache">true</param>
-      </result>
-      <result name="error" type="ambraFreemarker">
-        <param name="status">404</param>
-        <param name="templateFile">/static/pageNotFound.ftl</param>
-      </result>
-    </action>
-
-    <action name="getCorrectionsCommentary" class="org.ambraproject.annotation.action.GetCommentaryAction" method="listCorrections">
-      <result name="success" type="ambraFreemarker">
-        <param name="templateFile">/discussion/corrections.ftl</param>
-        <param name="noCache">true</param>
-      </result>
-      <result name="error" type="ambraFreemarker">
-        <param name="status">404</param>
-        <param name="templateFile">/static/pageNotFound.ftl</param>
-      </result>
-    </action>
-
-    <action name="listThreadRefresh" class="org.ambraproject.annotation.action.ListReplyAction" method="listAllReplies">
+    <action name="listThreadRefresh" class="org.ambraproject.annotation.action.ListReplyAction">
       <result name="success" type="ambraFreemarker">
         <param name="location">/discussion/threaded_replies.ftl</param>
         <param name="noCache">true</param>
@@ -737,22 +698,6 @@
         <param name="status">404</param>
         <param name="templateFile">/static/pageNotFound.ftl</param>
       </result>
-    </action>
-
-    <action name="getReply" class="org.ambraproject.annotation.action.GetReplyAction">
-      <result name="success" type="json"/>
-    </action>
-
-    <action name="listFlags" class="org.ambraproject.annotation.action.ListFlagAction">
-      <result name="success">/annotation/listFlag.ftl</result>
-      <result name="error" type="ambraFreemarker">
-        <param name="status">404</param>
-        <param name="templateFile">/static/pageNotFound.ftl</param>
-      </result>
-    </action>
-
-    <action name="getFlag" class="org.ambraproject.annotation.action.GetFlagAction">
-      <result name="success" type="json"/>
     </action>
   </package>
 
@@ -764,7 +709,7 @@
       <result>/annotation/createAnnotation.ftl</result>
     </action>
 
-    <action name="startDiscussion" class="org.ambraproject.annotation.action.GetCommentaryAction" method="getArticleMetaInfo">
+    <action name="startDiscussion" class="org.ambraproject.annotation.action.StartDiscussionAction">
       <result name="success" type="ambraFreemarker">
         <param name="templateFile">/discussion/startDiscussion.ftl</param>
       </result>
@@ -782,18 +727,10 @@
       <result name="success" type="json"/>
     </action>
 
-    <action name="deleteAnnotation" class="org.ambraproject.annotation.action.DeleteAnnotationAction" method="deleteAnnotation">
-      <result name="success" type="redirect">/home.action</result>
-    </action>
-
     <action name="createReplySubmit" class="org.ambraproject.annotation.action.CreateReplyAction">
       <result name="input" type="json"/>
       <result name="error" type="json"/>
       <result name="success" type="json"/>
-    </action>
-
-    <action name="deleteReply" class="org.ambraproject.annotation.action.DeleteReplyAction" method="deleteReplyWithId">
-      <result name="success" type="redirect">/home.action</result>
     </action>
 
     <!--TODO: not needed ?? -->
@@ -811,10 +748,6 @@
       <result name="input" type="json"/>
       <result name="error" type="json"/>
       <result name="success" type="json"/>
-    </action>
-
-    <action name="deleteFlag" class="org.ambraproject.annotation.action.DeleteFlagAction">
-      <result name="success" type="redirect">/home.action</result>
     </action>
 
   </package>

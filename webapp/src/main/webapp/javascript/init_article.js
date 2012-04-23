@@ -45,9 +45,9 @@ var annotationConfig = {
   dfltAnnSelErrMsg: 'This area of text cannot be notated.',
   annSelErrMsg: null,
   rangeInfoObj: new Object(),
-  annTypeMinorCorrection: 'MinorCorrection',
-  annTypeFormalCorrection: 'FormalCorrection',
-  annTypeRetraction: 'Retraction',
+  annTypeMinorCorrection: 'MINOR_CORRECTION',
+  annTypeFormalCorrection: 'FORMAL_CORRECTION',
+  annTypeRetraction: 'RETRACTION',
   styleMinorCorrection: 'minrcrctn', // generalized css class name for minor corrections
   styleFormalCorrection: 'frmlcrctn', // generalized css class name for formal corrections
   styleRetraction: 'retractionCssStyle' // generalized css class name for retractions.  Using Formal Corrections style.

@@ -20,17 +20,9 @@
 package org.ambraproject.feed.service;
 
 import org.ambraproject.ApplicationException;
-import org.ambraproject.article.service.NoSuchArticleIdException;
-import org.ambraproject.models.Article;
-import org.topazproject.ambra.models.Annotation;
-import org.topazproject.ambra.models.Comment;
-import org.topazproject.ambra.models.FormalCorrection;
-import org.topazproject.ambra.models.MinorCorrection;
-import org.topazproject.ambra.models.Rating;
-import org.topazproject.ambra.models.RatingSummary;
-import org.topazproject.ambra.models.Reply;
-import org.topazproject.ambra.models.Retraction;
-import org.topazproject.ambra.models.Trackback;
+import org.ambraproject.models.AnnotationType;
+import org.ambraproject.views.AnnotationView;
+import org.ambraproject.views.TrackbackView;
 import org.w3c.dom.Document;
 
 import java.net.URISyntaxException;
@@ -52,34 +44,28 @@ public interface FeedService {
    * Invalid is used when the types parameter does not match any of the current feed types.
    */
   public static enum FEED_TYPES {
-    Article(null, Article.class),
-    Annotation(org.topazproject.ambra.models.Annotation.RDF_TYPE, Annotation.class),
-    Comment(org.topazproject.ambra.models.Comment.RDF_TYPE, Comment.class),
-    FormalCorrection(org.topazproject.ambra.models.FormalCorrection.RDF_TYPE, FormalCorrection.class),
-    MinorCorrection(org.topazproject.ambra.models.MinorCorrection.RDF_TYPE, MinorCorrection.class),
-    Retraction(org.topazproject.ambra.models.Retraction.RDF_TYPE, Retraction.class),
-    Trackback(org.topazproject.ambra.models.Trackback.RDF_TYPE, Trackback.class),
-    Rating(org.topazproject.ambra.models.Rating.RDF_TYPE, Rating.class),
-    RatingSummary(org.topazproject.ambra.models.RatingSummary.RDF_TYPE, RatingSummary.class),
-    Reply(org.topazproject.ambra.models.Reply.RDF_TYPE, Reply.class),
-    Issue(null, null),
+    Comment(AnnotationType.COMMENT.toString()),
+    FormalCorrection(AnnotationType.FORMAL_CORRECTION.toString()),
+    MinorCorrection(AnnotationType.MINOR_CORRECTION.toString()),
+    Retraction(AnnotationType.RETRACTION.toString()),
+    Rating(AnnotationType.RATING.toString()),
+    Reply(AnnotationType.REPLY.toString()),
+    Note(AnnotationType.NOTE.toString()),
+    Annotation("Annotation"),
+    Article("Article"),
+    Issue("Issue"),
+    Trackback("Trackback"),
     // Invalid must remain last.
-    Invalid(null, null);
+    Invalid(null);
 
-    private String rdftype;
-    private Class clazz;
+    private String type;
 
-    private FEED_TYPES(String rdfType, Class clazz) {
-      this.rdftype = rdfType;
-      this.clazz = clazz;
+    private FEED_TYPES(String type) {
+      this.type = type;
     }
 
-    public String rdfType() {
-      return rdftype;
-    }
-
-    public Class isClass() {
-      return clazz;
+    public String type() {
+      return type;
     }
   }
 
@@ -107,41 +93,32 @@ public interface FeedService {
    * @return List&lt;String&gt; if article Ids.
    * @throws ApplicationException ApplicationException
    * @throws URISyntaxException   URISyntaxException
+   * TODO: We should really stop using this pattern of getting lists of IDs and then getting the actual objects
    */
+  @Deprecated
   public List<String> getIssueArticleIds(final ArticleFeedCacheKey cacheKey, String journal, String authId) throws
       URISyntaxException, ApplicationException;
 
   /**
-   * Given a list of articleIds return a list of articles corresponding to the Ids.
-   *
-   * @param articleIds List&lt;String&gt; of article Ids to fetch
-   * @parem authId the current user authId
-   *
-   * @return <code>List&lt;Article&gt;</code> of articles
-   * @throws ParseException ArchiveProcessException
-   */
-  public List<Article> getArticles(List<String> articleIds, final String authId) throws ParseException, NoSuchArticleIdException;
-
-  /**
-   * Returns a list of annotation Ids based on parameters contained in the cache key. If a start date is not specified
+   * Returns a list of annotationViews based on parameters contained in the cache key. If a start date is not specified
    * then a default date is used but not stored in the key.
    *
    * @param cacheKey cache key.
    * @return <code>List&lt;String&gt;</code> a list of annotation Ids
    * @throws ApplicationException Converts all exceptions to ApplicationException
    */
-  public List<String> getAnnotationIds(final AnnotationFeedCacheKey cacheKey)
-      throws ApplicationException;
+  public List<AnnotationView> getAnnotations(final AnnotationSearchParameters cacheKey)
+      throws ParseException, URISyntaxException;
 
   /**
-   * Returns a list of reply Ids based on parameters contained in the cache key. If a start date is not specified then a
-   * default date is used but not stored in the key.
+   * Returns a list of trackbackViews based on parameters contained in the cache key. If a start date is not specified
+   * then a default date is used but not stored in the key.
    *
-   * @param cacheKey cache key
-   * @return <code>List&lt;String&gt;</code> a list of reply Ids
+   * @param cacheKey cache key.
+   * @return <code>List&lt;String&gt;</code> a list of annotation Ids
    * @throws ApplicationException Converts all exceptions to ApplicationException
    */
-  public List<String> getReplyIds(final AnnotationFeedCacheKey cacheKey)
-      throws ApplicationException;
+  public List<TrackbackView> getTrackbacks(final AnnotationSearchParameters cacheKey)
+      throws ParseException, URISyntaxException;
 
 }

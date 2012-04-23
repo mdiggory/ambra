@@ -71,10 +71,10 @@
       <default>journal</default>
       <journals>journal,journal1</journals>
       <journal>
-        <url>http://www.journal.org</url>
+        <url>http://journal.org</url>
       </journal>
       <journal1>
-        <url>http://www.journal1.org</url>
+        <url>http://journal1.org</url>
       </journal1>
     </virtualJournals>
 

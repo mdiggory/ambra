@@ -48,21 +48,20 @@
           </#if>
         </#if>
         </a>
-        <!--<p><a href="/annotation/getCommentary.action?target=${articleURI}" class="commentary icon">See all commentary</a> on this article</p>-->
       </div>
 
-      <#list articleRatingSummaries as articleRatingSummary>
-        <@s.url id="fetchUserURL" namespace="/user" action="showUser" userAccountUri="${articleRatingSummary.creatorURI}"/>
+      <#list articleRatings as articleRating>
+        <@s.url id="fetchUserURL" namespace="/user" action="showUser" userId="${articleRating.creatorID?c}"/>
         <div class="response ratingComment">
-          <a name="${articleRatingSummary.ratingId}"/>
+          <a name="${articleRating.ratingId}"/>
           <div class="hd">
             <!-- begin : response title : user -->
             <h3>
-              <#if articleRatingSummary.commentTitle?exists>
-                ${articleRatingSummary.commentTitle}
+              <#if articleRating.commentTitle?exists>
+                ${articleRating.commentTitle}
               </#if>
-              <span class="detail">Posted by <a href="${fetchUserURL}" title="Annotation Author" class="user icon">${articleRatingSummary.creatorName}</a>
-                on <strong>${articleRatingSummary.created?string("dd MMM yyyy '</strong>at<strong>' HH:mm zzz")}</strong>
+              <span class="detail">Posted by <a href="${fetchUserURL}" title="Annotation Author" class="user icon">${articleRating.creatorName}</a>
+                on <strong>${articleRating.created?string("dd MMM yyyy '</strong>at<strong>' HH:mm zzz")}</strong>
               </span>
             </h3>
             <!-- end : response title : user -->
@@ -72,56 +71,56 @@
             <div class="posterRating">
               <ol class="ratingAvgs">
               <#if isResearchArticle == true>
-                <#if articleRatingSummary.insight?exists>
+                <#if articleRating.insight?exists>
                   <li><label for="insight">Insight</label>
                       <ul class="star-rating rating" title="insight">
-                        <#assign insightPct = (20 * articleRatingSummary.insight)?string("##0")>
-                        <li class="current-rating average pct${insightPct}">Currently ${articleRatingSummary.insight?string("0.#")}/5 Stars.</li>
+                        <#assign insightPct = (20 * articleRating.insight)?string("##0")>
+                        <li class="current-rating average pct${insightPct}">Currently ${articleRating.insight?string("0.#")}/5 Stars.</li>
                       </ul>
                   </li>
                 </#if>
-                <#if articleRatingSummary.reliability?exists>
+                <#if articleRating.reliability?exists>
                   <li><label for="reliability">Reliability</label>
                     <ul class="star-rating rating" title="reliability">
-                      <#assign reliabilityPct = (20 * articleRatingSummary.reliability)?string("##0")>
-                      <li class="current-rating average pct${reliabilityPct}">Currently ${articleRatingSummary.reliability?string("0.#")}/5 Stars.</li>
+                      <#assign reliabilityPct = (20 * articleRating.reliability)?string("##0")>
+                      <li class="current-rating average pct${reliabilityPct}">Currently ${articleRating.reliability?string("0.#")}/5 Stars.</li>
                     </ul>
                   </li>
                 </#if>
-                <#if articleRatingSummary.style?exists>
+                <#if articleRating.style?exists>
                   <li><label for="style">Style</label>
                     <ul class="star-rating rating" title="style">
-                      <#assign stylePct = (20 * articleRatingSummary.style)?string("##0")>
-                      <li class="current-rating average pct${stylePct}">Currently ${articleRatingSummary.style?string("0.#")}/5 Stars.</li>
+                      <#assign stylePct = (20 * articleRating.style)?string("##0")>
+                      <li class="current-rating average pct${stylePct}">Currently ${articleRating.style?string("0.#")}/5 Stars.</li>
                     </ul>
                   </li>
                 </#if>
-                <#if articleRatingSummary.overallRounded?exists>
+                <#if articleRating.overallRounded?exists>
                   <li><label for="overall"><strong>Overall</strong></label>
                     <ul class="star-rating rating" title="overall">
-                      <#assign overallPct = (20 * articleRatingSummary.overallRounded)?string("##0")>
-                      <li class="current-rating average pct${overallPct}">Currently ${articleRatingSummary.overallRounded?string("0.#")}/5 Stars.</li>
+                      <#assign overallPct = (20 * articleRating.overallRounded)?string("##0")>
+                      <li class="current-rating average pct${overallPct}">Currently ${articleRating.overallRounded?string("0.#")}/5 Stars.</li>
                     </ul>
                   </li>
                 </#if>
               <#else>
                   <li><label for="singleRating">&nbsp;</label>
                     <ul class="star-rating rating single" title="singleRating">
-                      <#assign singleRatingPct = (20 * articleRatingSummary.singleRating)?string("##0")>
-                      <li class="current-rating average pct${singleRatingPct}">Currently ${articleRatingSummary.singleRating?string("0.#")}/5 Stars.</li>
+                      <#assign singleRatingPct = (20 * articleRating.singleRating)?string("##0")>
+                      <li class="current-rating average pct${singleRatingPct}">Currently ${articleRating.singleRating?string("0.#")}/5 Stars.</li>
                     </ul>
                   </li>
               </#if>
               </ol>
             </div>
             <blockquote>
-              <#if articleRatingSummary.commentValue?exists>
-                <p>${articleRatingSummary.commentValue}</p>
+              <#if articleRating.commentValue?exists>
+                <p>${articleRating.commentValue}</p>
               </#if>
-              <#if (cisStartDateMillis < articleRatingSummary.createdMillis)>
+              <#if (cisStartDateMillis < articleRating.createdMillis)>
                 <div class="cis">
-                  <#if (articleRatingSummary.CIStatement?? && articleRatingSummary.CIStatement !="")>
-                    <strong>Competing interests declared:</strong> ${articleRatingSummary.CIStatement}
+                  <#if (articleRating.CIStatement?? && articleRating.CIStatement !="")>
+                    <strong>Competing interests declared:</strong> ${articleRating.CIStatement}
                   <#else>
                     <strong>No competing interests declared.</strong>
                   </#if>
@@ -133,15 +132,15 @@
 
           <!-- begin : toolbar options -->
           <div class="toolbar">
-            <#if articleRatingSummary.commentTitle?exists>
-              <#assign flagTitle = "${articleRatingSummary.commentTitle}">
+            <#if articleRating.commentTitle?exists>
+              <#assign flagTitle = "${articleRating.commentTitle}">
             <#else>
               <#assign flagTitle = "Flag this rating">
             </#if>
             <ul>
               <li>
                 <#if Session?exists && Session[freemarker_config.userAttributeKey]?exists>
-                  <a href="#" onclick="ambra.responsePanel.show(this, _dcf, 'toolbar', '${articleRatingSummary.ratingId}', null, null, 2); return false;" class="flag tooltip" title="Report a Concern">Report a Concern</a>
+                  <a href="#" onclick="ambra.responsePanel.show(this, _dcf, 'toolbar', '${articleRating.ratingId}', null, null, 2); return false;" class="flag tooltip" title="Report a Concern">Report a Concern</a>
                 <#else>
                   <a href="${freemarker_config.context}/user/secure/secureRedirect.action?goTo=${global.thisPage}" class="flag tooltip" title="Report a Concern">Report a Concern</a>
                 </#if>

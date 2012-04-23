@@ -96,7 +96,8 @@
       <!-- Predefined URL elements for accessing standard Ambra http services -->
       <webserverUrl>http://${ambra.network.hosts.default}:${ambra.network.ports.default}${ambra.platform.appContext}/</webserverUrl>
       <articleAction>article/</articleAction> <!-- action to which doi resolvers forwards to display an article -->
-      <annotationAction>annotation/</annotationAction> <!-- action to which doi resolvers forwards to display an annotation -->
+      <annotationAction>annotation/listThread.action?root=%ID%</annotationAction> <!-- action to which doi resolvers forwards to display an annotation -->
+      <ratingAction>rate/getArticleRatings.action?articleURI=%DOI%#%ID%</ratingAction> <!-- action to which doi resolvers forwards to display a rating-->
       <figureAction1>article/slideshow.action?uri=</figureAction1> <!-- with figure-action2, constructs url for graphics and table display -->
       <figureAction2>&amp;imageURI=</figureAction2>
       <fetchObjectAction>article/fetchObjectAttachment.action?uri=</fetchObjectAction>

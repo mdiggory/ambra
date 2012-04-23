@@ -19,11 +19,13 @@
  */
 package org.ambraproject.annotation.service;
 
+import org.ambraproject.annotation.Context;
+import org.ambraproject.models.AnnotationType;
+import org.ambraproject.models.FlagReasonCode;
 import org.ambraproject.models.UserProfile;
-import org.topazproject.ambra.models.Annotation;
-import org.topazproject.ambra.models.ArticleAnnotation;
+import org.ambraproject.views.AnnotationView;
 
-import java.io.UnsupportedEncodingException;
+import javax.annotation.Nullable;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.Date;
@@ -33,197 +35,140 @@ import java.util.Set;
 /**
  * Wrapper over annotation(not the same as reply) web service
  */
-public interface AnnotationService extends BaseAnnotationService {
-
-  public Set<Class<? extends ArticleAnnotation>> getAllAnnotationClasses();
-
+public interface AnnotationService {
   /**
-   * Delete an annotation.
-   *
-   * @param annotationId annotationId
-   * @throws RuntimeException      on an error
-   * @throws SecurityException if a security policy prevented this operation
+   * Enum for passing order values to {@link AnnotationService#listAnnotations(Long, java.util.Set,
+   * org.ambraproject.annotation.service.AnnotationService.AnnotationOrder)} and {@link
+   * AnnotationService#listAnnotationsNoReplies(Long, java.util.Set, org.ambraproject.annotation.service.AnnotationService.AnnotationOrder)}
    */
-  public void deleteAnnotation(final String annotationId, final String authId) throws SecurityException;
+  public static enum AnnotationOrder {
+    /**
+     * Order by the created date of the annotation, going oldest to newest
+     */
+    OLDEST_TO_NEWEST,
+    /**
+     * Order by the date of the most recent reply to any comment in the thread, newest to oldest. This includes replies
+     * to replies. If there are no replies, the creation date of the annotation is used.
+     */
+    MOST_RECENT_REPLY
+  }
 
 
   /**
-   * Get a list of all annotation Ids satifying the given criteria. All caching is done at the object level by the
-   * session.
+   * Create a comment on an article.  If the xpath passed is null or empty, then it is created as an {@link
+   * org.ambraproject.models.AnnotationType#COMMENT}. If it's not empty, it is assumed we are creating an inline comment
+   * ({@link org.ambraproject.models.AnnotationType#NOTE})
+   *
+   * @param user             the user creating the annotation
+   * @param articleDoi       the doi of the article being annotated
+   * @param title            title
+   * @param body             body
+   * @param ciStatement      competing interesting statement
+   * @param context          if this is an inline note, the location of the highlighted portion in the article
+   * @param flagAsCorrection if true, flag the created comment as a potential correction
+   * @return the id of the stored annotation
+   */
+  public Long createComment(UserProfile user, final String articleDoi, final String title, final String body,
+                            @Nullable final String ciStatement, @Nullable final Context context, boolean flagAsCorrection);
+
+  /**
+   * Create a reply to an annotation
+   * @param user the user creating the reply
+   * @param parentId the id of the annotation being replied to
+   * @param title the title of the reply
+   * @param body the body of the reply
+   * @param ciStatement the competing interest statement for the reply
+   * @return the generated id of the reply object
+   */
+  public Long createReply(UserProfile user, final Long parentId, final String title, final String body, @Nullable final String ciStatement);
+
+  /**
+   * Get a view object wrapper around the specified annotation, with all replies loaded up
+   *
+   * @param annotationId the id of the annotation to get
+   * @return a view wrapper around the annotation, with replies fully populated
+   */
+  public AnnotationView getFullAnnotationView(Long annotationId);
+
+  /**
+   * Get a view wrapper around the annotation object, without replies loaded.  The number of replies will be counted,
+   * the last reply date will be loaded up, and a faux reply array will be set on the annotation view with this size and
+   * the last entry having created date as the last reply date. This is a hack to show the number of replies and last
+   * reply date on the comment page of the article, without loading up replies.
+   *
+   * @param annotationId the id of the annotation to load
+   * @return a view wrapper around the the annotation with no replies
+   */
+  public AnnotationView getBasicAnnotationView(Long annotationId);
+
+  /**
+   * Get a view wrapper around the annotation object, without replies loaded.
+   *
+   * @param annotationUri the uri of the annotation to load
+   * @return a view wrapper around the the annotation with no replies
+   */
+  public AnnotationView getBasicAnnotationViewByUri(String annotationUri);
+
+
+  /**
+   * Create a flag against an annotation or a reply
+   *
+   * @param user         Logged in user
+   * @param annotationId the id of the annotation being flagged
+   * @param reasonCode   reasonCode
+   * @param body         body
+   * @return unique identifier for the newly created flag
+   */
+  public Long createFlag(UserProfile user, final Long annotationId, final FlagReasonCode reasonCode,
+                         final String body);
+
+
+  /**
+   * List annotations of specified types on an article. Replies must be loaded up in order to display a count of
+   * "replies to this comment". This count includes replies to replies.
+   *
+   * @param articleID       the article to get the annotations for
+   * @param annotationTypes only fetch annotations of these types
+   * @param order           an {@link AnnotationOrder} flag indicating how to order results
+   * @return a list of annotations on the article, with replies loaded up
+   */
+  public AnnotationView[] listAnnotations(final Long articleID, final Set<AnnotationType> annotationTypes, final AnnotationOrder order);
+
+  /**
+   * List annotations of specified types on an article without loading up replies. This means that {@link
+   * AnnotationOrder#MOST_RECENT_REPLY} CANNOT be specified as an ordering
+   *
+   * @param articleID       the article to get the annotations for
+   * @param annotationTypes only fetch annotations of these types
+   * @param order           an {@link AnnotationOrder} flag indicating how to order results
+   * @return a list of annotations on the article, without replies loaded up
+   * @throws IllegalArgumentException if {@link AnnotationOrder#MOST_RECENT_REPLY} is specified as the order type
+   */
+  public AnnotationView[] listAnnotationsNoReplies(final Long articleID, final Set<AnnotationType> annotationTypes, final AnnotationOrder order);
+
+  /**
+   * Count the number of annotations on an article
+   *
+   * @param articleID       the article to count for
+   * @param annotationTypes the types of annotation to count.  If null, counts all types, including replies
+   * @return the number of comments and corrections on an article, not including replies
+   */
+  public int countAnnotations(Long articleID, Set<AnnotationType> annotationTypes);
+
+  /**
+   * Get a list of all annotations satisfying the given criteria.
    *
    * @param startDate  search for annotation after start date.
    * @param endDate    is the date to search until. If null, search until present date
    * @param annotTypes List of annotation types
    * @param maxResults the maximum number of results to return, or 0 for no limit
-   * @param journal journalName
-   * @return the (possibly empty) list of article ids.
+   * @param journal    journalName
+   * @return the (possibly empty) list of article annotations.
    * @throws ParseException     if any of the dates or query could not be parsed
    * @throws URISyntaxException if an element of annotType cannot be parsed as a URI
    */
-  public List<String> getFeedAnnotationIds(Date startDate, Date endDate, Set<String> annotTypes,
-                                           int maxResults, String journal )
+  public List<AnnotationView> getAnnotations(final Date startDate, final Date endDate,
+                                             final Set<String> annotTypes, final int maxResults, final String journal)
       throws ParseException, URISyntaxException;
-
-  /**
-   * Get a list of all reply Ids satifying the given criteria. All caching is done at the object level by the session.
-   *
-   * @param startDate  search for replies after start date.
-   * @param endDate    is the date to search until. If null, search until present date
-   * @param annotTypes List of annotation types
-   * @param maxResults the maximum number of results to return, or 0 for no limit
-   * @param journal journalName
-   * @return the (possibly empty) list of article ids.
-   * @throws ParseException     if any of the dates or query could not be parsed
-   * @throws URISyntaxException if an element of annotType cannot be parsed as a URI
-   */
-  public List<String> getReplyIds(Date startDate, Date endDate, Set<String> annotTypes, int maxResults, String journal)
-      throws ParseException, URISyntaxException;
-
-  /**
-   * Get all annotations specified by the list of annotation ids.
-   *
-   * @param annotIds a list of annotations Ids to retrieve.
-   * @return the (possibly empty) list of annotations.
-   */
-  public List<Annotation> getAnnotations(List<String> annotIds);
-
-  /**
-   * Retrieve all Annotation instances that annotate the given target DOI. If annotationClassTypes is null, then all
-   * annotation types are retrieved. If annotationClassTypes is not null, only the Annotation class types in the
-   * annotationClassTypes Set are returned. Each Class in annotationClassTypes should extend Annotation. E.G.
-   * Comment.class or FormalCorrection.class
-   *
-   * @param target               target doi that the listed annotations annotate
-   * @param annotationClassTypes a set of Annotation class types to filter the results
-   * @return a list of annotations
-   * @throws RuntimeException      on an error
-   * @throws SecurityException if a security policy prevented this operation
-   */
-  public ArticleAnnotation[] listAnnotations(final String target,
-                                             Set<Class<? extends ArticleAnnotation>> annotationClassTypes)
-      throws SecurityException;
-
-  /**
-   * Loads the article annotation with the given id.
-   *
-   * @param annotationId annotationId
-   * @return an annotation
-   * @throws RuntimeException             on an error
-   * @throws SecurityException        if a security policy prevented this operation
-   * @throws IllegalArgumentException if an annotation with this id does not exist
-   */
-  public ArticleAnnotation getArticleAnnotation(final String annotationId)
-      throws SecurityException, IllegalArgumentException;
-
-  /**
-   * Loads the annotation with the given id.
-   *
-   * @param annotationId annotationId
-   * @return an annotation
-   * @throws RuntimeException             on an error
-   * @throws SecurityException        if a security policy prevented this operation
-   * @throws IllegalArgumentException if an annotation with this id does not exist
-   */
-  public Annotation getAnnotation(final String annotationId)
-      throws SecurityException, IllegalArgumentException;
-
-  /**
-   * Update the annotation body and context.
-   *
-   * @param id      the annotation id
-   * @param body
-   * @param context the context to set
-   * @throws RuntimeException             on an error
-   * @throws SecurityException        if a security policy prevented this operation
-   * @throws IllegalArgumentException if an annotation with this id does not exist
-   */
-  public void updateBodyAndContext(String id, String body, String context, String authId)
-      throws SecurityException, IllegalArgumentException, UnsupportedEncodingException;
-
-  /**
-   * List the set of annotations in a specific administrative state.
-   *
-   * @param mediator if present only those annotations that match this mediator are returned
-   * @param state    the state to filter the list of annotations by or 0 to return annotations in any administrative
-   *                 state
-   * @return an array of annotation metadata; if no matching annotations are found, an empty array is returned
-   * @throws RuntimeException      if some error occurred
-   * @throws SecurityException if a security policy prevented this operation
-   */
-  public ArticleAnnotation[] listAnnotations(final String mediator, final int state)
-      throws SecurityException;
-
-  /**
-   * Replaces the Annotation (indicated by the <code>srcAnnotationId</code> DOI) with a new Annotation of type
-   * <code>newAnnotationClassType</code>. Convertion requires that a new class type be used, so the old annotation
-   * properties are copied over to the new type, even though the DOI remains the same.
-   * <p/>
-   * The given newAnnotationClassType should implement the interface ArticleAnnotation. Known annotation classes that
-   * implement this interface are Comment, FormalCorrection, MinorCorrection, and Retraction.
-   *
-   * @param srcAnnotationId        the DOI of the annotation to convert
-   * @param newAnnotationClassType the Class of the new annotation type. Should implement ArticleAnnotation
-   * @return the id of the annotation, identical to <code>srcAnnotationId</code>
-   * @throws Exception on an error
-   */
-  public String convertAnnotationToType(final String srcAnnotationId,
-                                        final Class<? extends ArticleAnnotation> newAnnotationClassType) throws Exception;
-
-  /**
-   * Create an annotation.
-   *
-   * @param annotationClass the class of annotation
-   * @param mimeType        mimeType of the annotation body
-   * @param target          target of this annotation
-   * @param context         context the context within the target that this applies to
-   * @param olderAnnotation olderAnnotation that the new one will supersede
-   * @param title           title of this annotation
-   * @param body            body of this annotation
-   * @param ciStatement     competing interest statement of this annotation
-   * @param isPublic        to set up public permissions
-   * @param user            logged in user
-   * @return a the new annotation id
-   * @throws Exception on an error
-   */
-  public String createAnnotation(Class<? extends ArticleAnnotation> annotationClass,
-                                 final String mimeType, final String target,
-                                 final String context, final String olderAnnotation,
-                                 final String title, final String body, final String ciStatement,
-                                 boolean isPublic, UserProfile user)
-      throws Exception;
-
-  /**
-   * Create an annotation.
-   *
-   * @param target          target that an annotation is being created for
-   * @param context         context
-   * @param olderAnnotation olderAnnotation that the new one will supersede
-   * @param title           title
-   * @param mimeType        mimeType
-   * @param body            body
-   * @param ciStatement     competing interesting statement
-   * @param isPublic        isPublic
-   * @param user            logged in user
-   * @return unique identifier for the newly created annotation
-   * @throws Exception on an error
-   */
-  public String createComment(final String target, final String context,
-                              final String olderAnnotation, final String title,
-                              final String mimeType, final String body, final String ciStatement,
-                              final boolean isPublic, UserProfile user) throws Exception;
-
-  /**
-   * Create a flag against an annotation or a reply
-   *
-   * @param target     target that a flag is being created for
-   * @param reasonCode reasonCode
-   * @param body       body
-   * @param mimeType   mimeType
-   * @param user       Logged in user
-   * @return unique identifier for the newly created flag
-   * @throws Exception on an error
-   */
-  public String createFlag(final String target, final String reasonCode,
-                           final String body, final String mimeType, UserProfile user) throws Exception;
 
 }

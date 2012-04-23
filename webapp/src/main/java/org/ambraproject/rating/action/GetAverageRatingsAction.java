@@ -20,19 +20,18 @@
 package org.ambraproject.rating.action;
 
 import org.ambraproject.models.Article;
+import org.ambraproject.views.RatingSummaryView;
 import org.springframework.transaction.annotation.Transactional;
-import org.ambraproject.rating.service.RatingsService;
-import org.ambraproject.rating.service.RatingsService.AverageRatings;
 
 /**
  * General Rating action class to store and retrieve summary ratings on an article.
  *
  * @author stevec
+ *
  */
 @SuppressWarnings("serial")
 public class GetAverageRatingsAction extends AbstractRatingAction {
-  private AverageRatings averageRatings;
-
+  private RatingSummaryView averageRatings;
   private String articleURI;
   private boolean isResearchArticle;
   private boolean hasRated = false;
@@ -46,9 +45,8 @@ public class GetAverageRatingsAction extends AbstractRatingAction {
   @Transactional(readOnly = true)
   public String execute() throws Exception {
     final Article article = articleService.getArticle(articleURI, getAuthId());
-    assert article != null : "article of URI: " + articleURI + " not found.";
-    averageRatings = ratingsService.getAverageRatings(articleURI);
-    hasRated = ratingsService.hasRated(articleURI, getCurrentUser());
+    averageRatings = ratingsService.getAverageRatings(article.getID());
+    hasRated = ratingsService.hasRated(article.getID(), getCurrentUser());
     isResearchArticle = articleService.isResearchArticle(article, getAuthId());
     return SUCCESS;
   }
@@ -83,7 +81,7 @@ public class GetAverageRatingsAction extends AbstractRatingAction {
   *
   * @return returns averageRatings info
   * */
-  public RatingsService.AverageRatings getAverageRatings() {
+  public RatingSummaryView getAverageRatings() {
     return averageRatings;
   }
 

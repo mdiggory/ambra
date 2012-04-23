@@ -28,4 +28,12 @@ package org.ambraproject.models;
  * @author Alex Kudlick 11/8/11
  */
 public class ArticleEditor extends ArticlePerson{
+
+  public ArticleEditor() {
+    super();
+  }
+
+  public ArticleEditor(String givenNames, String surnames, String suffix) {
+    super(givenNames, surnames, suffix);
+  }
 }

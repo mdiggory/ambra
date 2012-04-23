@@ -20,41 +20,33 @@
 package org.ambraproject.rating.action;
 
 import org.ambraproject.models.Article;
-import org.ambraproject.models.UserProfile;
-import org.ambraproject.rating.service.RatingsService;
-import org.ambraproject.rating.service.RatingsService.AverageRatings;
-import org.ambraproject.user.service.UserService;
+import org.ambraproject.models.RatingSummary;
+import org.ambraproject.views.RatingView;
+import org.ambraproject.views.RatingAverage;
+import org.ambraproject.views.RatingSummaryView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.transaction.annotation.Transactional;
-import org.topazproject.ambra.models.Rating;
-import org.topazproject.ambra.models.RatingContent;
-import org.topazproject.ambra.models.RatingSummary;
-import org.topazproject.ambra.models.RatingSummaryContent;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 /**
  * Rating action class to retrieve all ratings for an Article.
  *
- * @author Jeff Suttor
+ * @author Joe Osowski
+ *
  */
 @SuppressWarnings("serial")
 public class GetArticleRatingsAction extends AbstractRatingAction {
   protected static final Logger log = LoggerFactory.getLogger(GetArticleRatingsAction.class);
 
-  private UserService userService;
-
   private String articleURI;
-  private String  articleTitle;
+  private String articleTitle;
   private String articleDescription;
   private boolean isResearchArticle;
-  private AverageRatings averageRatings;
-  private final List<ArticleRatingSummary> articleRatingSummaries =
-                                             new ArrayList<ArticleRatingSummary>();
+  private RatingSummaryView averageRatings;
+  private List<RatingView> articleRatingViews;
   private double articleOverall = 0;
   private double articleSingleRating = 0;
 
@@ -72,55 +64,27 @@ public class GetArticleRatingsAction extends AbstractRatingAction {
 
     articleTitle = article.getTitle();
     articleDescription = article.getDescription();
-    averageRatings = ratingsService.getAverageRatings(articleURI);
-
+    averageRatings = ratingsService.getAverageRatings(article.getID());
     isResearchArticle = articleService.isResearchArticle(article, getAuthId());
 
     // assume if valid RatingsPEP.GET_RATINGS, OK to GET_STATS
     // RatingSummary for this Article
-    List<RatingSummary> summaryList = ratingsService.getRatingSummaryList(articleURI);
+    RatingSummary ratingSummary = ratingsService.getRatingSummary(article.getID());
 
-    if(summaryList.size() == 1) {
-      RatingSummaryContent rsc = summaryList.get(0).getBody();
-      articleOverall = rsc.getOverall();
-      articleSingleRating = rsc.getSingleRating();
+    if(ratingSummary != null) {
+      RatingSummaryView ar = new RatingSummaryView(ratingSummary);
+      articleOverall = ar.getOverall();
+      articleSingleRating = ar.getSingle().getAverage();
     } else {
-      log.warn("Unexpected: " + summaryList.size() + " RatingSummary for " + articleURI);
+      log.warn("Unexpected: null RatingSummary for " + articleURI);
       articleOverall = 0;
       articleSingleRating = 0;
     }
 
     // list of Ratings that annotate this article
-    List<Rating> articleRatings = ratingsService.getRatingsList(articleURI);
+    articleRatingViews = ratingsService.getRatingViewList(article.getID());
 
-    if(log.isDebugEnabled()) {
-      log.debug("retrieved all ratings, " + articleRatings.size() + ", for: " + articleURI);
-    }
-
-    // create ArticleRatingSummary(s)
-    for (Rating rating : articleRatings) {
-      ArticleRatingSummary summary = new ArticleRatingSummary(getArticleURI(), getArticleTitle());
-      summary.setRating(rating);
-      summary.setCreated(rating.getCreated());
-      summary.setArticleURI(getArticleURI());
-      summary.setArticleTitle(getArticleTitle());
-      summary.setCreatorURI(rating.getCreator());
-      // get public 'name' for user
-      UserProfile au = userService.getUserByAccountUri(rating.getCreator());
-      if (au != null) {
-        summary.setCreatorName(au.getDisplayName());
-      } else {
-        summary.setCreatorName("Unknown");
-        log.error("Unable to look up UserProfile for " + rating.getCreator() +
-                  " for Rating " + rating.getId());
-      }
-      articleRatingSummaries.add(summary);
-    }
-
-    if(log.isDebugEnabled()) {
-      log.debug("created ArticleRatingSummaries, " + articleRatingSummaries.size() +
-                ", for: " + articleURI);
-    }
+    log.debug("created ArticleRatingSummaries, {}, for: {}", articleRatingViews.size(), articleURI);
 
     return SUCCESS;
   }
@@ -150,7 +114,7 @@ public class GetArticleRatingsAction extends AbstractRatingAction {
    */
   public double getArticleOverallRounded() {
 
-    return RatingContent.roundTo(articleOverall, 0.5);
+    return RatingAverage.roundTo(articleOverall, 0.5);
   }
 
   /**
@@ -160,7 +124,7 @@ public class GetArticleRatingsAction extends AbstractRatingAction {
    */
   public double getArticleSingleRatingRounded() {
 
-    return RatingContent.roundTo(articleSingleRating, 0.5);
+    return RatingAverage.roundTo(articleSingleRating, 0.5);
   }
 
   /**
@@ -169,22 +133,7 @@ public class GetArticleRatingsAction extends AbstractRatingAction {
    * @return Returns the articleTitle.
    */
   public String getArticleTitle() {
-
-    if(articleTitle != null) {
-      return articleTitle;
-    }
-
-    articleTitle = "Article title place holder for testing, resolve " + articleURI;
     return articleTitle;
-  }
-
-  /**
-   * Sets the title of the article being rated.
-   *
-   * @param articleTitle The article's title.
-   */
-  public void setArticleTitle(String articleTitle) {
-    this.articleTitle = articleTitle;
   }
 
   /**
@@ -193,11 +142,6 @@ public class GetArticleRatingsAction extends AbstractRatingAction {
    * @return Returns the articleDescription.
    */
   public String getArticleDescription() {
-    if(articleDescription != null) {
-      return articleDescription;
-    }
-
-    articleDescription = "Article Description place holder for testing, resolve " + articleURI;
     return articleDescription;
   }
 
@@ -209,25 +153,12 @@ public class GetArticleRatingsAction extends AbstractRatingAction {
   }
 
   /**
-   * @param isResearchArticle the isResearchArticle to set
-   */
-  public void setIsResearchArticle(boolean isResearchArticle) {
-    this.isResearchArticle = isResearchArticle;
-  }
-
-  @Required
-  public void setUserService(UserService us) {
-    this.userService = us;
-  }
-
-
-  /**
    * Gets all ratings for the Article.
    *
    * @return Returns Ratings for the Article.
    */
-  public Collection<ArticleRatingSummary> getArticleRatingSummaries() {
-    return articleRatingSummaries;
+  public Collection<RatingView> getArticleRatings() {
+    return articleRatingViews;
   }
 
   /*
@@ -235,7 +166,7 @@ public class GetArticleRatingsAction extends AbstractRatingAction {
   *
   * @return returns averageRatings info
   */
-  public RatingsService.AverageRatings getAverageRatings() {
+  public RatingSummaryView getAverageRatings() {
     return averageRatings;
   }
 
@@ -245,6 +176,6 @@ public class GetArticleRatingsAction extends AbstractRatingAction {
   * @return true if the article has been rated
   */
   public boolean getHasRated() {
-    return (articleRatingSummaries.size() > 0);
+    return (articleRatingViews.size() > 0);
   }
 }

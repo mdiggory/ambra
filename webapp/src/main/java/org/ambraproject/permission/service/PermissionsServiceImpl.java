@@ -40,6 +40,10 @@ public class PermissionsServiceImpl extends HibernateServiceImpl implements Perm
    * @return
    */
   public void checkRole(final String role, final String authId) throws SecurityException {
+    if(authId == null || authId.trim().length() == 0) {
+      throw new SecurityException("There is no current user.");
+    }
+
     Long count = (Long) hibernateTemplate.findByCriteria(
         DetachedCriteria.forClass(UserProfile.class)
             .add(Restrictions.eq("authId", authId))

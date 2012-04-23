@@ -33,6 +33,17 @@ public abstract class ArticlePerson extends AmbraEntity {
   private String surnames;
   private String suffix;
 
+  public ArticlePerson() {
+    super();
+  }
+
+  protected ArticlePerson(String givenNames, String surnames, String suffix) {
+    super();
+    this.givenNames = givenNames;
+    this.surnames = surnames;
+    this.suffix = suffix;
+  }
+
   public String getFullName() {
     return fullName;
   }

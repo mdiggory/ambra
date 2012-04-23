@@ -46,6 +46,10 @@ import java.io.StringWriter;
 @ContextConfiguration(locations = "http-test-context.xml")
 public abstract class BaseHttpTest extends BaseTest {
   /**
+   * The url of the http endpoint
+   */
+  protected static final String endpointUrl = "http://localhost:1234/select";
+  /**
    * Endpoint that sits behind the embedded http server created.  Can be used to set the http response, and make
    * assertions about the received http message.
    */

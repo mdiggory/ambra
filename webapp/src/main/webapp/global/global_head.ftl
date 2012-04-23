@@ -109,7 +109,7 @@
      dc:identifier="${Request[freemarker_config.journalContextAttributeKey].baseHostUrl}${rdfPgURL}"
      dc:title="${pgTitle}"
      <#if pgTitleOrig = "CODE_ARTICLE_TITLE">
-       <@s.url id="trackbackURL" namespace="/" action="trackback" includeParams="none" trackbackId="${articleURI}"/>
+       <@s.url id="trackbackURL" namespace="/" action="trackback" includeParams="none" doi="${articleURI}"/>
        trackback:ping="${Request[freemarker_config.journalContextAttributeKey].baseHostUrl}${trackbackURL}"
      </#if>/>
 </rdf:RDF>

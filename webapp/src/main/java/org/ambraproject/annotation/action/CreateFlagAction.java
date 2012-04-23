@@ -19,30 +19,26 @@
  */
 package org.ambraproject.annotation.action;
 
+import org.ambraproject.Constants;
+import org.ambraproject.models.FlagReasonCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.lang.StringUtils;
 
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import org.ambraproject.action.BaseSessionAwareActionSupport;
 import org.ambraproject.annotation.service.AnnotationService;
-import org.topazproject.ambra.models.Annotation;
-import org.topazproject.ambra.models.AnnotationBlob;
-
-import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 
 /**
  * Create a flag for a given annotation or reply
  */
 @SuppressWarnings("serial")
 public class CreateFlagAction extends BaseSessionAwareActionSupport {
-  private String target;
+  private Long target;
   private String comment;
-  private String mimeType = "text/plain";
-  private String annotationId;
+  private Long flagId;
   private String reasonCode;
   protected AnnotationService annotationService;
 
@@ -55,15 +51,18 @@ public class CreateFlagAction extends BaseSessionAwareActionSupport {
       return INPUT;
 
     try {
-      annotationId = annotationService.createFlag(target, reasonCode, comment, mimeType,
-                                                  getCurrentUser());
+      flagId = annotationService.createFlag(
+          getCurrentUser(),
+          target,
+          FlagReasonCode.fromString(reasonCode),
+          comment);
     } catch (final Exception e) {
       log.error("Could not create flag for target: " + target, e);
       addActionError("Flag creation failed with error message: " + e.getMessage());
       return ERROR;
     }
 
-    addActionMessage("Flag created with id:" + annotationId);
+    addActionMessage("Flag created with id:" + flagId);
     
     return SUCCESS;
   }
@@ -75,37 +74,14 @@ public class CreateFlagAction extends BaseSessionAwareActionSupport {
       addFieldError("comment", "You must say something in your flag comment");
       invalid = true;
     } else {
-      if (comment.length() > AnnotationBlob.MAX_BODY_LENGTH) {
+      if (comment.length() > Constants.Length.COMMENT_BODY_MAX) {
         addFieldError("comment", "Your flag comment is " + comment.length() +
-            " characters long, it can not be longer than " + AnnotationBlob.MAX_BODY_LENGTH + ".");
+            " characters long, it can not be longer than " + Constants.Length.COMMENT_BODY_MAX + ".");
         invalid = true;
       }
     }
 
     return invalid;
-  }
-
-  /**
-   * @return the target
-   */
-  @RequiredStringValidator(message="You must specify the target annotation/reply for this flag comment")
-  public String getTarget() {
-    return target;
-  }
-
-  /**
-   * Set the target that it annotates.
-   * @param target target
-   */
-  public void setTarget(final String target) {
-    this.target = target;
-  }
-
-  /**
-   * @return the annotation content
-   */
-  public String getComment() {
-    return comment;
   }
 
   /**
@@ -116,12 +92,8 @@ public class CreateFlagAction extends BaseSessionAwareActionSupport {
     this.comment = comment;
   }
 
-  /**
-   * @return the reason code for the flagging
-   */
-  @RequiredStringValidator(message="You must specify the reason code for this flag comment")
-  public String getReasonCode() {
-    return reasonCode;
+  public void setTarget(Long target) {
+    this.target = target;
   }
 
   /**
@@ -132,12 +104,8 @@ public class CreateFlagAction extends BaseSessionAwareActionSupport {
     this.reasonCode = reasonCode;
   }
 
-  /**
-   * Get the id of the newly created annotation
-   * @return annotation id
-   */
-  public String getAnnotationId() {
-    return annotationId;
+  public Long getFlagId() {
+    return flagId;
   }
 
   @Required

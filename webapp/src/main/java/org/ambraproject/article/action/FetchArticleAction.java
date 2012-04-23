@@ -22,12 +22,7 @@ package org.ambraproject.article.action;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import org.ambraproject.ApplicationException;
 import org.ambraproject.action.BaseSessionAwareActionSupport;
-import org.ambraproject.annotation.Commentary;
-import org.ambraproject.annotation.service.AnnotationConverter;
 import org.ambraproject.annotation.service.AnnotationService;
-import org.ambraproject.annotation.service.ReplyService;
-import org.ambraproject.annotation.service.TrackbackService;
-import org.ambraproject.annotation.service.WebAnnotation;
 import org.ambraproject.article.AuthorExtra;
 import org.ambraproject.article.CitationReference;
 import org.ambraproject.article.service.ArticleService;
@@ -36,44 +31,42 @@ import org.ambraproject.article.service.NoSuchArticleIdException;
 import org.ambraproject.journal.JournalService;
 import org.ambraproject.model.article.ArticleInfo;
 import org.ambraproject.model.article.ArticleType;
-import org.ambraproject.models.Article;
+import org.ambraproject.models.AnnotationType;
 import org.ambraproject.models.ArticleView;
-import org.ambraproject.models.Category;
 import org.ambraproject.models.UserProfile;
 import org.ambraproject.rating.service.RatingsService;
 import org.ambraproject.struts2.AmbraFreemarkerConfig;
+import org.ambraproject.trackback.TrackbackService;
 import org.ambraproject.user.service.UserService;
 import org.ambraproject.util.TextUtils;
 import org.ambraproject.util.UriUtil;
+import org.ambraproject.views.AnnotationView;
+import org.ambraproject.views.ArticleCategory;
+import org.ambraproject.views.RatingSummaryView;
+import org.ambraproject.views.TrackbackView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.transaction.annotation.Transactional;
-import org.topazproject.ambra.models.ArticleAnnotation;
-import org.topazproject.ambra.models.FormalCorrection;
 import org.topazproject.ambra.models.Journal;
-import org.topazproject.ambra.models.MinorCorrection;
-import org.topazproject.ambra.models.Retraction;
-import org.topazproject.ambra.models.Trackback;
 import org.w3c.dom.Document;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import static org.ambraproject.annotation.service.AnnotationService.AnnotationOrder;
 
 /**
- * This class fetches the information from the service tier for the artcle
- * Tabs.  Common data is defined in the setCommonData.  One method is defined
- * for each tab.
+ * This class fetches the information from the service tier for the artcle Tabs.  Common data is defined in the
+ * setCommonData.  One method is defined for each tab.
  * <p/>
- * Freemarker builds rest like URLs, inbound and outbound as
- * defined in the /WEB-INF/urlrewrite.xml file. These URLS then map to the
- * methods are referenced in the struts.xml file.
+ * Freemarker builds rest like URLs, inbound and outbound as defined in the /WEB-INF/urlrewrite.xml file. These URLS
+ * then map to the methods are referenced in the struts.xml file.
  * <p/>
  * ex: http://localhost/article/related/info%3Adoi%2F10.1371%2Fjournal.pone.0299
  * <p/>
@@ -81,10 +74,8 @@ import java.util.Set;
  * <p/>
  * http://localhost/fetchRelatedArticle.action&amp;articleURI=info%3Adoi%2F10.1371%2Fjournal.pone.0299
  * <p/>
- * Struts picks this up and translates it call the FetchArticleRelated method
- * ex: &lt;action name="fetchRelatedArticle"
- * class="org.ambraproject.article.action.FetchArticleAction"
- * method="FetchArticleRelated"&gt;
+ * Struts picks this up and translates it call the FetchArticleRelated method ex: &lt;action name="fetchRelatedArticle"
+ * class="org.ambraproject.article.action.FetchArticleAction" method="FetchArticleRelated"&gt;
  */
 public class FetchArticleAction extends BaseSessionAwareActionSupport {
   private static final Logger log = LoggerFactory.getLogger(FetchArticleAction.class);
@@ -93,14 +84,19 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
   private String articleURI;
   private String transformedArticle;
   private String annotationId = "";
-  private String annotationSet = "";
   private int pageCount = 0;
 
-  private List<WebAnnotation> formalCorrections = new ArrayList<WebAnnotation>();
-  private List<WebAnnotation> minorCorrections = new ArrayList<WebAnnotation>();
-  private List<WebAnnotation> retractions = new ArrayList<WebAnnotation>();
-  private List<WebAnnotation> discussions = new ArrayList<WebAnnotation>();
-  private List<WebAnnotation> comments = new ArrayList<WebAnnotation>();
+  private int totalNumAnnotations = 0;
+  private int numCorrections = 0;
+  private int numComments = 0;
+  private boolean isRetracted = false;
+  private List<AnnotationView> formalCorrections = new ArrayList<AnnotationView>();
+  private List<AnnotationView> minorCorrections = new ArrayList<AnnotationView>();
+  private List<AnnotationView> retractions = new ArrayList<AnnotationView>();
+
+  //commentary holds the comments that are being listed
+  private AnnotationView[] commentary = new AnnotationView[0];
+  private boolean isDisplayingCorrections = false;
 
   private boolean isResearchArticle;
   private boolean hasRated;
@@ -108,15 +104,13 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
 
   private ArticleInfo articleInfoX;
   private ArticleType articleType;
-  private Commentary[] commentary;
   private List<List<String>> articleIssues;
-  private List<Trackback> trackbackList;
+  private List<TrackbackView> trackbackList;
+  private int trackbackCount;
   private ArrayList<AuthorExtra> authorExtras;
   private ArrayList<CitationReference> references;
   private String journalAbbrev;
 
-  private ReplyService replyService;
-  private AnnotationConverter annotationConverter;
   private FetchArticleService fetchArticleService;
   private AnnotationService annotationService;
   private JournalService journalService;
@@ -127,7 +121,7 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
   private UserService userService;
 
   private Set<Journal> journalList;
-  private RatingsService.AverageRatings averageRatings;
+  private RatingSummaryView averageRatings;
 
   /**
    * Fetch common data the article HTML text
@@ -139,8 +133,29 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
     try {
 
       setCommonData();
+      //get the corrections without replies loaded up, and ordered oldest to newest. We don't need to show a count of replies on the main article page
+      AnnotationView[] annotationViews = annotationService.listAnnotationsNoReplies(
+          articleInfoX.getId(),
+          EnumSet.of(AnnotationType.FORMAL_CORRECTION,AnnotationType.MINOR_CORRECTION,AnnotationType.RETRACTION),
+          AnnotationOrder.OLDEST_TO_NEWEST
+      );
+      for (AnnotationView annotationView : annotationViews) {
+        switch (annotationView.getType()) {
+          case FORMAL_CORRECTION:
+            formalCorrections.add(annotationView);
+            break;
+          case MINOR_CORRECTION:
+            minorCorrections.add(annotationView);
+            break;
+          case RETRACTION:
+            retractions.add(annotationView);
+            break;
+        }
+      }
+      numCorrections = annotationViews.length;
 
-      transformedArticle = fetchArticleService.getURIAsHTML(articleURI, getAuthId());
+
+      transformedArticle = fetchArticleService.getArticleAsHTML(articleInfoX);
     } catch (NoSuchArticleIdException e) {
       messages.add("No article found for id: " + articleURI);
       log.info("Could not find article: " + articleURI, e);
@@ -173,8 +188,19 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
     try {
       setCommonData();
 
-      annotationSet = "comments";
-      setAnnotations(annotationService.getCommentSet());
+      //let the view layer know whether we are displaying corrections or not, so we can have different links
+      isDisplayingCorrections = false;
+
+      commentary = annotationService.listAnnotations(
+          articleInfoX.getId(),
+          EnumSet.of(AnnotationType.COMMENT, AnnotationType.NOTE),
+          AnnotationOrder.MOST_RECENT_REPLY);
+
+      //have to count the corrections so we know whether to show a 'Show All corrections' link
+      numCorrections = annotationService.countAnnotations(articleInfoX.getId(),
+          EnumSet.of(AnnotationType.FORMAL_CORRECTION, AnnotationType.MINOR_CORRECTION));
+      //have to indicate if there's a retraction so we know whether to show a 'Show Retraction' link
+      isRetracted = annotationService.countAnnotations(articleInfoX.getId(), EnumSet.of(AnnotationType.RETRACTION)) > 0;
 
     } catch (NoSuchArticleIdException e) {
       messages.add("No article found for id: " + articleURI);
@@ -197,9 +223,18 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
   public String fetchArticleCorrections() {
     try {
       setCommonData();
+      //let the view layer know whether we are displaying corrections or not, so we can have different links
+      isDisplayingCorrections = true;
+      commentary = annotationService.listAnnotations(
+          articleInfoX.getId(),
+          EnumSet.of(AnnotationType.FORMAL_CORRECTION,AnnotationType.MINOR_CORRECTION,AnnotationType.RETRACTION),
+          AnnotationOrder.MOST_RECENT_REPLY
+      );
 
-      annotationSet = "corrections";
-      setAnnotations(annotationService.getCorrectionSet());
+
+      //have to count comments so we know whether to show a 'View All Comments' link
+      numComments = annotationService.countAnnotations(articleInfoX.getId(),
+          EnumSet.of(AnnotationType.COMMENT, AnnotationType.NOTE));
 
     } catch (NoSuchArticleIdException e) {
       messages.add("No article found for id: " + articleURI);
@@ -223,10 +258,7 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
     try {
       setCommonData();
 
-      annotationSet = "comments";
-      setAnnotations(annotationService.getCommentSet());
-
-      trackbackList = trackbackService.getTrackbacks(articleURI, true);
+      trackbackCount = trackbackService.countTrackbacksForArticle(articleURI);
 
     } catch (NoSuchArticleIdException e) {
       messages.add("No article found for id: " + articleURI);
@@ -250,7 +282,7 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
     try {
       setCommonData();
 
-      trackbackList = trackbackService.getTrackbacks(articleURI, true);
+      trackbackList = trackbackService.getTrackbacksForArticle(articleURI);
 
     } catch (NoSuchArticleIdException e) {
       messages.add("No article found for id: " + articleURI);
@@ -287,6 +319,9 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
 
   /**
    * Sets up data used by the right hand column in the freemarker templates
+   * <p/>
+   * TODO: Review the data fetched by this; it's called on every tab and fetches more than is necessary (e.g.
+   * articleInfo)
    *
    * @throws ApplicationException     when there is an error talking to the OTM
    * @throws NoSuchArticleIdException when the article can not be found
@@ -299,27 +334,15 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
     }
 
     articleInfoX = articleService.getArticleInfo(articleURI, getAuthId());
-    averageRatings = ratingsService.getAverageRatings(articleURI);
+    averageRatings = ratingsService.getAverageRatings(articleInfoX.getId());
     journalList = journalService.getJournalsForObject(articleURI);
     isResearchArticle = articleService.isResearchArticle(articleInfoX, getAuthId());
-    hasRated = ratingsService.hasRated(articleURI, getCurrentUser());
+    hasRated = ratingsService.hasRated(articleInfoX.getId(), getCurrentUser());
     articleIssues = articleService.getArticleIssues(articleURI);
-
-    ArticleAnnotation anns[] = annotationService.listAnnotations(articleURI, null);
-
-    for (ArticleAnnotation a : anns) {
-      if (a.getContext() == null) {
-        discussions.add(annotationConverter.convert(a, false, false));
-      } else if (a instanceof MinorCorrection) {
-        minorCorrections.add(annotationConverter.convert(a, false, false));
-      } else if (a instanceof FormalCorrection) {
-        formalCorrections.add(annotationConverter.convert(a, true, true));
-      } else if (a instanceof Retraction) {
-        retractions.add(annotationConverter.convert(a, true, true));
-      } else {
-        comments.add(annotationConverter.convert(a, false, false));
-      }
-    }
+    //count all the comments and corrections
+    totalNumAnnotations = annotationService.countAnnotations(articleInfoX.getId(),
+        EnumSet.of(AnnotationType.NOTE, AnnotationType.COMMENT, AnnotationType.MINOR_CORRECTION,
+            AnnotationType.FORMAL_CORRECTION, AnnotationType.RETRACTION));
 
     articleType = ArticleType.getDefaultArticleType();
     for (String artType : this.articleInfoX.getTypes()) {
@@ -343,7 +366,7 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
       }
     }
 
-    Document doc = this.fetchArticleService.getArticleDocument(articleURI, getAuthId());
+    Document doc = this.fetchArticleService.getArticleDocument(articleInfoX);
     authorExtras = this.fetchArticleService.getAuthorAffiliations(doc);
     references = this.fetchArticleService.getReferences(doc);
     journalAbbrev = this.fetchArticleService.getJournalAbbreviation(doc);
@@ -357,38 +380,6 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
       if (articleInfoX.geteIssn().equals(j.geteIssn())) {
         publishedJournal = ambraFreemarkerConfig.getDisplayName(j.getKey());
       }
-    }
-  }
-
-  /**
-   * Grabs annotations from the service tier
-   *
-   * @param annotationTypeClasses The type of annotation to grab.
-   */
-  private void setAnnotations(Set<Class<? extends ArticleAnnotation>> annotationTypeClasses) {
-    WebAnnotation[] annotations = annotationConverter.convert(
-        annotationService.listAnnotations(articleURI, annotationTypeClasses), true, false);
-
-    commentary = new Commentary[annotations.length];
-    Commentary com;
-
-    if (annotations.length > 0) {
-      for (int i = 0; i < annotations.length; i++) {
-        com = new Commentary();
-        com.setAnnotation(annotations[i]);
-
-        try {
-          annotationConverter.convert(replyService.listAllReplies(annotations[i].getId(),
-              annotations[i].getId()), com, false,
-              false);
-        } catch (SecurityException t) {
-          // don't error if you can't list the replies
-          com.setNumReplies(0);
-          com.setReplies(null);
-        }
-        commentary[i] = com;
-      }
-      Arrays.sort(commentary, new Commentary.Sorter());
     }
   }
 
@@ -418,16 +409,6 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
   @Required
   public void setTrackBackService(TrackbackService trackBackservice) {
     this.trackbackService = trackBackservice;
-  }
-
-  @Required
-  public void setReplyService(final ReplyService replyService) {
-    this.replyService = replyService;
-  }
-
-  @Required
-  public void setAnnotationConverter(AnnotationConverter annotationConverter) {
-    this.annotationConverter = annotationConverter;
   }
 
   /**
@@ -482,22 +463,8 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
   }
 
   /**
-   * Get the type of annotations currently being listed
-   *
-   * @return the annotation set either "comments" or "corrections"
-   */
-  public String getAnnotationSet() {
-    return annotationSet;
-  }
-
-  /**
    * Return the ArticleInfo from the Browse cache.
    * <p/>
-   * TODO: convert all usages of "articleInfo" (ObjectInfo) to use the Browse cache version of
-   * ArticleInfo.  Note that for all templates to use ArticleInfo, it will have to
-   * be enhanced.  articleInfo and articleInfoX are both present, for now, to support:
-   * - existing templates/services w/o a large conversion
-   * - access to RelatedArticles
    *
    * @return Returns the articleInfoX.
    */
@@ -540,9 +507,8 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
   }
 
   /**
-   * @return Returns the names and URIs of all of the Journals, Volumes, and Issues
-   *         to which this Article has been attached.  This includes "collections", but does not
-   *         include the
+   * @return Returns the names and URIs of all of the Journals, Volumes, and Issues to which this Article has been
+   *         attached.  This includes "collections", but does not include the
    */
   public List<List<String>> getArticleIssues() {
     return articleIssues;
@@ -569,70 +535,19 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
   *
   * @return returns averageRatings info
   * */
-  public RatingsService.AverageRatings getAverageRatings() {
+  public RatingSummaryView getAverageRatings() {
     return averageRatings;
-  }
-
-  /**
-   * Get the total number of user comments
-   *
-   * @return total number of user comments
-   */
-  public int getTotalComments() {
-    return getNumDiscussions() + getNumComments() + getNumMinorCorrections() +
-        getNumFormalCorrections() + getNumRetractions();
-  }
-
-  /**
-   * Zero if this Article has not been retracted.  One if this Article has been retracted.
-   * Having multiple Retractions for a single Article does not make sense.
-   *
-   * @return Returns the number of Retractions that have been associated to this Article.
-   */
-  public int getNumRetractions() {
-    return retractions.size();
-  }
-
-  /**
-   * @return Returns the numDiscussions.
-   */
-  public int getNumDiscussions() {
-    return discussions.size();
-  }
-
-  /**
-   * @return Returns the numComments.
-   */
-  public int getNumComments() {
-    return comments.size();
-  }
-
-  /**
-   * @return Returns the numMinorCorrections.
-   */
-  public int getNumMinorCorrections() {
-    return minorCorrections.size();
-  }
-
-  /**
-   * @return Returns the numFormalCorrections.
-   */
-  public int getNumFormalCorrections() {
-    return formalCorrections.size();
-  }
-
-  /**
-   * @return The commentary array
-   */
-  public Commentary[] getCommentary() {
-    return commentary;
   }
 
   /**
    * @return Returns the trackbackList.
    */
-  public List<Trackback> getTrackbackList() {
+  public List<TrackbackView> getTrackbackList() {
     return trackbackList;
+  }
+
+  public int getTrackbackCount() {
+    return trackbackCount;
   }
 
   public String getPublishedJournal() {
@@ -672,15 +587,43 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
   /**
    * @return an array of formal corrections
    */
-  public List<WebAnnotation> getFormalCorrections() {
+  public List<AnnotationView> getFormalCorrections() {
     return this.formalCorrections;
   }
 
   /**
    * @return an array of retractions
    */
-  public List<WebAnnotation> getRetractions() {
+  public List<AnnotationView> getRetractions() {
     return this.retractions;
+  }
+
+  public List<AnnotationView> getMinorCorrections() {
+    return minorCorrections;
+  }
+
+  public int getNumComments() {
+    return numComments;
+  }
+
+  public int getNumCorrections() {
+    return numCorrections;
+  }
+
+  public int getTotalNumAnnotations() {
+    return totalNumAnnotations;
+  }
+
+  public AnnotationView[] getCommentary() {
+    return commentary;
+  }
+
+  public boolean getIsDisplayingCorrections() {
+    return isDisplayingCorrections;
+  }
+
+  public boolean getIsRetracted() {
+    return isRetracted;
   }
 
   /**
@@ -696,7 +639,7 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
       throw new ApplicationException("Article not set");
     }
 
-    for (Category curCategory : articleInfoX.getCategories()) {
+    for (ArticleCategory curCategory : articleInfoX.getCategories()) {
       mainCats.add(curCategory.getMainCategory());
     }
 
@@ -707,8 +650,8 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
   }
 
   /**
-   * Set the config class containing all of the properties used by the Freemarker templates so
-   * those values can be used within this Action class.
+   * Set the config class containing all of the properties used by the Freemarker templates so those values can be used
+   * within this Action class.
    *
    * @param ambraFreemarkerConfig All of the configuration properties used by the Freemarker templates
    */
@@ -752,8 +695,8 @@ public class FetchArticleAction extends BaseSessionAwareActionSupport {
   /**
    * Returns article description
    * <p/>
-   * //TODO: This is a pretty heavy weight function that gets called for every article request to
-   * get a value that rarely changes.  Should we just make the value in the database correct on ingest?
+   * //TODO: This is a pretty heavy weight function that gets called for every article request to get a value that
+   * rarely changes.  Should we just make the value in the database correct on ingest?
    *
    * @return
    */

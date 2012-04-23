@@ -20,20 +20,18 @@
 package org.ambraproject.rating.action;
 
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
+import org.ambraproject.Constants;
 import org.ambraproject.models.Article;
 import org.ambraproject.models.UserProfile;
+import org.ambraproject.models.Rating;
 import org.ambraproject.permission.service.PermissionsService;
 import org.ambraproject.util.ProfanityCheckingService;
+import org.ambraproject.views.RatingSummaryView;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.transaction.annotation.Transactional;
-import org.topazproject.ambra.models.Rating;
-import org.topazproject.ambra.models.RatingContent;
-import org.topazproject.ambra.models.RatingSummary;
-import org.topazproject.ambra.models.RatingSummaryContent;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.DateFormat;
@@ -50,17 +48,22 @@ import java.util.List;
 public class RateAction extends AbstractRatingAction {
   private static final Logger log = LoggerFactory.getLogger(RateAction.class);
 
+  //Form fields:
   private double                   insight;
   private double                   reliability;
   private double                   style;
   private double                   singleRating;
-  private String                   articleURI;
-  private boolean                  isResearchArticle;
   private String                   commentTitle;
   private String                   ciStatement;
   private Date                     rateDate;
   private String                   isCompetingInterest;
   private String                   comment;
+  private String                   articleURI;
+
+  //Internal logic:
+  private boolean                  isResearchArticle;
+  private Article                  article;
+
   private ProfanityCheckingService profanityCheckingService;
   private PermissionsService       permissionsService;
 
@@ -72,14 +75,11 @@ public class RateAction extends AbstractRatingAction {
    */
   @SuppressWarnings("unchecked")
   @Transactional(rollbackFor = { Throwable.class })
-  public String rateArticle() throws Exception{
+  public String rateArticle() {
     final UserProfile user = getCurrentUser();
-    final Date      now  = new Date(System.currentTimeMillis());
-    final URI       annotatedArticle;
-    final Article article = articleService.getArticle(articleURI, getAuthId());
-    assert article != null : "article of URI: " + articleURI + " not found.";
+
     try {
-      annotatedArticle = new URI(articleURI);
+      new URI(articleURI);
     } catch (URISyntaxException ue) {
       log.info("Could not construct article URI: " + articleURI, ue);
 
@@ -94,8 +94,9 @@ public class RateAction extends AbstractRatingAction {
     }
 
     this.permissionsService.checkLogin(user.getAuthId());
-
+    
     try {
+      article = articleService.getArticle(articleURI, getAuthId());
       isResearchArticle = articleService.isResearchArticle(article, getAuthId());
     } catch (Exception ae) {
       log.info("Could not get article info for: " + articleURI, ae);
@@ -117,7 +118,7 @@ public class RateAction extends AbstractRatingAction {
     }
 
     if (this.isCompetingInterest == null || this.isCompetingInterest.trim().length() == 0) {
-      addFieldError("statement", "You must specificy whether you have a competing interest or not");
+      addFieldError("statement", "You must specify whether you have a competing interest or not");
       return INPUT;
     } else {
       if (Boolean.parseBoolean(isCompetingInterest)) {
@@ -125,10 +126,10 @@ public class RateAction extends AbstractRatingAction {
           addFieldError("statement", "You must say something in your competing interest statement");
           return INPUT;
         } else {
-          if(ciStatement.length() > RatingContent.MAX_CISTATEMENT_LENGTH) {
+          if(ciStatement.length() > Constants.Length.CI_STATEMENT_MAX) {
             addFieldError("statement", "Your competing interest statement is " +
                 ciStatement.length() + " characters long, it can not be longer than " +
-                RatingContent.MAX_CISTATEMENT_LENGTH + ".");
+              Constants.Length.CI_STATEMENT_MAX + ".");
             return INPUT;
           }
         }
@@ -136,17 +137,17 @@ public class RateAction extends AbstractRatingAction {
     }
 
     if (!StringUtils.isEmpty(comment)) {
-      if(comment.length() > RatingContent.MAX_COMMENT_LENGTH) {
+      if(comment.length() > Constants.Length.COMMENT_BODY_MAX) {
         addFieldError("comment", "Your comment is " + comment.length() +
-            " characters long, it can not be longer than " + RatingContent.MAX_COMMENT_LENGTH + ".");
+            " characters long, it can not be longer than " + Constants.Length.COMMENT_BODY_MAX + ".");
         return INPUT;
       }
     }
 
     if (!StringUtils.isEmpty(commentTitle)) {
-      if(commentTitle.length() > RatingContent.MAX_TITLE_LENGTH) {
+      if(commentTitle.length() > Constants.Length.COMMENT_TITLE_MAX) {
         addFieldError("commentTitle", "Your title is " + commentTitle.length() +
-            " characters long, it can not be longer than " + RatingContent.MAX_TITLE_LENGTH + ".");
+            " characters long, it can not be longer than " + Constants.Length.COMMENT_TITLE_MAX + ".");
         return INPUT;
       }
     }    
@@ -163,136 +164,35 @@ public class RateAction extends AbstractRatingAction {
       return INPUT;
     }
 
-    Rating        articleRating;
-    RatingSummary articleRatingSummary;
-    boolean       newRating = false;
-
     if (log.isDebugEnabled()) {
       log.debug("Retrieving user Ratings for article: " + articleURI + " and user: " +
                 user.getAccountUri());
     }
 
     // Ratings by this User for Article
-    List<Rating> ratingsList = ratingsService.getRatingsList(articleURI, user.getAccountUri());
+    Rating articleRating = new Rating();
 
-    if (ratingsList.size() == 0) {
-      newRating = true;
-      articleRating = new Rating();
-      articleRating.setAnnotates(annotatedArticle);
-      articleRating.setContext("");
-      articleRating.setCreator(user.getAccountUri());
-      articleRating.setCreated(now);
-      articleRating.setBody(new RatingContent());
-
-      ratingsService.saveRating(articleRating);
-    } else if (ratingsList.size() == 1) {
-      articleRating = ratingsList.get(0);
-    } else {
-      // should never happen
-      String errorMessage = "Multiple Ratings, " + ratingsList.size() + ", for Article, " +
-                            articleURI + ", for user, " + user.getAccountUri();
-      log.error(errorMessage);
-      throw new RuntimeException(errorMessage);
-    }
-
-    // RatingsSummary for Article
-    List<RatingSummary> summaryList = ratingsService.getRatingSummaryList(articleURI);
-
-    if (summaryList.size() == 0) {
-      articleRatingSummary = new RatingSummary();
-      articleRatingSummary.setAnnotates(annotatedArticle);
-      articleRatingSummary.setContext("");
-      articleRatingSummary.setCreated(now);
-      articleRatingSummary.setBody(new RatingSummaryContent());
-
-      ratingsService.saveRatingSummary(articleRatingSummary);
-    } else if (summaryList.size() == 1) {
-      articleRatingSummary = summaryList.get(0);
-    } else {
-      // should never happen
-      String errorMessage = "Multiple RatingsSummary, " + summaryList.size() + ", for Article " +
-                            articleURI;
-      log.error(errorMessage);
-      throw new RuntimeException(errorMessage);
-    }
-
-    // update Rating + RatingSummary with new values
-    articleRating.setCreated(now);
-    articleRatingSummary.setCreated(now);
-
-    // if they had a prior insight Rating, remove it from the RatingSummary
-    if (articleRating.getBody().getInsightValue() > 0) {
-      articleRatingSummary.getBody().
-        removeRating(Rating.INSIGHT_TYPE, articleRating.getBody().getInsightValue());
-    }
-
-    // update insight Article Rating, don't care if new, update or 0
-    articleRating.getBody().setInsightValue((int) insight);
-
-    // if user rated insight, add to to Article RatingSummary
-    if (insight > 0) {
-      articleRatingSummary.getBody().addRating(Rating.INSIGHT_TYPE, (int) insight);
-    }
-
-    // if they had a prior reliability Rating, remove it from the RatingSummary
-    if (articleRating.getBody().getReliabilityValue() > 0) {
-      articleRatingSummary.getBody().
-        removeRating(Rating.RELIABILITY_TYPE, articleRating.getBody().getReliabilityValue());
-    }
-
-    // update reliability Article Rating, don't care if new, update or 0
-    articleRating.getBody().setReliabilityValue((int) reliability);
-
-    // if user rated reliability, add to to Article RatingSummary
-    if (reliability > 0) {
-      articleRatingSummary.getBody().addRating(Rating.RELIABILITY_TYPE, (int) reliability);
-    }
-
-    // if they had a prior style Rating, remove it from the RatingSummary
-    if (articleRating.getBody().getStyleValue() > 0) {
-      articleRatingSummary.getBody().
-        removeRating(Rating.STYLE_TYPE, articleRating.getBody().getStyleValue());
-    }
-
-    // update style Article Rating, don't care if new, update or 0
-    articleRating.getBody().setStyleValue((int) style);
-
-    // if user rated style, add to to Article RatingSummary
-    if (style > 0) {
-      articleRatingSummary.getBody().addRating(Rating.STYLE_TYPE, (int) style);
-    }
-
-    // if they had a prior single Rating, remove it from the RatingSummary
-    if (articleRating.getBody().getSingleRatingValue() > 0) {
-      articleRatingSummary.getBody().
-        removeRating(Rating.SINGLE_RATING_TYPE, articleRating.getBody().getSingleRatingValue());
-    }
-
-    // update single Article Rating, don't care if new, update or 0
-    articleRating.getBody().setSingleRatingValue((int) singleRating);
-
-    // if user rated single, add to to Article RatingSummary
-    if (singleRating > 0) {
-      articleRatingSummary.getBody().addRating(Rating.SINGLE_RATING_TYPE, (int) singleRating);
-    }
+    articleRating.setArticleID(article.getID());
+    articleRating.setCreator(user);
 
     // Rating comment
-    articleRating.getBody().setCommentTitle(commentTitle);
-    articleRating.getBody().setCommentValue(comment);
+    articleRating.setTitle(commentTitle);
+    articleRating.setBody(comment);
 
     //If the user decides that they no longer have competing interests
     //Let's delete the text.
     if(Boolean.parseBoolean(isCompetingInterest)) {
-      articleRating.getBody().setCIStatement(ciStatement);
+      articleRating.setCompetingInterestBody(ciStatement);
     } else {
-      articleRating.getBody().setCIStatement("");
+      articleRating.setCompetingInterestBody("");
     }
 
-    // if this is a new Rating, the summary needs to know
-    if (newRating) {
-      articleRatingSummary.getBody().
-        setNumUsersThatRated(articleRatingSummary.getBody().getNumUsersThatRated() + 1);
-    }
+    articleRating.setInsight((int)insight);
+    articleRating.setReliability((int)reliability);
+    articleRating.setStyle((int)style);
+    articleRating.setSingleRating((int) singleRating);
+
+    ratingsService.saveRating(articleRating);
 
     return SUCCESS;
   }
@@ -314,24 +214,28 @@ public class RateAction extends AbstractRatingAction {
       return ERROR;
     }
 
-    List<Rating> ratingsList = ratingsService.getRatingsList(articleURI, user.getAccountUri());
+    try {
+      article = articleService.getArticle(articleURI, getAuthId());
+    } catch (Exception ae) {
+      log.info("Could not get article info for: " + articleURI, ae);
+      return ERROR;
+    }
 
-    if (ratingsList.size() < 1) {
+    Rating rating = ratingsService.getRating(article.getID(), user);
+
+    if (rating == null) {
       log.debug("didn't find any matching ratings for user: " + user.getAccountUri());
       addActionError("No ratings for user");
       return ERROR;
     }
 
-    Rating rating = ratingsList.get(0);
-
-    setInsight(rating.getBody().getInsightValue());
-    setReliability(rating.getBody().getReliabilityValue());
-    setStyle(rating.getBody().getStyleValue());
-    setSingleRating(rating.getBody().getSingleRatingValue());
-
-    setCommentTitle(rating.getBody().getCommentTitle());
-    setComment(rating.getBody().getCommentValue());
-    setCiStatement(rating.getBody().getCIStatement());
+    setInsight(rating.getInsight());
+    setReliability(rating.getReliability());
+    setStyle(rating.getStyle());
+    setSingleRating(rating.getSingleRating());
+    setCommentTitle(rating.getTitle());
+    setComment(rating.getBody());
+    setCiStatement(rating.getCompetingInterestBody());
     setRateDate(rating.getCreated());
 
     return SUCCESS;
@@ -369,9 +273,6 @@ public class RateAction extends AbstractRatingAction {
    * @param articleURI The articleUri to set.
    */
   public void setArticleURI(String articleURI) {
-    if (articleURI != null && articleURI.equals(this.articleURI)) {
-      return;
-    }
     this.articleURI = articleURI;
   }
 
@@ -415,9 +316,6 @@ public class RateAction extends AbstractRatingAction {
    * @param insight The insight to set.
    */
   public void setInsight(double insight) {
-    if (log.isDebugEnabled())
-      log.debug("setting insight to: " + insight);
-
     this.insight = insight;
   }
 
@@ -452,7 +350,7 @@ public class RateAction extends AbstractRatingAction {
    * @return Returns the overall.
    */
   public double getOverall() {
-    return RatingContent.calculateOverall(getInsight(), getReliability(), getStyle());
+    return RatingSummaryView.calculateOverall(getInsight(), getReliability(), getStyle());
   }
 
   /**

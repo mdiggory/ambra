@@ -1,4 +1,68 @@
 
+    create table annotation (
+        annotationID bigint not null auto_increment,
+        lastModified datetime not null,
+        created datetime not null,
+        type varchar(255) not null,
+        userProfileID bigint not null,
+        articleID bigint not null,
+        annotationURI varchar(255) unique,
+        parentID bigint,
+        title longtext,
+        body longtext,
+        xpath longtext,
+        competingInterestBody longtext,
+        annotationCitationID bigint unique,
+        primary key (annotationID)
+    );
+
+    create table annotationCitation (
+        annotationCitationID bigint not null auto_increment,
+        lastModified datetime not null,
+        created datetime not null,
+        title longtext,
+        volume varchar(255),
+        issue varchar(255),
+        journal varchar(255),
+        publisherName varchar(255),
+        year varchar(255),
+        eLocationId varchar(255),
+        url varchar(255),
+        note longtext,
+        summary longtext,
+        primary key (annotationCitationID)
+    );
+
+    create table annotationCitationAuthor (
+        annotationCitationAuthorID bigint not null auto_increment,
+        lastModified datetime not null,
+        created datetime not null,
+        givenNames varchar(255),
+        surnames varchar(255),
+        suffix varchar(255),
+        annotationCitationID bigint,
+        sortOrder integer,
+        primary key (annotationCitationAuthorID)
+    );
+
+    create table annotationCitationCollabAuthor (
+        annotationCitationID bigint not null,
+        name varchar(255),
+        sortOrder integer not null,
+        primary key (annotationCitationID, sortOrder)
+    );
+
+    create table annotationFlag (
+        annotationFlagID bigint not null auto_increment,
+        lastModified datetime not null,
+        created datetime not null,
+        reason varchar(255) not null,
+        userProfileID bigint not null,
+        annotationID bigint not null,
+        comment longtext,
+        primary key (annotationFlagID)
+    );
+
     create table article (
         articleID bigint not null auto_increment,
         lastModified datetime not null,
@@ -144,6 +208,32 @@
         primary key (citedPersonID)
     );
 
+    create table rating (
+        annotationID bigint not null,
+        insight integer not null,
+        reliability integer not null,
+        style integer not null,
+        singleRating integer not null,
+        primary key (annotationID)
+    );
+
+    create table ratingSummary (
+        ratingSummaryID bigint not null auto_increment,
+        lastModified datetime not null,
+        created datetime not null,
+        articleID bigint not null unique,
+        insightNumRatings integer not null,
+        insightTotal integer not null,
+        reliabilityNumRatings integer not null,
+        reliabilityTotal integer not null,
+        styleNumRatings integer not null,
+        styleTotal integer not null,
+        singleRatingNumRatings integer not null,
+        singleRatingTotal integer not null,
+        usersThatRated integer not null,
+        primary key (ratingSummaryID)
+    );
+
     create table syndication (
         syndicationID bigint not null auto_increment,
         lastModified datetime not null,
@@ -156,6 +246,18 @@
         lastSubmitTimestamp datetime,
         primary key (syndicationID),
         unique (doi, target)
+    );
+
+    create table trackback (
+        trackbackID bigint not null auto_increment,
+        lastModified datetime not null,
+        created datetime not null,
+        articleID bigint not null,
+        url varchar(255),
+        title varchar(255),
+        blogName varchar(255),
+        excerpt varchar(255),
+        primary key (trackbackID)
     );
 
     create table userArticleView (
@@ -224,6 +326,15 @@
         primary key (userRoleID)
     );
 
+    create table userSearch (
+        userSearchID bigint not null auto_increment,
+        created datetime not null,
+        userProfileID bigint not null,
+        searchString varchar(255),
+        searchTerms varchar(255),
+        primary key (userSearchID)
+    );
+
     create table version (
         versionID bigint not null auto_increment,
         lastModified datetime not null,
@@ -233,6 +344,42 @@
         updateInProcess bit,
         primary key (versionID)
     );
+
+    alter table annotation 
+        add index FKA34FEB2F78B0DAE3 (userProfileID), 
+        add constraint FKA34FEB2F78B0DAE3 
+        foreign key (userProfileID) 
+        references userProfile (userProfileID);
+
+    alter table annotation 
+        add index FKA34FEB2FF84E69FB (annotationCitationID), 
+        add constraint FKA34FEB2FF84E69FB 
+        foreign key (annotationCitationID) 
+        references annotationCitation (annotationCitationID);
+
+    alter table annotationCitationAuthor 
+        add index FKAB4C0861F84E69FB (annotationCitationID), 
+        add constraint FKAB4C0861F84E69FB 
+        foreign key (annotationCitationID) 
+        references annotationCitation (annotationCitationID);
+
+    alter table annotationCitationCollabAuthor 
+        add index FKF90DAE4EF84E69FB (annotationCitationID), 
+        add constraint FKF90DAE4EF84E69FB 
+        foreign key (annotationCitationID) 
+        references annotationCitation (annotationCitationID);
+
+    alter table annotationFlag 
+        add index FK561A2F3BB123DFCD (annotationID), 
+        add constraint FK561A2F3BB123DFCD 
+        foreign key (annotationID) 
+        references annotation (annotationID);
+
+    alter table annotationFlag 
+        add index FK561A2F3B78B0DAE3 (userProfileID), 
+        add constraint FK561A2F3B78B0DAE3 
+        foreign key (userProfileID) 
+        references userProfile (userProfileID);
 
     alter table articleAsset 
         add index FKE6D8D79ADFD5CDF3 (articleID), 
@@ -293,6 +440,12 @@
         add constraint FK29A133A28F1352A1 
         foreign key (citedArticleID) 
         references citedArticle (citedArticleID);
+
+    alter table rating 
+        add index FKC815B19DB123DFCD (annotationID), 
+        add constraint FKC815B19DB123DFCD 
+        foreign key (annotationID) 
+        references annotation (annotationID);
 
     alter table userProfileRoleJoinTable 
         add index FK57F48A3078B0DAE3 (userProfileID), 

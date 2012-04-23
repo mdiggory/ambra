@@ -23,6 +23,8 @@ package org.ambraproject.hibernate;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 
+import java.io.File;
+
 
 /**
  * Tool for generating ddl from hibernate config.  Inspiration taken from <a href="http://jandrewthompson.blogspot.com/2009/10/how-to-generate-ddl-scripts-from.html">this
@@ -35,6 +37,7 @@ import org.hibernate.tool.hbm2ddl.SchemaExport;
 public class SchemaGenerator {
   private Configuration configuration;
   private boolean updateSchema;
+  private String outputDir;
 
   /**
    * Create a new schema generator
@@ -42,17 +45,18 @@ public class SchemaGenerator {
    * @param updateSchema - true if the tables in the schema already exist and need to be dropped, false to create the
    *                     schema from scratch
    */
-  public SchemaGenerator(boolean updateSchema) {
+  public SchemaGenerator(boolean updateSchema, String outputDir) {
     this.configuration = new Configuration().configure();
     configuration.setProperty("format_sql", "true");
     this.updateSchema = updateSchema;
+    this.outputDir = outputDir;
   }
 
   /**
    * Create a new schema generator that won't drop tables
    */
   public SchemaGenerator() {
-    this(false);
+    this(false, new File("").getAbsolutePath());
   }
 
   /**
@@ -65,14 +69,15 @@ public class SchemaGenerator {
 
     SchemaExport export = new SchemaExport(configuration);
     export.setDelimiter(";");
-    String outputFile = "ddl_" + dialect.name().toLowerCase() + ".sql";
+    String outputFile = this.outputDir + File.separator + "ddl_" + dialect.name().toLowerCase() + ".sql";
     export.setOutputFile(outputFile);
     export.execute(false, false, false, !updateSchema);
   }
 
   /**
    * Run the schema creation script
-   * @param jdbcUrl - the jdbc url for the database in which to run the script
+   *
+   * @param jdbcUrl  - the jdbc url for the database in which to run the script
    * @param dialect- the sql dialect for the database
    * @param username - the username for the database
    * @param password - the password to use
@@ -93,13 +98,13 @@ public class SchemaGenerator {
    */
   public static enum Dialect {
     ORACLE("org.hibernate.dialect.Oracle10gDialect", "oracle.jdbc.driver.OracleDriver"),
-    MYSQL("org.hibernate.dialect.MySQLDialect","com.mysql.jdbc.Driver"),
-    HSQL("org.hibernate.dialect.HSQLDialect","org.hsqldb.jdbcDriver");
+    MYSQL("org.hibernate.dialect.MySQLDialect", "com.mysql.jdbc.Driver"),
+    HSQL("org.hibernate.dialect.HSQLDialect", "org.hsqldb.jdbcDriver");
 
     private String dialectClass;
     private String driverClass;
 
-    private Dialect(String dialectClass,String driverClass) {
+    private Dialect(String dialectClass, String driverClass) {
       this.dialectClass = dialectClass;
       this.driverClass = driverClass;
     }
@@ -107,6 +112,7 @@ public class SchemaGenerator {
     public String getDialectClass() {
       return dialectClass;
     }
+
     public String getDriverClass() {
       return driverClass;
     }

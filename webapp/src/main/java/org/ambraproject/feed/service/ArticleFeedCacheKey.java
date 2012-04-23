@@ -46,6 +46,9 @@ import java.net.URI;
  * @see       FeedService.FEED_TYPES
  * @see       org.ambraproject.struts2.AmbraFeedResult
  */
+
+//Rename this class to be something more logical once we no longer use is with caching
+@Deprecated
 public class ArticleFeedCacheKey implements Serializable, Comparable {
   private static final long serialVersionUID = 1L;
   private String journal;

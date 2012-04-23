@@ -30,12 +30,10 @@
 
       <#list replies as reply>
           id          =
-          <@s.url id="getReplyURL" action="getReply" replyId="${reply.id}"/>
-          <@s.a href="%{getReplyURL}">${reply.id}</@s.a> <br/>
+          <@s.url id="getReplyURL" action="getReply" replyId="${reply.ID?c}"/>
+          <@s.a href="%{getReplyURL}">${reply.ID?c}</@s.a> <br/>
 
-          inReplyTo   =${reply.inReplyTo}     <br/>
-          root        =${reply.root}     <br/>
-          title       =${reply.commentTitle}         <br/>
+          title       =${reply.title}         <br/>
           creator     =${reply.creator}       <br/>
 
       <ul>
@@ -63,7 +61,7 @@
         </li>
 
         <li>
-          <@s.url id="listFlagURL" action="listFlags" target="${reply.id}" />
+          <@s.url id="listFlagURL" action="listFlags" target="${reply.ID?c}" />
           <@s.a href="%{listFlagURL}">list flags</@s.a> <br/>
         </li>
 
@@ -71,7 +69,7 @@
           <fieldset>
               <legend>Create a flag</legend>
               <@s.form name="createFlagForm" action="createReplyFlagSubmit" method="get" namespace="/annotation/secure">
-                <@s.textfield name="target" label="What does it flag" value="${reply.id}" required="true" size="50"/>
+                <@s.textfield name="target" label="What does it flag" value="${reply.ID?c}" required="true" size="50"/>
                 <@s.select name="reasonCode" label="Reason"
                             list="{'spam', 'Offensive', 'Inappropriate'}"/>
                 <@s.textarea name="comment" label="Flag text" value="%{'Spammer guy attacks again....'}" rows="'3'" cols="'30'" required="true"/>

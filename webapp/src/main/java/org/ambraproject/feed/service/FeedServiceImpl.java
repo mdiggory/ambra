@@ -23,17 +23,16 @@ package org.ambraproject.feed.service;
 import org.ambraproject.ApplicationException;
 import org.ambraproject.annotation.service.AnnotationService;
 import org.ambraproject.article.action.TOCArticleGroup;
-import org.ambraproject.article.service.ArticleService;
 import org.ambraproject.article.service.BrowseService;
-import org.ambraproject.article.service.NoSuchArticleIdException;
-import org.ambraproject.cache.Cache;
 import org.ambraproject.journal.JournalService;
 import org.ambraproject.model.article.ArticleInfo;
-import org.ambraproject.models.Article;
 import org.ambraproject.service.HibernateServiceImpl;
 import org.ambraproject.solr.SolrException;
 import org.ambraproject.solr.SolrFieldConversion;
 import org.ambraproject.solr.SolrHttpService;
+import org.ambraproject.trackback.TrackbackService;
+import org.ambraproject.views.AnnotationView;
+import org.ambraproject.views.TrackbackView;
 import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,10 +59,9 @@ public class FeedServiceImpl extends HibernateServiceImpl implements FeedService
   private static final Logger log = LoggerFactory.getLogger(FeedServiceImpl.class);
 
   private AnnotationService   annotationService;    // Annotation service Spring injected.
-  private ArticleService      articleService;       // Article service Spring injected
+  private TrackbackService    trackbackService;     // Trackback service Spring injected
   private BrowseService       browseService;        // Browse Article Servcie Spring Injected
   private JournalService      journalService;       // Journal service Spring injected.
-  private Cache               feedCache;            // Feed Cache Spring injected
   private SolrHttpService     solrHttpService;      // solr service
   private Configuration       configuration;
   private SolrFieldConversion solrFieldConverter;
@@ -80,6 +78,7 @@ public class FeedServiceImpl extends HibernateServiceImpl implements FeedService
    *
    * @return Key a new cache key to be used as a data model for the FeedAction.
    */
+  @Override
   public ArticleFeedCacheKey newCacheKey() {
     return new ArticleFeedCacheKey();
   }
@@ -90,6 +89,7 @@ public class FeedServiceImpl extends HibernateServiceImpl implements FeedService
    * @param cacheKey
    * @return solr search result that contains list of articles
    */
+  @Override
   public Document getArticles(final ArticleFeedCacheKey cacheKey) {
     Map<String, String> params = new HashMap<String, String>();
     // result format
@@ -171,6 +171,7 @@ public class FeedServiceImpl extends HibernateServiceImpl implements FeedService
    * @throws ApplicationException ApplicationException
    * @throws java.net.URISyntaxException URISyntaxException
    */
+  @Override
   public List<String> getIssueArticleIds(final ArticleFeedCacheKey cacheKey, String journal, String authId) throws
       URISyntaxException, ApplicationException {
     List<String> articleList  = new ArrayList<String>();
@@ -191,163 +192,86 @@ public class FeedServiceImpl extends HibernateServiceImpl implements FeedService
   }
 
   /**
-   * Given a list of articleIds return a list of articles corresponding to the Ids.
-   *
-   * @param articleIds  List&lt;String&gt; of article Ids to fetch
-   * @parem authId the current user authId
-   *
-   * @return <code>List&lt;Article&gt;</code> of articles
-   * @throws java.text.ParseException ParseException
-   */
-  public List<Article> getArticles(List<String> articleIds, final String authId) throws ParseException, NoSuchArticleIdException {
-    return articleService.getArticles(articleIds, authId);
-  }
-
-  /**
-   * Returns a list of annotation Ids based on parameters contained in
-   * the cache key. If a start date is not specified then a default
-   * date is used but not stored in the key.
+   * Returns a list of annotationViews based on parameters contained in the cache key. If a start date is not specified
+   * then a default date is used but not stored in the key.
    *
    * @param cacheKey cache key.
    * @return <code>List&lt;String&gt;</code> a list of annotation Ids
-   * @throws ApplicationException   Converts all exceptions to ApplicationException
+   * @throws ApplicationException Converts all exceptions to ApplicationException
    */
-  public List<String> getAnnotationIds(final AnnotationFeedCacheKey cacheKey)
-      throws ApplicationException {
-
-    if (cacheKey.isUseCache()) {
-      // Create a local lookup based on the feed URI.
-      Cache.Lookup<List<String>, ApplicationException> lookUp =
-        new Cache.SynchronizedLookup<List<String>, ApplicationException>(cacheKey) {
-          public List<String> lookup() throws ApplicationException {
-            return fetchAnnotationIds(cacheKey);
-          }
-        };
-      // Get articel ID's from the feed cache or add it
-      return feedCache.get(cacheKey, -1, lookUp);
-    }
-
-    // OR, for the cases in which we do not want to use the cache, just do a direct lookup.
-    return fetchAnnotationIds(cacheKey);
+  @Override
+  public List<AnnotationView> getAnnotations(final AnnotationSearchParameters cacheKey)
+      throws ParseException, URISyntaxException
+  {
+    return annotationService.getAnnotations(
+        cacheKey.getStartDate(), cacheKey.getEndDate(), cacheKey.getAnnotationTypes(),
+        cacheKey.getMaxResults(), cacheKey.getJournal());
   }
 
   /**
-   * Returns a list of reply Ids based on parameters contained in
-   * the cache key. If a start date is not specified then a default
-   * date is used but not stored in the key.
+   * Returns a list of trackbackViews based on parameters contained in the cache key. If a start date is not specified
+   * then a default date is used but not stored in the key.
    *
-   * @param cacheKey cache key
-   * @return <code>List&lt;String&gt;</code> a list of reply Ids
-   * @throws ApplicationException   Converts all exceptions to ApplicationException
+   * @param cacheKey cache key.
+   * @return <code>List&lt;String&gt;</code> a list of annotation Ids
+   * @throws ApplicationException Converts all exceptions to ApplicationException
    */
-  public List<String> getReplyIds(final AnnotationFeedCacheKey cacheKey)
-      throws ApplicationException {
-
-    if (cacheKey.isUseCache()) {
-      // Create a local lookup based on the feed URI.
-      Cache.Lookup<List<String>, ApplicationException> lookUp =
-        new Cache.SynchronizedLookup<List<String>, ApplicationException>(cacheKey) {
-          public List<String> lookup() throws ApplicationException {
-            return fetchReplyIds(cacheKey);
-          }
-        };
-      // Get articel ID's from the feed cache or add it
-      return feedCache.get(cacheKey, -1, lookUp);
-    }
-
-    // OR, for the cases in which we do not want to use the cache, just do a direct lookup.
-    return fetchReplyIds(cacheKey);
+  @Override
+  public List<TrackbackView> getTrackbacks(final AnnotationSearchParameters cacheKey)
+      throws ParseException, URISyntaxException
+  {
+    return trackbackService.getTrackbacks(
+        cacheKey.getStartDate(), cacheKey.getEndDate(), cacheKey.getMaxResults(), cacheKey.getJournal());
   }
 
-  private List<String> fetchAnnotationIds(final AnnotationFeedCacheKey cacheKey)
-      throws ApplicationException {
-
-    List<String> annotIds;
-    try {
-      annotIds = annotationService.getFeedAnnotationIds(
-                 cacheKey.getStartDate(), cacheKey.getEndDate(), cacheKey.getAnnotationTypes(),
-                 cacheKey.getMaxResults(), cacheKey.getJournal());
-
-    } catch (Exception ex) {
-      throw new ApplicationException(ex);
-    }
-    return  annotIds;
-  }
-
-  private List<String> fetchReplyIds(final AnnotationFeedCacheKey cacheKey)
-      throws ApplicationException {
-
-    List<String> replyIds;
-    try {
-      replyIds = annotationService.getReplyIds(
-                 cacheKey.getStartDate(), cacheKey.getEndDate(), cacheKey.getAnnotationTypes(),
-                 cacheKey.getMaxResults(), cacheKey.getJournal());
-
-    } catch (Exception ex) {
-      throw new ApplicationException(ex);
-    }
-    return  replyIds;
-  }
 
   /**
    * @param journalService   Journal Service
    */
-  @SuppressWarnings("synthetic-access")
   @Required
   public void setJournalService(JournalService journalService) {
     this.journalService = journalService;
   }
 
   /**
-   * @param articleService Article Service
-   */
-  @SuppressWarnings("synthetic-access")
-  @Required
-  public void setArticleService(ArticleService articleService) {
-    this.articleService = articleService;
-  }
-
-  /**
    * @param annotationService   Annotation Service
    */
-  @SuppressWarnings("synthetic-access")
   @Required
   public void setAnnotationService(AnnotationService annotationService) {
     this.annotationService = annotationService;
   }
 
-
   /**
    * @param browseService   Browse Service
    */
-  @SuppressWarnings("synthetic-access")
   @Required
   public void setBrowseService(BrowseService browseService) {
     this.browseService = browseService;
   }
 
-
   /**
-   * @param feedCache  Feed Cache
+   * @param trackbackService Trackback Service
    */
-  @SuppressWarnings("synthetic-access")
   @Required
-  public void setFeedCache(Cache feedCache) {
-    this.feedCache = feedCache;
+  public void setTrackBackService(TrackbackService trackbackService) {
+    this.trackbackService = trackbackService;
   }
 
   /**
    * Set solr http service
    * @param solrHttpService solr http service
    */
+  @Required
   public void setSolrHttpService(SolrHttpService solrHttpService) {
     this.solrHttpService = solrHttpService;
   }
 
+  @Required
   public void setConfiguration(Configuration configuration) {
     this.configuration = configuration;
   }
 
+  @Required
   public void setSolrFieldConverter(SolrFieldConversion solrFieldConverter) {
     this.solrFieldConverter = solrFieldConverter;
   }

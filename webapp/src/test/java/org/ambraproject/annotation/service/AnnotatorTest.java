@@ -21,24 +21,22 @@
 
 package org.ambraproject.annotation.service;
 
+import org.ambraproject.models.Annotation;
+import org.ambraproject.models.AnnotationType;
+import org.ambraproject.models.UserProfile;
+import org.ambraproject.views.AnnotationView;
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeTest;
 import static org.testng.Assert.assertTrue;
 import org.w3c.dom.Document;
-import org.topazproject.ambra.models.ArticleAnnotation;
-import org.topazproject.ambra.models.FormalCorrection;
-import org.topazproject.ambra.models.AnnotationBlob;
-import org.topazproject.ambra.models.Retraction;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
-
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.net.URISyntaxException;
-import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
 import java.io.IOException;
@@ -73,48 +71,41 @@ public class AnnotatorTest {
     TimeZone.setDefault(TimeZone.getTimeZone("GMT-8"));
     SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yy");
 
-    String articleId = "info:doi/10.1371/journal.pone.0002250";
+    Long articleId = 1L;
 
-    ArticleAnnotation[] annoatations = new ArticleAnnotation[2];
+    AnnotationView[] annotations = new AnnotationView[2];
 
-    FormalCorrection fc = new FormalCorrection();
-    fc.setId(URI.create("formalCorrection:1234"));
-    fc.setAnnotates(URI.create(articleId));
-    AnnotationBlob blob1 = new AnnotationBlob();
-    blob1.setId("AnnotationBlob:1");
-    blob1.setBody("Annotation One".getBytes("UTF-8"));
-    fc.setBody(blob1);
+    Annotation fc = new Annotation();
+    fc.setID(1L);
+    fc.setType(AnnotationType.FORMAL_CORRECTION);
+    fc.setAnnotationUri("formalCorrection:1234");
+    fc.setArticleID(articleId);
+    fc.setBody("Annotation One");
     // #xpointer(string-range(/article[1]/body[1]/sec[1]/p[1], '', 17, 3)[1])
-    fc.setContext(articleId +
-        "#xpointer(string-range(%2farticle%5b1%5d%2fbody%5b1%5d%2fsec%5b1%5d%2fp%5b1%5d%2c+''%2c+17%2c+3)%5b1%5d)");
+    fc.setXpath(articleId +
+      "#xpointer(string-range(%2farticle%5b1%5d%2fbody%5b1%5d%2fsec%5b1%5d%2fp%5b1%5d%2c+''%2c+17%2c+3)%5b1%5d)");
     fc.setCreated(dateFormat.parse("03/22/09"));
-    fc.setCreator("user:1");
+    fc.setCreator(new UserProfile("authID", "e@mail.net", "user:1"));
     fc.setTitle("Formal Correction Title");
-    fc.setState(0);
+    annotations[0] = new AnnotationView(fc, "test-title", "test-doi", null);
 
-    annoatations[0] = fc;
-
-    Retraction r = new Retraction();
-    r.setId(URI.create("retrcation:3245"));
-    r.setAnnotates(URI.create(articleId));
-    AnnotationBlob blob2 = new AnnotationBlob();
-    blob2.setId("AnnotationBlob:2");
-    blob2.setBody("Annotation Two".getBytes("UTF-8"));
-    r.setBody(blob2);
+    Annotation r = new Annotation();
+    r.setID(2L);
+    r.setType(AnnotationType.RETRACTION);
+    r.setAnnotationUri("retraction:3245");
+    r.setArticleID(articleId);
+    r.setBody("Annotation Two");
     // #xpointer(string-range(/article[1]/front[1]/article-meta[1]/abstract[1]/p[1], '', 10, 4)[1])
-    r.setContext(articleId +
+    r.setXpath(articleId +
         "#xpointer(string-range(%2Farticle%5B1%5D%2Ffront%5B1%5D%2Farticle-meta%5B1%5D%2Fabstract%5B1%5D%2Fp%5B1%5D%2C+''%2C+10%2C+4)%5B1%5D)");
     r.setCreated(dateFormat.parse("12/01/08"));
-    r.setCreator("user:2");
+    r.setCreator(new UserProfile("authID2", "e@mail2.net", "user:2"));
     r.setTitle("Retraction Title");
-    r.setState(0);
-
-    annoatations[1] = r;
+    annotations[1] = new AnnotationView(r, "test-title", "test-doi", null);
 
     Document doc = XMLUnit.buildTestDocument(new InputSource(getClass().getResourceAsStream("/annotation/document.xml")));
     Document expected = XMLUnit.buildControlDocument(new InputSource(getClass().getResourceAsStream("/annotation/result.xml")));
-
-    Document result = Annotator.annotateAsDocument(doc, annoatations);
+    Document result = Annotator.annotateAsDocument(doc, annotations);
 
     System.out.println(XMLUnit.getTransformerFactory().getClass().getName());
     System.out.println(XMLUnit.getControlDocumentBuilderFactory().getClass().getName());

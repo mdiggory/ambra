@@ -23,23 +23,44 @@ package org.ambraproject;
 
 import org.ambraproject.model.article.ArticleInfo;
 import org.ambraproject.model.article.RelatedArticleInfo;
-import org.ambraproject.models.*;
+import org.ambraproject.models.Annotation;
+import org.ambraproject.models.AnnotationType;
+import org.ambraproject.models.Article;
+import org.ambraproject.models.ArticleAsset;
+import org.ambraproject.models.ArticleAuthor;
+import org.ambraproject.models.ArticleEditor;
+import org.ambraproject.models.ArticleRelationship;
+import org.ambraproject.models.Category;
+import org.ambraproject.models.CitedArticle;
+import org.ambraproject.models.CitedArticleAuthor;
+import org.ambraproject.models.CitedArticleEditor;
+import org.ambraproject.models.CorrectedAuthor;
 import org.ambraproject.testutils.DummyDataStore;
+import org.ambraproject.views.AnnotationView;
+import org.ambraproject.views.ArticleCategory;
+import org.ambraproject.views.AuthorView;
+import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.topazproject.ambra.models.Journal;
 
 import java.net.URI;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
+import java.util.Set;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertEqualsNoOrder;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -274,8 +295,7 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
   }
 
   protected void checkArticleInfo(ArticleInfo actual, Article expectedArticle,
-                                  Article[] expectedRelatedArticles, URI[] expectedRetractions,
-                                  URI[] expectedFormalCorrections) {
+                                  Article[] expectedRelatedArticles) {
     //basic properties
     assertEquals(actual.getDoi(), expectedArticle.getDoi(), "returned article info with incorrect id");
     assertEquals(actual.getTitle(), expectedArticle.getTitle(),
@@ -283,6 +303,7 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
     assertEquals(actual.getDate(), expectedArticle.getDate(),
         "returned article info with incorrect date");
     assertEquals(actual.getDescription(), expectedArticle.getDescription(), "incorrect description");
+    assertEquals(actual.getRights(), expectedArticle.getRights(), "incorrect rights");
     //check collaborative authors
     if (expectedArticle.getCollaborativeAuthors() != null) {
       assertNotNull(actual.getCollaborativeAuthors(), "returned null collaborative authors");
@@ -292,24 +313,32 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
     }
     //check categories
     if (expectedArticle.getCategories() == null || expectedArticle.getCategories().size() == 0) {
-      assertTrue(actual.getSubjects() == null || actual.getSubjects().size() == 0,
+      assertTrue(actual.getCategories() == null || actual.getCategories().size() == 0,
           "returned subjects when none were expected");
     } else {
-      assertNotNull(actual.getSubjects(), "returned null subjects");
-      int numSubjects = 0;
+      assertNotNull(actual.getCategories(), "returned null subjects");
+
+      Set<String> collapsedCategories = new HashSet<String>(expectedArticle.getCategories().size());
+
       for (Category category : expectedArticle.getCategories()) {
-        if (category.getMainCategory() != null) {
-          numSubjects++;
-          assertTrue(actual.getSubjects().contains(category.getMainCategory()),
-              "didn't return subject: " + category.getMainCategory());
+        boolean foundCategory = false;
+
+        collapsedCategories.add(category.getMainCategory());
+        collapsedCategories.add(category.getSubCategory());
+
+        for(ArticleCategory cat : actual.getCategories())
+        {
+          if(cat.getMainCategory().equals(category.getMainCategory())) {
+            if(cat.getSubCategory().equals(category.getSubCategory())) {
+              foundCategory = true;
+            }
+          }
         }
-        if (category.getSubCategory() != null) {
-          numSubjects++;
-          assertTrue(actual.getSubjects().contains(category.getSubCategory()),
-              "didn't return subject: " + category.getSubCategory());
-        }
+
+        assertTrue(foundCategory, "Didn't return category: " + category.getMainCategory());
       }
-      assertEquals(actual.getSubjects().size(), numSubjects, "incorrect number of subjects");
+
+      assertEqualsNoOrder(collapsedCategories.toArray(), actual.getTransposedCategories().toArray());
     }
 
     //check authors
@@ -343,21 +372,77 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
         }
       }
     }
-    //check retractions
-    if (expectedRetractions == null || expectedRetractions.length == 0) {
-      assertTrue(actual.getRetractions() == null || actual.getRetractions().size() == 0,
-          "returned retractions when none were expected");
-    } else {
-      assertNotNull(actual.getRetractions(), "returned null set of retractions");
-      assertEqualsNoOrder(actual.getRetractions().toArray(), expectedRetractions, "incorrect retractions");
+  }
+
+  protected void checkAnnotationProperties(AnnotationView result, Annotation expected) {
+    if (expected.getType() == AnnotationType.MINOR_CORRECTION) {
+      assertEquals(result.getTitle(), "Minor Correction: " + expected.getTitle(), "Annotation view had incorrect title");
+    } else if (expected.getType() == AnnotationType.FORMAL_CORRECTION) {
+      assertEquals(result.getTitle(), "Formal Correction: " + expected.getTitle(), "Annotation view had incorrect title");
+    } else if (expected.getType() == AnnotationType.RETRACTION) {
+      assertEquals(result.getTitle(), "Retraction: " + expected.getTitle(), "Annotation view had incorrect title");
     }
-    //check formal corrections
-    if (expectedFormalCorrections == null || expectedFormalCorrections.length == 0) {
-      assertTrue(actual.getCorrections() == null || actual.getCorrections().size() == 0,
-          "returned corrections when none were expected");
+    assertEquals(result.getBody(), "<p>" + expected.getBody() + "</p>", "Annotation view had incorrect body");
+    assertEquals(result.getCompetingInterestStatement(),
+        expected.getCompetingInterestBody() == null ? "" : expected.getCompetingInterestBody(),
+        "Annotation view had incorrect ci statement");
+    assertEquals(result.getAnnotationUri(), expected.getAnnotationUri(), "Annotation view had incorrect annotation uri");
+    assertEquals(result.getXpath(), expected.getXpath(), "Annotation view had incorrect xpath");
+    assertEquals(result.getCreatorID(), expected.getCreator().getID(), "Annotation view had incorrect creator id");
+    assertEquals(result.getCreatorDisplayName(), expected.getCreator().getDisplayName(), "Annotation view had incorrect creator name");
+
+    if (Arrays.asList(AnnotationType.FORMAL_CORRECTION, AnnotationType.MINOR_CORRECTION,
+        AnnotationType.RETRACTION).contains(expected.getType())) {
+      assertTrue(result.isCorrection(), "Result should have been created as a correction");
     } else {
-      assertNotNull(actual.getCorrections(), "returned null set of corrections");
-      assertEqualsNoOrder(actual.getCorrections().toArray(), expectedFormalCorrections, "incorrect corrections");
+      assertFalse(result.isCorrection(), "Result should not have been created as a correction");
+    }
+
+    if (expected.getAnnotationCitation() == null) {
+      assertNull(result.getCitation(), "returned non-null citation when null was expected");
+    } else {
+      assertNotNull(result.getCitation(), "returned null citation when non-null was expected");
+      assertEquals(result.getCitation().getTitle(), expected.getAnnotationCitation().getTitle(),
+          "Returned citation with incorrect title");
+      assertEquals(result.getCitation().geteLocationId(), expected.getAnnotationCitation().getELocationId(),
+          "Returned citation with incorrect eLocationId");
+      assertEquals(result.getCitation().getJournal(), expected.getAnnotationCitation().getJournal(),
+          "Returned citation with incorrect journal");
+      assertEquals(result.getCitation().getYear(), expected.getAnnotationCitation().getYear(),
+          "Returned citation with incorrect year");
+
+      assertEquals(result.getCitation().getVolume(), expected.getAnnotationCitation().getVolume(),
+          "Returned citation with incorrect volume");
+      assertEquals(result.getCitation().getIssue(), expected.getAnnotationCitation().getIssue(),
+          "Returned citation with incorrect issue");
+      assertEquals(result.getCitation().getSummary(), expected.getAnnotationCitation().getSummary(),
+          "Returned citation with incorrect summary");
+      assertEquals(result.getCitation().getNote(), expected.getAnnotationCitation().getNote(),
+          "Returned citation with incorrect note");
+
+      if (expected.getAnnotationCitation().getCollaborativeAuthors() != null) {
+        assertEqualsNoOrder(result.getCitation().getCollabAuthors(), expected.getAnnotationCitation().getCollaborativeAuthors().toArray(),
+            "Returned citation with incorrect collab authors");
+      } else {
+        assertTrue(ArrayUtils.isEmpty(result.getCitation().getCollabAuthors()),
+            "Returned non-empty collab authors when empty was expected");
+      }
+      if (expected.getAnnotationCitation().getAuthors() != null) {
+        assertNotNull(result.getCitation().getAuthors(), "Returned null authors when authors were expected");
+        assertEquals(result.getCitation().getAuthors().length, expected.getAnnotationCitation().getAuthors().size(),
+            "Returned incorrect number of authors");
+        for (int i = 0; i < result.getCitation().getAuthors().length; i++) {
+          AuthorView actualAuthor = result.getCitation().getAuthors()[i];
+          CorrectedAuthor expectedAuthor = expected.getAnnotationCitation().getAuthors().get(i);
+          assertEquals(actualAuthor.getGivenNames(), expectedAuthor.getGivenNames(),
+              "Author " + (i + 1) + " had incorrect given names");
+          assertEquals(actualAuthor.getSurnames(), expectedAuthor.getSurName(),
+              "Author " + (i + 1) + " had incorrect surnames");
+          assertEquals(actualAuthor.getSuffix(), expectedAuthor.getSuffix(),
+              "Author " + (i + 1) + " had incorrect suffix");
+        }
+      }
+
     }
   }
 }

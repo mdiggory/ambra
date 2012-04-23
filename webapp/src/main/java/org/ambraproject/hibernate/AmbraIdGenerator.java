@@ -19,25 +19,12 @@ import org.hibernate.engine.SessionImplementor;
 import org.hibernate.id.IdentifierGenerator;
 import org.hibernate.metadata.ClassMetadata;
 import org.topazproject.ambra.configuration.ConfigurationStore;
-import org.topazproject.ambra.models.AnnotationBlob;
 import org.topazproject.ambra.models.ArticleContributor;
 import org.topazproject.ambra.models.Citation;
 import org.topazproject.ambra.models.CitedPerson;
-import org.topazproject.ambra.models.Comment;
-import org.topazproject.ambra.models.FormalCorrection;
 import org.topazproject.ambra.models.Issue;
 import org.topazproject.ambra.models.Journal;
-import org.topazproject.ambra.models.MinorCorrection;
-import org.topazproject.ambra.models.Rating;
-import org.topazproject.ambra.models.RatingContent;
-import org.topazproject.ambra.models.RatingSummary;
-import org.topazproject.ambra.models.RatingSummaryContent;
 import org.topazproject.ambra.models.RelatedArticle;
-import org.topazproject.ambra.models.Reply;
-import org.topazproject.ambra.models.ReplyBlob;
-import org.topazproject.ambra.models.ReplyThread;
-import org.topazproject.ambra.models.Trackback;
-import org.topazproject.ambra.models.TrackbackContent;
 import org.topazproject.ambra.models.Volume;
 
 import java.io.Serializable;
@@ -97,25 +84,6 @@ public class AmbraIdGenerator implements IdentifierGenerator {
   }
 
   static {
-    entitiesWithStringId.add(AnnotationBlob.class);
-    entitiesWithStringId.add(RatingContent.class);
-    entitiesWithStringId.add(RatingSummaryContent.class);
-    entitiesWithStringId.add(ReplyBlob.class);
-    entitiesWithStringId.add(TrackbackContent.class);
-
-    //Annotations
-    uriPrefixes.put(Comment.class, "annotation");
-    uriPrefixes.put(Rating.class, "annotation");
-    uriPrefixes.put(MinorCorrection.class, "annotation");
-    uriPrefixes.put(RatingSummary.class, "annotation");
-    uriPrefixes.put(FormalCorrection.class, "annotation");
-    uriPrefixes.put(Trackback.class, "annotation");
-    uriPrefixes.put(RatingContent.class, "ratingContent");
-    uriPrefixes.put(TrackbackContent.class, "trackbackContent");
-    uriPrefixes.put(AnnotationBlob.class, "annoteaBodyId:");
-    uriPrefixes.put(RatingSummaryContent.class, "ratingSummaryContent");
-    uriPrefixes.put(Reply.class, "reply");
-    uriPrefixes.put(ReplyThread.class, "reply");
     //Aggregations
     uriPrefixes.put(Journal.class, "aggregation");
     uriPrefixes.put(Volume.class, "aggregation");

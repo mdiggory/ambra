@@ -38,31 +38,31 @@
         <li id="article" class="active"><@s.a href="${articleTabURL}" cssClass="tab" title="Article">Article</@s.a></li>
         <li id="metrics"><@s.a href="${metricsTabURL}" cssClass="tab" title="Metrics">Metrics</@s.a></li>
         <li id="related"><@s.a href="${relatedTabURL}" cssClass="tab" title="Related Content">Related Content</@s.a></li>
-        <li id="comments"><@s.a href="${commentsTabURL}" cssClass="tab" title="Comments">Comments: ${totalComments}</@s.a></li>
+        <li id="comments"><@s.a href="${commentsTabURL}" cssClass="tab" title="Comments">Comments: ${totalNumAnnotations}</@s.a></li>
         <#break>
       <#case "related">
         <li id="article"><@s.a href="${articleTabURL}" cssClass="tab" title="Article">Article</@s.a></li>
         <li id="metrics"><@s.a href="${metricsTabURL}" cssClass="tab" title="Metrics">Metrics</@s.a></li>
         <li id="related" class="active"><@s.a href="${relatedTabURL}" cssClass="tab" title="Related Content">Related Content</@s.a></li>
-        <li id="comments"><@s.a href="${commentsTabURL}" cssClass="tab" title="Comments">Comments: ${totalComments}</@s.a></li>
+        <li id="comments"><@s.a href="${commentsTabURL}" cssClass="tab" title="Comments">Comments: ${totalNumAnnotations}</@s.a></li>
         <#break>
       <#case "metrics">
         <li id="article"><@s.a href="${articleTabURL}" cssClass="tab" title="Article">Article</@s.a></li>
         <li id="metrics" class="active"><@s.a href="${metricsTabURL}" cssClass="tab" title="Metrics">Metrics</@s.a></li>
         <li id="related"><@s.a href="${relatedTabURL}" cssClass="tab" title="Related Content">Related Content</@s.a></li>
-        <li id="comments"><@s.a href="${commentsTabURL}" cssClass="tab" title="Comments">Comments: ${totalComments}</@s.a></li>
+        <li id="comments"><@s.a href="${commentsTabURL}" cssClass="tab" title="Comments">Comments: ${totalNumAnnotations}</@s.a></li>
         <#break>
       <#case "comments">
         <li id="article"><@s.a href="${articleTabURL}" cssClass="tab" title="Article">Article</@s.a></li>
         <li id="metrics"><@s.a href="${metricsTabURL}" cssClass="tab" title="Metrics">Metrics</@s.a></li>
         <li id="related"><@s.a href="${relatedTabURL}" cssClass="tab" title="Related Content">Related Content</@s.a></li>
-        <li id="comments" class="active"><@s.a href="${commentsTabURL}" cssClass="tab" title="Comments">Comments: ${totalComments}</@s.a></li>
+        <li id="comments" class="active"><@s.a href="${commentsTabURL}" cssClass="tab" title="Comments">Comments: ${totalNumAnnotations}</@s.a></li>
         <#break>
       <#default>
         <li id="article" class="active"><@s.a href="${articleTabURL}" cssClass="tab" title="Article">Article</@s.a></li>
         <li id="metrics"><@s.a href="${metricsTabURL}" cssClass="tab" title="Metrics">Metrics</@s.a></li>
         <li id="related"><@s.a href="${relatedTabURL}" cssClass="tab" title="Related Content">Related Content</@s.a></li>
-        <li id="comments"><@s.a href="${commentsTabURL}" cssClass="tab" title="Comments">Comments: ${totalComments}</@s.a></li>
+        <li id="comments"><@s.a href="${commentsTabURL}" cssClass="tab" title="Comments">Comments: ${totalNumAnnotations}</@s.a></li>
     </#switch>
   </ul>
 </div>

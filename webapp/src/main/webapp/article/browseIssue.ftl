@@ -107,34 +107,6 @@
             <h3><@s.a href="%{fetchArticleURL}" title="Read Open Access Article"><@articleFormat>${articleInfo.title}</@articleFormat></@s.a></h3>
             <p class="authors"><#list articleInfo.authors as auth><#if auth_index gt 0>, </#if>${auth?trim}</#list></p>
             <@related articleInfo=articleInfo/>
-            <#if articleInfo.corrections?? && (articleInfo.corrections?size > 0)>
-              <div class="fch">
-              <p class="fch"><strong> Formal Correction:</strong></p>
-              <ol class="fclist">
-              <#list articleInfo.corrections as correctionId>
-                <#assign correction = correctionMap.getValue(correctionId)>
-                <#if correction??>
-                  <@s.url namespace="/annotation" action="listThread" id="correctionUrl" inReplyTo="${correction.id}" root="${correction.id}"/>
-                  <li>
-                    <p>${correction.title} (<@s.a href="%{correctionUrl}">More...</@s.a>)</p>
-                  </li>
-                </#if>
-              </#list>
-              </ol>
-              </div>
-            </#if>
-            <#if articleInfo.retractions?? && (articleInfo.retractions?size > 0)>
-              <div class="retractionHtmlId">
-                <p class="retractionHtmlId"><strong> Retraction:</strong> This article has been retracted.
-                <#list articleInfo.retractions as retractionId>
-                  <#assign retraction = retractionMap.getValue(retractionId)>
-                  <#if retraction??>
-                    <@s.url namespace="/annotation" action="listThread" id="retractionUrl" inReplyTo="${retraction.id}" root="${retraction.id}"/> (<@s.a href="%{retractionUrl}">More...</@s.a>)
-                  </#if>
-                </#list>
-                </p>
-              </div>
-            </#if>        
           </div>
         </#list>
       </#list>

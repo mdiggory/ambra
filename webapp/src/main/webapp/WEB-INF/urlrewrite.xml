@@ -27,18 +27,18 @@
   <rule>
     <note>
       re-write incoming trackbacks URIs.
-     /article/doi/trackback -> /trackback.action?trackbackId=doi
+     /article/doi/trackback -> /trackback.action?doi=doi
     </note>
     <from>^(/.+)?/article/(info:doi/10\.1371/.+)/trackback$</from>
-    <to>$1/trackback.action?trackbackId=$2</to>
+    <to>$1/trackback.action?doi=$2</to>
   </rule>
 
   <outbound-rule>
     <note>
       re-write outbound trackbacks URIs.
-      /trackback.action?trackbackId=doi -> /article/doi/trackback
+      /trackback.action?doi=doi -> /article/doi/trackback
     </note>
-    <from>^(/.+)?/trackback.action\?trackbackId=(info%3Adoi%2F10\.1371%2F.+)$</from>
+    <from>^(/.+)?/trackback.action\?doi=(info%3Adoi%2F10\.1371%2F.+)$</from>
     <to>$1/article/$2/trackback</to>
   </outbound-rule>
 

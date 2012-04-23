@@ -21,38 +21,42 @@ package org.ambraproject.rating.service;
 
 import org.ambraproject.ApplicationException;
 import org.ambraproject.models.UserProfile;
-import org.topazproject.ambra.models.Rating;
-import org.topazproject.ambra.models.RatingContent;
-import org.topazproject.ambra.models.RatingSummary;
+import org.ambraproject.models.Rating;
+import org.ambraproject.models.RatingSummary;
+import org.ambraproject.views.RatingView;
+import org.ambraproject.views.RatingSummaryView;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * This service allows client code to operate on ratings objects.
  *
- * @author jonnie.
+ * @author Joe Osowski.
  */
 public interface RatingsService {
   /**
    * Delete the Rating identified by ratingId and update the RatingSummary.
    *
-   * @param ratingId the identifier of the Rating object to be deleted
+   * @param ratingID the identifier of the Rating object to be deleted
+   * @param authId the authID of the current user
+   *
    * @throws ApplicationException on an error
    */
-  public void deleteRating(final String ratingId, final String authId) throws ApplicationException;
+  public void deleteRating(final Long ratingID, final String authId) throws ApplicationException;
 
   /**
    * Save a rating
-   * @param rating
+   * @param rating the dating to save
    */
   public void saveRating(Rating rating);
 
   /**
-   * Save a ratingSummary
-   * @param ratingSummary
+   * Get a Rating by Id (URI).
+   *
+   * @param ratingURI Rating URI
+   * @return Rating
    */
-  public void saveRatingSummary(RatingSummary ratingSummary);
+  public Rating getRating(final String ratingURI);
 
   /**
    * Get a Rating by Id.
@@ -60,157 +64,44 @@ public interface RatingsService {
    * @param ratingId Rating Id
    * @return Rating
    */
-  public Rating getRating(final String ratingId) ;
+  public Rating getRating(final Long ratingId);
 
   /**
    * Get rating summary list for the given article
-   * @param articleURI
+   * @param articleID the ID of the article
    * @return
    */
-  public List<RatingSummary> getRatingSummaryList(final String articleURI);
+  public RatingSummary getRatingSummary(final long articleID);
 
   /**
-   * Get list of ratings for the given article by the given user
-   * @param articleURI
-   * @param userID
+   * Get the rating for the given article by the given user
+   * @param articleID the ID of the article
+   * @param user the current user
    * @return
    */
-  public List<Rating> getRatingsList(final String articleURI, final String userID);
+  public Rating getRating(final long articleID, final UserProfile user);
 
   /**
    * Get list of ratings for the given article
-   * @param articleURI
+   * @param articleID The article to get the ratings summary for
    * @return
    */
-  public List<Rating> getRatingsList(final String articleURI);
+  public List<RatingView> getRatingViewList(final Long articleID);
 
   /**
-   * List the set of Ratings in a specific administrative state.
+   * Get the average ratings
    *
-   * @param mediator if present only those annotations that match this mediator are returned
-   * @param state    the state to filter the list of annotations by or 0 to return annotations
-   *                 in any administrative state
-   * @return an array of rating metadata; if no matching annotations are found, an empty array
-   *         is returned
+   * @param articleID the ID of the article
+   * @return
    */
-  public Rating[] listRatings(final String mediator,final int state);
+  public RatingSummaryView getAverageRatings(final long articleID);
 
-  public AverageRatings getAverageRatings(final String articleURI);
-
-  public boolean hasRated(String articleURI, UserProfile user);
-
-  public static class Average implements Serializable {
-    private static final long serialVersionUID = -2890067268188424471L;
-
-    private final double total;
-    private final int    count;
-    private final double average;
-    private final double rounded;
-
-    Average(double total, int count) {
-      this.total = total;
-      this.count = count;
-      average = (count == 0) ? 0 : total/count;
-      rounded = RatingContent.roundTo(average, 0.5);
-    }
-
-    @Override
-    public String toString() {
-      return "total = " + total + ", count = " + count + ", average = " + average +
-             ", rounded = " + rounded;
-    }
-
-    public double getTotal() {
-      return total;
-    }
-
-    public int getCount() {
-      return count;
-    }
-
-    public double getAverage() {
-      return average;
-    }
-
-    public double getRounded() {
-      return rounded;
-    }    
-  }
-
-  public static class AverageRatings implements Serializable {
-    private static final long serialVersionUID = -1666766336307635633L;
-
-    private final Average style;
-    private final Average insight;
-    private final Average reliability;
-    private final Average single;
-    private final int     numUsersThatRated;
-    private final double  overall;
-    private final double  roundedOverall;
-
-    AverageRatings() {
-      style = new Average(0, 0);
-      insight = new Average(0, 0);
-      reliability = new Average(0, 0);
-      single = new Average(0, 0);
-      numUsersThatRated = 0;
-      overall = 0;
-      roundedOverall = 0;
-    }
-
-    AverageRatings(RatingSummary ratingSummary) {
-      insight = new Average(ratingSummary.getBody().getInsightTotal(),
-         ratingSummary.getBody().getInsightNumRatings());
-      reliability = new Average(ratingSummary.getBody().getReliabilityTotal(),
-         ratingSummary.getBody().getReliabilityNumRatings());
-      style = new Average(ratingSummary.getBody().getStyleTotal(),
-         ratingSummary.getBody().getStyleNumRatings());
-      single = new Average(ratingSummary.getBody().getSingleRatingTotal(),
-         ratingSummary.getBody().getSingleRatingNumRatings());
-
-      numUsersThatRated = ratingSummary.getBody().getNumUsersThatRated();
-      overall = RatingContent.calculateOverall(insight.average, reliability.average, style.average);
-      roundedOverall = RatingContent.roundTo(overall, 0.5);
-    }
-
-    @Override
-    public String toString() {
-      return "style = [" + style + "], " +
-             "insight = [" + insight + "], " +
-             "reliability = [" + reliability + "], " +
-             "single = [" + single + "], " +
-             "numUsersThatRated = " + numUsersThatRated +
-             ", overall = " + overall +
-             ", roundedOverall = " + roundedOverall;
-    }
-
-    public Average getStyle() {
-      return style;
-    }
-
-    public Average getInsight() {
-      return insight;
-    }
-
-    public Average getReliability() {
-      return reliability;
-    }
-
-    public Average getSingle() {
-      return single;
-    }
-
-    public int getNumUsersThatRated() {
-      return numUsersThatRated;
-    }
-
-    public double getOverall() {
-      return overall;
-    }
-
-    public double getRoundedOverall()
-    {
-      return roundedOverall;
-    }      
-  }
+  /**
+   * Has the passed in user rated the article?
+   *
+   * @param articleID the ID of the article
+   * @param user the user to check for a rating with
+   * @return did the user rate the article?
+   */
+  public boolean hasRated(final long articleID, final UserProfile user);
 }

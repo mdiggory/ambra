@@ -52,10 +52,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.transaction.annotation.Transactional;
-import org.topazproject.ambra.models.FormalCorrection;
 import org.topazproject.ambra.models.Issue;
 import org.topazproject.ambra.models.Journal;
-import org.topazproject.ambra.models.Retraction;
 import org.topazproject.ambra.models.Volume;
 
 import java.io.IOException;
@@ -620,60 +618,6 @@ public class BrowseServiceImpl extends HibernateServiceImpl implements BrowseSer
       return new ArrayList<URI>(issue.getSimpleCollection());
 
     return articleList;
-  }
-
-  /**
-   * ArticleInfo objects store lists of FormalCorrection id's because ArticleInfo is object that is not cached in the
-   * ObjectCache and it cannot hold referencews to OTM entities because it will cause it to fail serialization. We need
-   * to fetch FormalCorrection objects and put them in a Map so they can be displayed.
-   *
-   * @param articleGroups List of article groups
-   * @return Map of all FormalCorrection objects contained in articleGroups
-   */
-  public Map<URI, FormalCorrection> getCorrectionMap(List<TOCArticleGroup> articleGroups) {
-    Map<URI, FormalCorrection> correctionMap = new HashMap<URI, FormalCorrection>();
-
-    for (TOCArticleGroup articleGroup : articleGroups) {
-      for (ArticleInfo articleInfo : articleGroup.getArticles()) {
-        if (articleInfo.getCorrections() != null) {
-          for (URI correctionId : articleInfo.getCorrections()) {
-            correctionMap.put(
-                correctionId,
-                (FormalCorrection) hibernateTemplate.get(FormalCorrection.class, correctionId)
-            );
-          }
-        }
-      }
-    }
-
-    return correctionMap;
-  }
-
-  /**
-   * ArticleInfo objects store lists of Retraction id's because ArticleInfo is object that is not cached in the
-   * ObjectCache and it cannot hold referencews to OTM entities because it will cause it to fail serialization. We need
-   * to fetch Retraction objects and put them in a Map so they can be displayed.
-   *
-   * @param articleGroups List of article groups
-   * @return Map of all Retraction objects contained in articleGroups
-   */
-  public Map<URI, Retraction> getRetractionMap(List<TOCArticleGroup> articleGroups) {
-    Map<URI, Retraction> retractionMap = new HashMap<URI, Retraction>();
-
-    for (TOCArticleGroup articleGroup : articleGroups) {
-      for (ArticleInfo articleInfo : articleGroup.getArticles()) {
-        if (articleInfo.getRetractions() != null) {
-          for (URI retractionId : articleInfo.getRetractions()) {
-            retractionMap.put(
-                retractionId,
-                (Retraction) hibernateTemplate.get(Retraction.class, retractionId)
-            );
-          }
-        }
-      }
-    }
-
-    return retractionMap;
   }
 
   /**

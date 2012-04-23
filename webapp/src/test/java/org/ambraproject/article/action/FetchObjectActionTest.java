@@ -51,12 +51,10 @@ public class FetchObjectActionTest extends FetchActionTest {
 
   @Test
   public void testFetchArticleXML() {
-    //put the user in the session
-    UserProfile user = userService.getUserByAuthId(DEFUALT_USER_AUTHID);
-    login(user);
+    login(userService.getUserByAuthId(DEFAULT_ADMIN_AUTHID));
     int numViews = dummyDataStore.getAll(ArticleView.class).size();
 
-    action.setUri(doi);
+    action.setUri(getArticleToFetch().getDoi());
     action.setRepresentation("XML");
     String result = action.fetchObjectAction();
 

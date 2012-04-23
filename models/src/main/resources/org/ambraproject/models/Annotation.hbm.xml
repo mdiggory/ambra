@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ $HeadURL$
+  ~ $Id$
+  ~ Copyright (c) 2006-2012 by Public Library of Science http://plos.org http://ambraproject.org
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="org.ambraproject.models" default-lazy="false">
+
+  <class name="Annotation" table="annotation">
+    <id name="ID" column="annotationID" type="long">
+      <generator class="native"/>
+    </id>
+
+    <timestamp name="lastModified" column="lastModified"/>
+    <property name="created" column="created" type="timestamp" not-null="true" update="false"/>
+
+    <property name="type" column="type" not-null="true">
+      <type name="org.ambraproject.hibernate.GenericEnumUserType">
+        <param name="enumClass">org.ambraproject.models.AnnotationType</param>
+        <param name="identifierMethod">toString</param>
+        <param name="valueOfMethod">fromString</param>
+      </type>
+    </property>
+
+    <!--Don't cascade to creator-->
+    <many-to-one name="creator" class="UserProfile" column="userProfileID" not-null="true" cascade="none"/>
+
+    <property name="articleID" type="long" column="articleID" not-null="true"/>
+    <property name="annotationUri" type="string" column="annotationURI" unique="true"/>
+
+    <property name="parentID" type="long" column="parentID"/>
+
+    <property name="title" column="title" type="text"/>
+    <property name="body" column="body" type="text"/>
+    <property name="xpath" column="xpath" type="text"/>
+
+    <property name="competingInterestBody" type="text" column="competingInterestBody"/>
+
+    <!--Don't put cascade delete orphan here. It causes null pointers when updating annotations that have no citation-->
+    <many-to-one name="annotationCitation" cascade="all" unique="true"
+                 class="AnnotationCitation" fetch="join" column="annotationCitationID"/>
+
+    <joined-subclass table="rating" name="org.ambraproject.models.Rating">
+      <key column="annotationID"/>
+      <property name="insight" column="insight" type="integer" not-null="true"/>
+      <property name="reliability" column="reliability" type="integer" not-null="true"/>
+      <property name="style" column="style" type="integer" not-null="true"/>
+      <property name="singleRating" column="singleRating" type="integer" not-null="true"/>
+    </joined-subclass>
+
+  </class>
+
+</hibernate-mapping>

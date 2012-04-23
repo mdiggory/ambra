@@ -24,20 +24,30 @@
 
         <value>hbm/Citation.hbm.xml</value>
 
-        <value>hbm/Annotation.hbm.xml</value>
-        <value>hbm/ByteArrayBlob.hbm.xml</value>
-        <value>hbm/RatingContent.hbm.xml</value>
-        <value>hbm/TrackbackContent.hbm.xml</value>
-        <value>hbm/RatingSummaryContent.hbm.xml</value>
-        <value>hbm/Reply.hbm.xml</value>
-
         <value>hbm/Aggregations.hbm.xml</value>
         <value>hbm/CitedPerson.hbm.xml</value>
         <value>hbm/ArticleContributor.hbm.xml</value>
 
         <!--NEW HBMS-->
-
+        <!--Since HSQL doesn't allow case-sensitive table names, we need to distinguish the new annotations while refactoring-->
         <value>classpath:org/ambraproject/models/*.hbm.xml</value>
+
+        <!--
+                <value>classpath:org/ambraproject/models/ArticleAsset.hbm.xml</value>
+                <value>classpath:org/ambraproject/models/Article.hbm.xml</value>
+                <value>classpath:org/ambraproject/models/ArticlePerson.hbm.xml</value>
+                <value>classpath:org/ambraproject/models/ArticleRelationship.hbm.xml</value>
+                <value>classpath:org/ambraproject/models/ArticleView.hbm.xml</value>
+                <value>classpath:org/ambraproject/models/Category.hbm.xml</value>
+                <value>classpath:org/ambraproject/models/CitedArticle.hbm.xml</value>
+                <value>classpath:org/ambraproject/models/CitedArticlePerson.hbm.xml</value>
+                <value>classpath:org/ambraproject/models/Syndication.hbm.xml</value>
+                <value>classpath:org/ambraproject/models/UserLogin.hbm.xml</value>
+                <value>classpath:org/ambraproject/models/UserProfile.hbm.xml</value>
+                <value>classpath:org/ambraproject/models/UserRole.hbm.xml</value>
+                <value>classpath:org/ambraproject/models/UserSearch.hbm.xml</value>
+                <value>classpath:org/ambraproject/models/Version.hbm.xml</value>
+        -->
 
       </list>
     </property>

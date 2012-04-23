@@ -1,4 +1,3 @@
-
 /* $HeadURL::                                                                            $
  * $Id$
  *
@@ -20,8 +19,7 @@
  */
 package org.ambraproject.annotation.service;
 
-import org.topazproject.ambra.models.Annotation;
-import org.topazproject.ambra.models.ArticleAnnotation;
+import org.ambraproject.views.AnnotationView;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -38,7 +36,6 @@ public class AnnotationModel {
   static final URI r               = URI.create("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
   static final URI d               = URI.create("http://purl.org/dc/elements/1.1/");
   static final URI dt              = URI.create("http://purl.org/dc/terms/");
-  static final URI topaz           = URI.create("http://rdf.topazproject.org/RDF/");
   static final URI nil             = URI.create("http://www.w3.org/1999/02/22-rdf-syntax-ns#nil");
   static final URI a_Annotation    = a.resolve("#Annotation");
   static final URI r_type          = r.resolve("#type");
@@ -50,8 +47,6 @@ public class AnnotationModel {
   static final URI a_body          = a.resolve("#body");
   static final URI dt_replaces     = dt.resolve("replaces");
   static final URI dt_isReplacedBy = dt.resolve("isReplacedBy");
-  static final URI dt_mediator     = dt.resolve("mediator");
-  static final URI topaz_state     = topaz.resolve("state");
 
   /**
    * Append the xmlns attributes used by annotation meta data to an element. Useful for declaring
@@ -65,8 +60,6 @@ public class AnnotationModel {
     element.setAttributeNS(xmlns, "xmlns:r", r.toString());
     element.setAttributeNS(xmlns, "xmlns:a", a.toString());
     element.setAttributeNS(xmlns, "xmlns:d", d.toString());
-    element.setAttributeNS(xmlns, "xmlns:dt", dt.toString());
-    element.setAttributeNS(xmlns, "xmlns:topaz", topaz.toString());
   }
 
   /**
@@ -75,72 +68,44 @@ public class AnnotationModel {
    * @param parent the annotation node
    * @param annotation the annotation to append
    */
-  public static void appendToNode(final Node parent, final ArticleAnnotation annotation) {
+  public static void appendToNode(final Node parent, final AnnotationView annotation) {
     String   rNs     = r.toString();
     String   aNs     = a.toString();
     String   dNs     = d.toString();
-    String   dtNs    = dt.toString();
-    String   topazNs = topaz.toString();
 
     Document document = parent.getOwnerDocument();
     Element  node;
 
     node = document.createElementNS(rNs, "r:type");
-    node.setAttributeNS(rNs, "r:resource", annotation.getType());
+    node.setAttributeNS(rNs, "r:resource", annotation.getType().toString());
     parent.appendChild(node);
 
     node = document.createElementNS(aNs, "a:annotates");
-    node.setAttributeNS(rNs, "r:resource", "" + annotation.getAnnotates());
+    node.setAttributeNS(rNs, "r:resource", "" + annotation.getArticleID());
     parent.appendChild(node);
 
     node = document.createElementNS(aNs, "a:context");
-    node.appendChild(document.createTextNode(annotation.getContext()));
+    node.appendChild(document.createTextNode(annotation.getXpath()));
     parent.appendChild(node);
 
     node = document.createElementNS(dNs, "d:creator");
-    node.setAttributeNS(rNs, "r:resource", annotation.getCreator());
+    node.setAttributeNS(rNs, "r:resource", annotation.getCreatorDisplayName());
     parent.appendChild(node);
 
     node = document.createElementNS(aNs, "a:created");
-    node.appendChild(document.createTextNode(annotation.getCreatedAsString()));
+    node.appendChild(document.createTextNode(annotation.getCreatedFormatted()));
     parent.appendChild(node);
 
     if (annotation.getBody() != null) {
       node = document.createElementNS(aNs, "a:body");
-      node.setAttributeNS(rNs, "r:resource", annotation.getBody().getId());
+      node.setAttributeNS(rNs, "r:resource", annotation.getID().toString());
       parent.appendChild(node);
     }
 
-    Annotation<?> supersedes = annotation.getSupersedes();
-    if (supersedes != null) {
-      node = document.createElementNS(dtNs, "dt:replaces");
-      node.setAttributeNS(rNs, "r:resource", supersedes.getId().toString());
-      parent.appendChild(node);
-    }
-
-    Annotation<?> supersededBy = annotation.getSupersededBy();
-    if (supersededBy != null) {
-      node = document.createElementNS(dtNs, "dt:isReplacedBy");
-      node.setAttributeNS(rNs, "r:resource", supersededBy.getId().toString());
-      parent.appendChild(node);
-    }
-
-    String title = annotation.getTitle();
-    if (title != null) {
+    if (annotation.getTitle() != null) {
       node = document.createElementNS(dNs, "d:title");
-      node.appendChild(document.createTextNode(title));
+      node.appendChild(document.createTextNode(annotation.getTitle()));
       parent.appendChild(node);
     }
-
-    String mediator = annotation.getMediator();
-    if (mediator != null) {
-      node = document.createElementNS(dtNs, "dt:mediator");
-      node.appendChild(document.createTextNode(mediator));
-      parent.appendChild(node);
-    }
-
-    node = document.createElementNS(topazNs, "topaz:state");
-    node.appendChild(document.createTextNode("" + annotation.getState()));
-    parent.appendChild(node);
   }
 }

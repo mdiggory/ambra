@@ -21,27 +21,22 @@
 
 package org.ambraproject.article.service;
 
-import org.apache.commons.configuration.Configuration;
-import org.apache.solr.client.solrj.SolrServerException;
 import org.ambraproject.ApplicationException;
-import org.ambraproject.article.BrowseResult;
 import org.ambraproject.article.BrowseParameters;
+import org.ambraproject.article.BrowseResult;
 import org.ambraproject.article.action.TOCArticleGroup;
 import org.ambraproject.model.IssueInfo;
 import org.ambraproject.model.VolumeInfo;
 import org.ambraproject.model.article.ArticleInfo;
 import org.ambraproject.model.article.Years;
-import org.topazproject.ambra.models.FormalCorrection;
+import org.apache.commons.configuration.Configuration;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.topazproject.ambra.models.Issue;
 import org.topazproject.ambra.models.Journal;
-import org.topazproject.ambra.models.Retraction;
-import org.ambraproject.search.SearchHit;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
 import java.util.SortedMap;
 
 /**
@@ -187,27 +182,6 @@ public interface BrowseService {
    * @return List of article URI's
    */
   public List<URI> getArticleList(Issue issue);
-
-  /**
-   * ArticleInfo objects store lists of FormalCorrection id's because ArticleInfo is
-   * object that is not cached in the ObjectCache and it cannot hold referencews to OTM entities
-   * because it will cause it to fail serialization.
-   * We need to fetch FormalCorrection objects and put them in a Map so they can be displayed.
-   *
-   * @param articleGroups List of article groups
-   * @return Map of all FormalCorrection objects contained in articleGroups
-   */
-  public Map<URI, FormalCorrection> getCorrectionMap(List<TOCArticleGroup> articleGroups);
-  /**
-   * ArticleInfo objects store lists of Retraction id's because ArticleInfo is
-   * object that is not cached in the ObjectCache and it cannot hold referencews to OTM entities
-   * because it will cause it to fail serialization.
-   * We need to fetch Retraction objects and put them in a Map so they can be displayed.
-   *
-   * @param articleGroups List of article groups
-   * @return Map of all Retraction objects contained in articleGroups
-   */
-  public Map<URI, Retraction> getRetractionMap(List<TOCArticleGroup> articleGroups);
 
   /**
    * Set the configuration class

@@ -21,11 +21,10 @@
 
 package org.ambraproject.article.service;
 
+import org.ambraproject.ApplicationException;
 import org.ambraproject.model.article.ArticleInfo;
 import org.ambraproject.models.Article;
-import org.ambraproject.ApplicationException;
 
-import java.net.URI;
 import java.text.ParseException;
 import java.util.List;
 
@@ -78,16 +77,6 @@ public interface ArticleService {
    */
   public List<ArticleInfo> getPublishableArticles(String eIssn, String orderField,
                                               boolean isOrderAscending) throws ApplicationException;
-
-  /**
-   * Delete an article.
-   *
-   * @param articleDoi the uri of the article
-   * @param authId the authorization ID of the current user
-   *
-   * @throws NoSuchArticleIdException NoSuchArticleIdException
-   */
-  public void delete(final String articleDoi, final String authId) throws NoSuchArticleIdException;
 
   /**
    * Get a List of all of the Journal/Volume/Issue combinations that contain the <code>articleURI</code> which was
@@ -148,6 +137,17 @@ public interface ArticleService {
     throws NoSuchArticleIdException;
 
   /**
+   * Get an Article by ID.
+   *
+   * @param articleID ID of Article to get.
+   * @param authId the authorization ID of the current user
+   * @return Article with specified URI or null if not found.
+   * @throws NoSuchArticleIdException NoSuchArticleIdException
+   */
+  public Article getArticle(final Long articleID, final String authId)
+      throws NoSuchArticleIdException;
+
+  /**
    * Get articles based on a list of Article id's.
    *
    * @param articleDois list of article id's
@@ -167,5 +167,22 @@ public interface ArticleService {
    * @return articleInfo
    */
   public ArticleInfo getArticleInfo(final String articleDoi, final String authId) throws NoSuchArticleIdException;
+
+  /**
+   * Get a basic view object for the article with the corresponding id
+   *
+   * @param articleID the id of the article to get
+   * @return a simple wrapper around string properties of the article
+   */
+  public ArticleInfo getBasicArticleView(Long articleID) throws NoSuchArticleIdException;
+
+
+  /**
+   * Get a basic view object for the article by doi
+   * @param articleDoi the doi of the article
+   * @return a simple wrapper around the article with only title and doi set
+   * @throws NoSuchArticleIdException if the article doesn't exist
+   */
+  public ArticleInfo getBasicArticleView(String articleDoi) throws NoSuchArticleIdException;
 
 }

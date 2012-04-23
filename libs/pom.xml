@@ -18,7 +18,6 @@
     <module>ambra-emailer</module>
     <module>otm-models</module>
     <module>conf-helper</module>
-    <module>trackback-util</module>
     <module>dom-ranges-helper</module>
     <module>js</module>
     <module>password-service</module>

@@ -21,36 +21,37 @@
 package org.ambraproject.annotation.service;
 
 import org.ambraproject.BaseTest;
+import org.ambraproject.annotation.Context;
+import org.ambraproject.cache.Cache;
+import org.ambraproject.models.Annotation;
+import org.ambraproject.models.AnnotationCitation;
+import org.ambraproject.models.AnnotationType;
 import org.ambraproject.models.Article;
+import org.ambraproject.models.ArticleAuthor;
+import org.ambraproject.models.Flag;
+import org.ambraproject.models.FlagReasonCode;
+import org.ambraproject.models.Rating;
 import org.ambraproject.models.UserProfile;
+import org.ambraproject.views.AnnotationView;
+import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.topazproject.ambra.models.Annotation;
-import org.topazproject.ambra.models.AnnotationBlob;
-import org.topazproject.ambra.models.ArticleAnnotation;
-import org.topazproject.ambra.models.Comment;
-import org.topazproject.ambra.models.FormalCorrection;
-import org.topazproject.ambra.models.Journal;
-import org.topazproject.ambra.models.MinorCorrection;
-import org.topazproject.ambra.models.Reply;
-import org.topazproject.ambra.models.Retraction;
 
-import java.lang.reflect.Method;
-import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertEqualsNoOrder;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 
 /**
  * Test for methods of {@link AnnotationService}.  The test just references methods of the interface so that different
@@ -64,555 +65,772 @@ public class AnnotationServiceTest extends BaseTest {
   @Autowired
   protected AnnotationService annotationService;
 
-  @Test(alwaysRun = true)
-  public void testGetAllAnnotationClasses() {
-    Set<Class<? extends ArticleAnnotation>> classes = annotationService.getAllAnnotationClasses();
-    assertNotNull(classes, "AnnotationService returned null set of annotation classes");
-    assertTrue(classes.size() > 0, "AnnotationService returned empty set of classes");
-  }
+  @Autowired
+  protected Cache articleHtmlCache; //just used to check that articles get kicked out of the cache when notes are created
 
-  /**
-   * Data Provider for annotationService.createAnnotation().
-   *
-   * @return - 1 element arrays of dummy annotations which haven't been saved to the data store
-   */
-  @DataProvider(name = "dummyAnnotations")
-  public Object[][] dummyAnnotations() {
-    FormalCorrection formalCorrection = new FormalCorrection();
-    formalCorrection.setAnnotates(URI.create("id://annotates"));
-    formalCorrection.setContext("context");
-    formalCorrection.setTitle("Formal Correction of a Very Formal Error");
-    formalCorrection.setCreator("id://John-Smith");
+  @DataProvider(name = "articleAnnotations")
+  public Object[][] getArticleAnnotations() {
+    Article article = new Article("id:doi-for-annotationsTopLevel-test");
+    article.setJournal("test journal");
+    article.setTitle("test article title");
+    article.seteLocationId("1234");
+    article.setAuthors(Arrays.asList(new ArticleAuthor("article", "author", "1"), new
+        ArticleAuthor("article", "author", "2")));
+    article.setDate(Calendar.getInstance().getTime());
+    article.setCollaborativeAuthors(Arrays.asList("Collab Author 1", "Collab Author 2", "Collab Author 3"));
+    dummyDataStore.store(article);
 
-    Comment comment = new Comment();
-    comment.setAnnotates(URI.create("id://another-annotation"));
-    comment.setContext("context");
-    comment.setTitle("Comment title");
-    comment.setCreator("John Smith the 3rd");
+    UserProfile creator = new UserProfile(
+        "user-1-annotationsTopLevel",
+        "email@annotationsTopLevel.org",
+        "user-1-annotationsTopLevel");
+    dummyDataStore.store(creator);
 
+    //dates to be able to differentiate expected order of results
+    Calendar lastYear = Calendar.getInstance();
+    lastYear.add(Calendar.YEAR, -1);
+    Calendar lastMonth = Calendar.getInstance();
+    lastMonth.add(Calendar.MONTH, -1);
+
+    Map<Long, List<Annotation>> replyMap = new HashMap<Long, List<Annotation>>(2);
+
+    /**********ANNOTATIONS ON THE FIRST ARTICLE***********/
+    /******************RETURN ORDER SHOULD BE mCorrection, fCorrection****************************/
+    //fCorrection created is last month, mCorrection created is last year, but the replies to mCorrection were created now
+    Annotation fCorrection = new Annotation(creator, AnnotationType.FORMAL_CORRECTION, article.getID());
+    fCorrection.setAnnotationUri("formal-correction-annotationsTopLevel-fc1");
+    fCorrection.setTitle("formal-correction-annotationsTopLevel-fc1");
+    fCorrection.setBody("formal-correction-annotationsTopLevel-body-fc1");
+    fCorrection.setAnnotationCitation(new AnnotationCitation(article));
+    fCorrection.setCreated(lastMonth.getTime());
+    dummyDataStore.store(fCorrection);
+
+    Annotation mCorrection = new Annotation(creator, AnnotationType.MINOR_CORRECTION, article.getID());
+    mCorrection.setAnnotationUri("minor-correction-annotationsTopLevel-mc1");
+    mCorrection.setTitle("minor-correction-annotationsTopLevel-mc1");
+    mCorrection.setBody("minor-correction-annotationsTopLevel-body-mc1");
+    mCorrection.setAnnotationCitation(new AnnotationCitation(article));
+    mCorrection.setCreated(lastYear.getTime());
+    dummyDataStore.store(mCorrection);
+
+    Annotation mCorrectionReply1 = new Annotation(creator, AnnotationType.REPLY, mCorrection.getArticleID());
+    mCorrectionReply1.setParentID(mCorrection.getID());
+    mCorrectionReply1.setAnnotationUri("reply1-to-minor-correction-uri");
+    mCorrectionReply1.setTitle("reply1-to-minor-correction-title");
+    mCorrectionReply1.setBody("reply1-to-minor-correction-body");
+    dummyDataStore.store(mCorrectionReply1);
+
+    Annotation mCorrectionReply2 = new Annotation(creator, AnnotationType.REPLY, mCorrection.getArticleID());
+    mCorrectionReply2.setParentID(mCorrection.getID());
+    mCorrectionReply2.setAnnotationUri("reply2-to-minor-correction-uri");
+    mCorrectionReply2.setTitle("reply2-to-minor-correction-title");
+    mCorrectionReply2.setBody("reply2-to-minor-correction-body");
+    dummyDataStore.store(mCorrectionReply2);
+    replyMap.put(mCorrection.getID(), Arrays.asList(mCorrectionReply1, mCorrectionReply2));
+
+    Article article1 = new Article("id:doi-for-annotationsTopLevel-test-1");
+    article1.setJournal("test journal");
+    article1.seteLocationId("1234");
+    article1.setTitle("test article1 title");
+    article1.setAuthors(Arrays.asList(new ArticleAuthor("article", "author", "1"), new
+        ArticleAuthor("article", "author", "2")));
+    article1.setDate(Calendar.getInstance().getTime());
+    article1.setCollaborativeAuthors(Arrays.asList("Collab Author 1", "Collab Author 2", "Collab Author 3"));
+    dummyDataStore.store(article1);
+
+    /**********ANNOTATIONS ON THE SECOND ARTICLE***********/
+    /**********RETURN ORDER SHOULD BE fCorrection1, fCorrection2**/
+    //fCorrection1 and it's reply have created date last year, but the reply to reply date is now
+    //fCorrection2 and it's reply have created date last month
+    Annotation fCorrection1 = new Annotation(creator, AnnotationType.FORMAL_CORRECTION, article1.getID());
+    fCorrection1.setAnnotationUri("formal-correction-1-annotationsTopLevel-fc2");
+    fCorrection1.setTitle("formal-correction-1-annotationsTopLevel-fc2");
+    fCorrection1.setBody("formal-correction-1-annotationsTopLevel-body-fc2");
+    fCorrection1.setAnnotationCitation(new AnnotationCitation(article1));
+    fCorrection1.setCreated(lastMonth.getTime());
+    dummyDataStore.store(fCorrection1);
+
+    Annotation fCorrection1Reply1 = new Annotation(creator, AnnotationType.REPLY, fCorrection1.getArticleID());
+    fCorrection1Reply1.setParentID(fCorrection1.getID());
+    fCorrection1Reply1.setAnnotationUri("reply1-to-formal-correction1-uri");
+    fCorrection1Reply1.setTitle("reply1-to-formal-correction1-title");
+    fCorrection1Reply1.setBody("reply1-to-formal-correction1-body");
+    fCorrection1Reply1.setCreated(lastMonth.getTime());
+    dummyDataStore.store(fCorrection1Reply1);
+
+    Annotation fCorrection1ReplyToReply = new Annotation(creator, AnnotationType.REPLY, fCorrection1.getArticleID());
+    fCorrection1ReplyToReply.setParentID(fCorrection1Reply1.getID());
+    fCorrection1ReplyToReply.setAnnotationUri("reply-to-reply-to-formal-correction1-uri");
+    fCorrection1ReplyToReply.setTitle("reply-to-reply-to-formal-correction1-title");
+    fCorrection1ReplyToReply.setBody("reply-to-reply-to-formal-correction1-body");
+    dummyDataStore.store(fCorrection1ReplyToReply);
+
+    replyMap.put(fCorrection1.getID(), Arrays.asList(fCorrection1Reply1));
+    replyMap.put(fCorrection1Reply1.getID(), Arrays.asList(fCorrection1ReplyToReply));
+
+    Annotation fCorrection2 = new Annotation(creator, AnnotationType.FORMAL_CORRECTION, article1.getID());
+    fCorrection2.setAnnotationUri("formal-correction-1-annotationsTopLevel-fc3");
+    fCorrection2.setTitle("formal-correction-1-annotationsTopLevel-fc3");
+    fCorrection2.setBody("formal-correction-1-annotationsTopLevel-body-fc3");
+    fCorrection2.setAnnotationCitation(new AnnotationCitation(article1));
+    fCorrection2.setCreated(lastYear.getTime());
+    dummyDataStore.store(fCorrection2);
+
+    Annotation fCorrection2Reply1 = new Annotation(creator, AnnotationType.REPLY, fCorrection1.getArticleID());
+    fCorrection2Reply1.setParentID(fCorrection2.getID());
+    fCorrection2Reply1.setAnnotationUri("reply1-to-formal-correction2-uri");
+    fCorrection2Reply1.setTitle("reply1-to-formal-correction2-title");
+    fCorrection2Reply1.setBody("reply1-to-formal-correction2-body");
+    fCorrection2Reply1.setCreated(lastMonth.getTime());
+    dummyDataStore.store(fCorrection2Reply1);
+
+    replyMap.put(fCorrection2.getID(), Arrays.asList(fCorrection2Reply1));
+
+
+    Article article2 = new Article("id:doi-for-annotationsTopLevel-test-2");
+    article2.setJournal("test journal");
+    article2.setTitle("test article2 title");
+    article2.seteLocationId("1234");
+    article2.setAuthors(Arrays.asList(new ArticleAuthor("article", "author", "1"), new
+        ArticleAuthor("article", "author", "2")));
+    article2.setDate(Calendar.getInstance().getTime());
+    article2.setCollaborativeAuthors(Arrays.asList("Collab Author 1", "Collab Author 2", "Collab Author 3"));
+    dummyDataStore.store(article2);
+
+    UserProfile creator2 = new UserProfile(
+        "user-2-annotationsTopLevel",
+        "email2@annotationsTopLevel.org",
+        "user-2-annotationsTopLevel");
+    dummyDataStore.store(creator2);
+
+    /**********ANNOTATIONS ON THE THIRD ARTICLE***********/
+    /**********RETURN ORDER SHOULD BE comment, retraction*******/
+    Annotation retraction = new Annotation(creator2, AnnotationType.RETRACTION, article2.getID());
+    retraction.setAnnotationUri("retraction-1-annotationsTopLevel-r1");
+    retraction.setTitle("retraction-1-annotationsTopLevel-r1");
+    retraction.setBody("retraction-1-annotationsTopLevel-body-r1");
+    retraction.setAnnotationCitation(new AnnotationCitation(article2));
+    retraction.setCreated(lastYear.getTime());
+    dummyDataStore.store(retraction);
+
+    Annotation comment = new Annotation(creator2, AnnotationType.COMMENT, article2.getID());
+    comment.setAnnotationUri("comment-annotationsTopLevel-r1");
+    comment.setTitle("comment-annotationsTopLevel-r1");
+    comment.setBody("comment-annotationsTopLevel-body-r1");
+    comment.setCreated(lastMonth.getTime());
+    dummyDataStore.store(comment);
+
+    AnnotationView fCorrectionView = new AnnotationView(fCorrection, article.getDoi(), article.getTitle(), replyMap);
+    AnnotationView mCorrectionView = new AnnotationView(mCorrection, article.getDoi(), article.getTitle(), replyMap);
+    AnnotationView fCorrection1View = new AnnotationView(fCorrection1, article1.getDoi(), article1.getTitle(), replyMap);
+    AnnotationView fCorrection2View = new AnnotationView(fCorrection2, article1.getDoi(), article1.getTitle(), replyMap);
+    AnnotationView retractionView = new AnnotationView(retraction, article2.getDoi(), article2.getTitle(), replyMap);
+    AnnotationView commentView = new AnnotationView(comment, article2.getDoi(), article2.getTitle(), replyMap);
+    //Pass in query parameters and expected results for each set of articles / citations
     return new Object[][]{
-        {formalCorrection},
-        {comment}
+        {
+            article,
+            EnumSet.of(AnnotationType.FORMAL_CORRECTION, AnnotationType.MINOR_CORRECTION),
+            AnnotationService.AnnotationOrder.MOST_RECENT_REPLY,
+            new AnnotationView[]{
+                mCorrectionView, //mCorrection has a more recent reply
+                fCorrectionView
+            },
+            replyMap
+        },
+        {
+            article,
+            EnumSet.of(AnnotationType.FORMAL_CORRECTION, AnnotationType.MINOR_CORRECTION),
+            AnnotationService.AnnotationOrder.OLDEST_TO_NEWEST,
+            new AnnotationView[]{
+                mCorrectionView, //mCorrection has created date last year, fCorrection last month
+                fCorrectionView
+            },
+            replyMap
+        },
+        {
+            article1,
+            EnumSet.of(AnnotationType.FORMAL_CORRECTION),
+            AnnotationService.AnnotationOrder.MOST_RECENT_REPLY,
+            new AnnotationView[]{
+                fCorrection1View, //fCorrection1 has a more recent reply to reply
+                fCorrection2View
+            },
+            replyMap
+        },
+        {
+            article1,
+            EnumSet.of(AnnotationType.FORMAL_CORRECTION),
+            AnnotationService.AnnotationOrder.OLDEST_TO_NEWEST,
+            new AnnotationView[]{
+                fCorrection2View, //fCorrection2 has created date last year
+                fCorrection1View
+            },
+            replyMap
+        },
+        {
+            article1,
+            EnumSet.of(AnnotationType.FORMAL_CORRECTION, AnnotationType.MINOR_CORRECTION),
+            AnnotationService.AnnotationOrder.MOST_RECENT_REPLY,
+            new AnnotationView[]{
+                fCorrection1View, //fCorrection1 has a more recent reply to reply
+                fCorrection2View
+            },
+            replyMap
+        },
+        {
+            article,
+            EnumSet.of(AnnotationType.RETRACTION),
+            AnnotationService.AnnotationOrder.MOST_RECENT_REPLY,
+            new AnnotationView[]{},
+            replyMap
+        },
+        {
+            article2,
+            EnumSet.of(AnnotationType.RETRACTION),
+            AnnotationService.AnnotationOrder.MOST_RECENT_REPLY,
+            new AnnotationView[]{
+                retractionView
+            },
+            replyMap
+        },
+        {
+            article2,
+            EnumSet.of(AnnotationType.RETRACTION, AnnotationType.COMMENT),
+            AnnotationService.AnnotationOrder.MOST_RECENT_REPLY,
+            new AnnotationView[]{
+                commentView,  //comment has more recent created date
+                retractionView
+            },
+            replyMap
+        },
+        {
+            article2,
+            EnumSet.of(AnnotationType.RETRACTION, AnnotationType.COMMENT),
+            AnnotationService.AnnotationOrder.OLDEST_TO_NEWEST,
+            new AnnotationView[]{
+                retractionView,
+                commentView  //comment has more recent created date
+            },
+            replyMap
+        },
+        {
+            article2,
+            EnumSet.of(AnnotationType.FORMAL_CORRECTION, AnnotationType.MINOR_CORRECTION),
+            AnnotationService.AnnotationOrder.MOST_RECENT_REPLY,
+            new AnnotationView[]{},
+            replyMap
+        }
     };
   }
 
-  /**
-   * Test for annotationService.createAnnotation() method.
-   *
-   * @param annotation - mock annotation object with at least the following properties set: <ul> <li>annotates</li>
-   *                   <li>context</li> <li>title</li> <li>creator</li> </ul>.  These are copied for the new annotation
-   * @throws Exception - from annotationService.createAnnotation()
-   */
-  @Test(dataProvider = "dummyAnnotations")
-  public void testCreateAnnotation(ArticleAnnotation annotation) throws Exception {
-    UserProfile user = new UserProfile();
-    user.setAccountUri(annotation.getCreator());
+  @Test(dataProvider = "articleAnnotations")
+  public void testListAnnotations(
+      final Article article,
+      final Set<AnnotationType> annotationTypes,
+      final AnnotationService.AnnotationOrder order,
+      final AnnotationView[] expectedViews,
+      final Map<Long, List<Annotation>> fullReplyMap
+  ) {
+    AnnotationView[] resultViews = annotationService.listAnnotations(article.getID(), annotationTypes, order);
+    //Not just calling assertEquals here, so we can give a more informative message (the .toSting() on the arrays is huge)
+    assertNotNull(resultViews, "returned null array of results");
+    assertEquals(resultViews.length, expectedViews.length, "returned incorrect number of results");
+    for (int i = 0; i < resultViews.length; i++) {
+      assertEquals(resultViews[i].getCitation(), expectedViews[i].getCitation(),
+          "Result " + (i + 1) + " had incorrect citation with order " + order);
+      assertEquals(resultViews[i], expectedViews[i], "Result " + (i + 1) + " was incorrect with order " + order);
+      recursivelyCheckReplies(resultViews[i], fullReplyMap);
+    }
 
-    String id = annotationService.createAnnotation(
-        annotation.getClass(), //class
-        "text/plain",   //mime type of body
-        annotation.getAnnotates().toString(), //target
-        annotation.getContext(), //context
-        null, //olderAnnotation
-        annotation.getTitle(), //title
-        "Test body with hash code " + annotation.hashCode(), //body
-        "ciStatement", //ci statement
-        true, //isPublic
-        user //AmbraUser
-    );
-    assertNotNull(id, "generated null id for annotation");
-    assertFalse(id.isEmpty(), "generated empty id for annotation");
   }
 
-  @Test(dataProvider = "dummyAnnotations")
-  public void testCreateComment(ArticleAnnotation annotation) throws Exception {
-    UserProfile user = new UserProfile();
-    user.setAccountUri(annotation.getCreator());
+  @Test(dataProvider = "articleAnnotations")
+  public void testListAnnotationsNoReplies(
+      final Article article,
+      final Set<AnnotationType> annotationTypes,
+      final AnnotationService.AnnotationOrder order,
+      final AnnotationView[] expectedViews,
+      final Map<Long, List<Annotation>> notUsed
+  ) {
+    if (order != AnnotationService.AnnotationOrder.MOST_RECENT_REPLY) {
+      AnnotationView[] resultViews = annotationService.listAnnotationsNoReplies(article.getID(), annotationTypes, order);
+      //Not just calling assertEquals here, so we can give a more informative message (the .toSting() on the arrays is huge)
+      assertNotNull(resultViews, "returned null array of results");
+      assertEquals(resultViews.length, expectedViews.length, "returned incorrect number of results");
+      for (int i = 0; i < resultViews.length; i++) {
+        assertEquals(resultViews[i].getCitation(), expectedViews[i].getCitation(),
+            "Result " + (i + 1) + " had incorrect citation with order " + order);
+        assertEquals(resultViews[i], expectedViews[i], "Result " + (i + 1) + " was incorrect with order " + order);
+        assertTrue(ArrayUtils.isEmpty(resultViews[i].getReplies()), "returned annotation with replies loaded up");
+      }
+    }
+  }
 
-    String id = annotationService.createComment(
-        "text/plain",   //mime type of body
-        annotation.getAnnotates().toString(), //target
-        null, //olderAnnotation
-        annotation.getContext(), //context
-        annotation.getTitle(), //title
-        "Test body with hash code " + annotation.hashCode(), //body
-        "ciStatement", //ci statement
-        true, //isPublic
-        user //AmbraUser
+  @Test(expectedExceptions = {IllegalArgumentException.class})
+  public void testListAnnotationNoRepliesWithBadOrderArgument() {
+    annotationService.listAnnotationsNoReplies(1231l, null, AnnotationService.AnnotationOrder.MOST_RECENT_REPLY);
+  }
+
+  @Test
+  public void testCreateComment() throws Exception {
+    Article article = new Article("id:doiForCreateCommentByService");
+    UserProfile user = new UserProfile(
+        "authIdForCreateCommentService",
+        "email@createCommentService.org",
+        "displayNAmeForCreateCommentService");
+    dummyDataStore.store(article);
+    dummyDataStore.store(user);
+
+    String body = "Test body";
+    String title = "test title";
+    String ciStatement = "ciStatement";
+    Context context = new Context(null, 0, null, 0, article.getDoi());
+    Long id = annotationService.createComment(user, article.getDoi(), title, body, ciStatement, context, false);
+    assertNotNull(id, "Returned null annotation id");
+
+    Annotation storedAnnotation = dummyDataStore.get(Annotation.class, id);
+    assertNotNull(storedAnnotation, "didn't store annotation to the db");
+
+    assertEquals(storedAnnotation.getArticleID(), article.getID(), "stored annotation had incorrect article id");
+    assertEquals(storedAnnotation.getBody(), body, "stored annotation had incorrect body");
+    assertEquals(storedAnnotation.getTitle(), title, "stored annotation had incorrect title");
+    assertEquals(storedAnnotation.getCompetingInterestBody(), ciStatement, "stored annotation had incorrect ci statement");
+    assertEquals(storedAnnotation.getType(), AnnotationType.COMMENT, "Stored annotation had incorrect type");
+    assertNull(storedAnnotation.getXpath(), "Stored annotation had an xpath associated with it");
+    assertNotNull(storedAnnotation.getAnnotationUri(), "Service didn't generate an annotation uri");
+  }
+
+  @Test
+  public void testCreateInlineNote() throws Exception {
+    Article article = new Article("id:doiForCreateInlineNoteByService");
+    UserProfile user = new UserProfile(
+        "authIdForCreateInlineNoteByService",
+        "email@createInlineNoteByService.org",
+        "displayNAmeForCreateInlineNoteByService");
+    dummyDataStore.store(article);
+    dummyDataStore.store(user);
+
+    //put the article in the cache to see that it gets kicked out
+    articleHtmlCache.put(article.getDoi(), new Cache.Item(article));
+
+    String body = "Test body";
+    String title = "test title";
+    String ciStatement = "ciStatement";
+    Context context = new Context("/article[1]/body[1]/sec[1]/p[3]", 107, "/article[1]/body[1]/sec[1]/p[3]", 640, article.getDoi());
+    String expectedXpath = article.getDoi() + "#xpointer(string-range%28%2Farticle%5B1%5D%2Fbody%5B1%5D%2Fsec%5B1%5D%2Fp%5B3%5D%2C+%27%27%2C+107%2C+533%29%5B1%5D)";
+    Long id = annotationService.createComment(user, article.getDoi(), title, body, ciStatement, context, false);
+    assertNotNull(id, "Returned null annotation id");
+
+    Annotation storedAnnotation = dummyDataStore.get(Annotation.class, id);
+    assertNotNull(storedAnnotation, "didn't store annotation to the db");
+
+    assertEquals(storedAnnotation.getArticleID(), article.getID(), "stored annotation had incorrect article id");
+    assertEquals(storedAnnotation.getBody(), body, "stored annotation had incorrect body");
+    assertEquals(storedAnnotation.getTitle(), title, "stored annotation had incorrect title");
+    assertEquals(storedAnnotation.getCompetingInterestBody(), ciStatement, "stored annotation had incorrect ci statement");
+    assertEquals(storedAnnotation.getType(), AnnotationType.NOTE, "Stored annotation had incorrect type");
+    assertEquals(storedAnnotation.getXpath(), expectedXpath, "stored annotation had incorrect xpath associated with it");
+    assertNotNull(storedAnnotation.getAnnotationUri(), "Service didn't generate an annotation uri");
+
+    assertNull(articleHtmlCache.get(article.getDoi()), "Article didn't get kicked out of cache");
+  }
+
+  @Test(expectedExceptions = {IllegalArgumentException.class})
+  public void testCreateCommentWithNullBody() throws Exception {
+    Article article = new Article("id:doiForCreateWithNullBody");
+    UserProfile user = new UserProfile(
+        "authIdForCreateWithNullBody",
+        "email@CreateWithNullBody.org",
+        "displayNAmeForCreateWithNullBody");
+    dummyDataStore.store(article);
+    dummyDataStore.store(user);
+
+    annotationService.createComment(user, article.getDoi(), "foo", null, "foo", null, false);
+  }
+
+  @Test(expectedExceptions = {IllegalArgumentException.class})
+  public void testCreateCommentWithNullUser() throws Exception {
+    Article article = new Article("id:doiForCreateWithNullUser");
+    dummyDataStore.store(article);
+
+    annotationService.createComment(null, article.getDoi(), "foo", "foo", "foo", null, false);
+  }
+
+  @Test(expectedExceptions = {IllegalArgumentException.class})
+  public void testCreateCommentWithBadDoi() throws Exception {
+    Article article = new Article("id:doiForCreateWithBadDoi");
+    UserProfile user = new UserProfile(
+        "authIdForCreateWithBadDoi",
+        "email@CreateWithBadDoi.org",
+        "displayNAmeForCreateWithBadDoi");
+    dummyDataStore.store(user);
+
+    annotationService.createComment(user, article.getDoi(), "foo", "foo", "foo", null, false);
+  }
+
+  @Test
+  public void testCreateAndFlagAsCorrection() {
+    Article article = new Article("id:doiForCreateAndFlagByService");
+    UserProfile user = new UserProfile(
+        "authIdForCreateAndFlagByService",
+        "email@CreateAndFlagByService.org",
+        "displayNAmeForCreateAndFlagByService");
+    dummyDataStore.store(article);
+    dummyDataStore.store(user);
+
+    String body = "Test body";
+    String title = "test title";
+    String ciStatement = "ciStatement";
+    Context context = new Context("/article[1]/body[1]/sec[1]/p[3]", 107, "/article[1]/body[1]/sec[1]/p[3]", 640, article.getDoi());
+    String expectedXpath = article.getDoi() + "#xpointer(string-range%28%2Farticle%5B1%5D%2Fbody%5B1%5D%2Fsec%5B1%5D%2Fp%5B3%5D%2C+%27%27%2C+107%2C+533%29%5B1%5D)";
+
+    Long id = annotationService.createComment(user, article.getDoi(), title, body, ciStatement, context, true);
+    assertNotNull(id, "Returned null annotation id");
+
+    Annotation storedAnnotation = dummyDataStore.get(Annotation.class, id);
+    assertNotNull(storedAnnotation, "didn't store annotation to the db");
+
+    assertEquals(storedAnnotation.getArticleID(), article.getID(), "stored annotation had incorrect article id");
+    assertEquals(storedAnnotation.getBody(), body, "stored annotation had incorrect body");
+    assertEquals(storedAnnotation.getTitle(), title, "stored annotation had incorrect title");
+    assertEquals(storedAnnotation.getCompetingInterestBody(), ciStatement, "stored annotation had incorrect ci statement");
+    assertEquals(storedAnnotation.getType(), AnnotationType.NOTE, "Stored annotation had incorrect type");
+    assertEquals(storedAnnotation.getXpath(), expectedXpath, "stored annotation had incorrect xpath associated with it");
+    assertNotNull(storedAnnotation.getAnnotationUri(), "Service didn't generate an annotation uri");
+
+    List<Flag> allFlags = dummyDataStore.getAll(Flag.class);
+    assertTrue(allFlags.size() > 0, "didn't create a flag for comment");
+    boolean foundFlag = false;
+    for (Flag flag : allFlags) {
+      if (flag.getFlaggedAnnotation().getID().equals(id)) {
+        foundFlag = true;
+        assertEquals(flag.getReason(), FlagReasonCode.CORRECTION, "Flag had incorrect reason code");
+      }
+    }
+    assertTrue(foundFlag, "Didn't create a flag for annotation");
+  }
+
+  @DataProvider(name = "storedAnnotation")
+  public Object[][] getStoredAnnotation() {
+    Article article = new Article("id:doi-for-annotationService-test");
+    article.setJournal("test journal");
+    article.seteLocationId("12340-37951");
+    article.setVolume("articl volume");
+    article.setTitle("article test title");
+    article.setIssue("article issue");
+    article.setDate(Calendar.getInstance().getTime());
+    article.setCollaborativeAuthors(Arrays.asList("The Skoll Foundation", "The Bill and Melinda Gates Foundation"));
+    dummyDataStore.store(article);
+    UserProfile creator = new UserProfile(
+        "authIdForAnnotationService",
+        "email@annotationService.org",
+        "displayNameForAnnotationService");
+    dummyDataStore.store(creator);
+
+    Annotation annotation = new Annotation(creator, AnnotationType.COMMENT, article.getID());
+    annotation.setTitle("test title for annotation service test");
+    annotation.setBody("test body for annotation service test");
+    annotation.setXpath("test xpath");
+    annotation.setAnnotationUri("id:annotationWithReplies");
+    annotation.setAnnotationCitation(new AnnotationCitation(article));
+    annotation.getAnnotationCitation().setSummary("Citation summary");
+    annotation.getAnnotationCitation().setNote("Citation note");
+    dummyDataStore.store(annotation.getAnnotationCitation());
+    dummyDataStore.store(annotation);
+
+    /*
+       the reply tree structure is ...
+                   original
+                    /       \
+                reply1   reply2
+                           /        \
+                         reply3  reply4
+                                       \
+                                       reply5
+    */
+    Map<Long, List<Annotation>> replies = new HashMap<Long, List<Annotation>>(3);
+
+    List<Annotation> repliesToOriginal = new ArrayList<Annotation>(3);
+    List<Annotation> repliesToReply2 = new ArrayList<Annotation>(2);
+    List<Annotation> repliesToReply4 = new ArrayList<Annotation>(1);
+
+    replies.put(annotation.getID(), repliesToOriginal);
+    //set created dates for replies so we can check ordering by date
+    Calendar lastYear = Calendar.getInstance();
+    lastYear.add(Calendar.YEAR, -1);
+
+    //Reply to the original annotation
+    Annotation reply1 = new Annotation(creator, AnnotationType.REPLY, article.getID());
+    reply1.setParentID(annotation.getID());
+    reply1.setTitle("title for reply to original comment");
+    reply1.setBody("body for reply to original comment");
+    reply1.setAnnotationUri("id:reply1ForTestAnnotationView");
+    dummyDataStore.store(reply1);
+    repliesToOriginal.add(reply1);
+
+    //Reply to the original annotation. This should show up first since it has last year as created date
+    Annotation reply2 = new Annotation(creator, AnnotationType.REPLY, article.getID());
+    reply2.setParentID(annotation.getID());
+    reply2.setTitle("title for 2nd reply to original comment");
+    reply2.setBody("body for 2nd reply to original comment");
+    reply2.setAnnotationUri("id:reply2ForTestAnnotationView");
+    reply2.setCreated(lastYear.getTime());
+    dummyDataStore.store(reply2);
+    repliesToOriginal.add(reply2);
+
+    replies.put(reply2.getID(), repliesToReply2);
+    //reply to reply2
+    Annotation reply3 = new Annotation(creator, AnnotationType.REPLY, article.getID());
+    reply3.setParentID(reply2.getID());
+    reply3.setTitle("title for 1st reply to reply");
+    reply3.setBody("body for 1st reply to reply");
+    reply3.setAnnotationUri("id:reply3ForTestAnnotationView");
+    dummyDataStore.store(reply3);
+    repliesToReply2.add(reply3);
+
+    //reply to reply2. This should show up first since it has last year as created date
+    Annotation reply4 = new Annotation(creator, AnnotationType.REPLY, article.getID());
+    reply4.setParentID(reply2.getID());
+    reply4.setTitle("title for 2nd reply to reply");
+    reply4.setBody("body for 2nd reply to reply");
+    reply4.setAnnotationUri("id:reply4ForTestAnnotationView");
+    reply4.setCreated(lastYear.getTime());
+    dummyDataStore.store(reply4);
+    repliesToReply2.add(reply4);
+
+    replies.put(reply4.getID(), repliesToReply4);
+
+    //reply to reply4
+    Annotation reply5 = new Annotation(creator, AnnotationType.REPLY, article.getID());
+    reply5.setParentID(reply4.getID());
+    reply5.setTitle("title for 3rd level reply");
+    reply5.setBody("body for 3rd level reply");
+    reply5.setAnnotationUri("id:reply5ForTestAnnotationView");
+    dummyDataStore.store(reply5);
+    repliesToReply4.add(reply5);
+
+
+    return new Object[][]{
+        {annotation, replies},
+        {reply1, replies},
+        {reply2, replies},
+        {reply3, replies},
+        {reply4, replies}
+    };
+  }
+
+
+  @Test(dataProvider = "storedAnnotation")
+  public void testGetFullAnnotationView(Annotation annotation, Map<Long, List<Annotation>> fullReplyMap) {
+    AnnotationView result = annotationService.getFullAnnotationView(annotation.getID());
+    assertNotNull(result, "Returned null annotation view");
+
+    String expectedDoi = dummyDataStore.get(Article.class, annotation.getArticleID()).getDoi();
+    String expectedTitle = dummyDataStore.get(Article.class, annotation.getArticleID()).getTitle();
+
+    assertEquals(result.getArticleDoi(), expectedDoi, "AnnotationView had incorrect article doi");
+    assertEquals(result.getArticleTitle(), expectedTitle, "AnnotationView had incorrect article title");
+
+    checkAnnotationProperties(result, annotation);
+    recursivelyCheckReplies(result, fullReplyMap);
+    //check ordering of replies
+    for (int i = 0; i < result.getReplies().length - 1; i++) {
+      assertTrue(result.getReplies()[i].getCreated().before(result.getReplies()[i + 1].getCreated()),
+          "Replies were out of order for annotation " + annotation.getAnnotationUri() +
+              " (should be earliest -> latest)");
+    }
+  }
+
+  private void recursivelyCheckReplies(AnnotationView annotationView, Map<Long, List<Annotation>> fullReplyMap) {
+    List<Annotation> expectedReplies = fullReplyMap.get(annotationView.getID());
+    if (expectedReplies != null) {
+      assertEquals(annotationView.getReplies().length, expectedReplies.size(), "Returned incorrect number of replies");
+      for (AnnotationView actual : annotationView.getReplies()) {
+        boolean foundMatch = false;
+
+        for (Annotation expected : expectedReplies) {
+          if (actual.getID().equals(expected.getID())) {
+            foundMatch = true;
+            assertEquals(actual.getTitle(), expected.getTitle(), "Annotation view had incorrect title");
+            assertEquals(actual.getBody(), "<p>" + expected.getBody() + "</p>", "Annotation view had incorrect body");
+            assertEquals(actual.getCompetingInterestStatement(),
+                expected.getCompetingInterestBody() == null ? "" : expected.getCompetingInterestBody(),
+                "Annotation view had incorrect ci statement");
+            assertEquals(actual.getAnnotationUri(), expected.getAnnotationUri(), "Annotation view had incorrect annotation uri");
+          }
+        }
+        assertTrue(foundMatch, "Returned unexpected reply: " + actual);
+        //recursively check the replies
+        recursivelyCheckReplies(actual, fullReplyMap);
+      }
+    } else {
+      assertTrue(ArrayUtils.isEmpty(annotationView.getReplies()),
+          "Returned replies when none were expected: " + Arrays.deepToString(annotationView.getReplies()));
+    }
+  }
+
+  @Test
+  public void testAnnotationViewEscapesHtml() {
+    UserProfile creator = new UserProfile(
+        "authIdForAnnotationViewEscapesHtml",
+        "email@EscapesHtml.org",
+        "displayNameForAnnotationViewEscapesHtml"
     );
-    assertNotNull(id, "generated null id for comment");
-    assertFalse(id.isEmpty(), "generated empty id for annotation");
+    dummyDataStore.store(creator);
+    Long articleId = Long.valueOf(dummyDataStore.store(new Article("id:doi-for-AnnotationViewEscapesViewHtml")));
+    String title = "hello <p /> world!";
+    String expectedTitle = "hello &lt;p /&gt; world!";
+    String body = "You & I";
+    String expectedBody = "<p>You &amp; I</p>";
+    Annotation annotation = new Annotation(creator, AnnotationType.COMMENT, articleId);
+    annotation.setTitle(title);
+    annotation.setBody(body);
+    dummyDataStore.store(annotation);
+
+    AnnotationView result = annotationService.getFullAnnotationView(annotation.getID());
+    assertNotNull(result, "returned null annotation view");
+    assertEquals(result.getTitle(), expectedTitle, "AnnotationView didn't escape html in title");
+    assertEquals(result.getBody(), expectedBody, "AnnotationView didn't escape html in body");
+  }
+
+  @Test
+  public void testAnnotationViewCorrectionTitles() {
+    UserProfile creator = new UserProfile(
+        "authIdForAnnotationViewCorrectionTitles",
+        "email@CorrectionTitles.org",
+        "displayNameForAnnotationViewCorrectionTitles"
+    );
+    dummyDataStore.store(creator);
+
+    Article article = new Article();
+    article.setDoi("id:doi-for-annotationViewCorrectionsTitles");
+    article.setTitle("test article");
+    Long articleID = Long.valueOf(dummyDataStore.store(article));
+
+    String title = "Dummy Title";
+    Annotation formalCorrection = new Annotation(creator, AnnotationType.FORMAL_CORRECTION, articleID);
+    formalCorrection.setTitle(title);
+    dummyDataStore.store(formalCorrection);
+
+    Annotation minorCorrection = new Annotation(creator, AnnotationType.MINOR_CORRECTION, articleID);
+    minorCorrection.setTitle(title);
+    dummyDataStore.store(minorCorrection);
+
+    Annotation retraction = new Annotation(creator, AnnotationType.RETRACTION, articleID);
+    retraction.setTitle(title);
+    dummyDataStore.store(retraction);
+
+    AnnotationView formalCorrectionView = annotationService.getFullAnnotationView(formalCorrection.getID());
+    assertNotNull(formalCorrectionView, "returned null annotation view");
+    assertEquals(formalCorrectionView.getTitle(), "Formal Correction: " + title, "Formal Correction didn't have correct title");
+
+    AnnotationView minorCorrectionView = annotationService.getFullAnnotationView(minorCorrection.getID());
+    assertNotNull(minorCorrectionView, "returned null annotation view");
+    assertEquals(minorCorrectionView.getTitle(), "Minor Correction: " + title, "Minor Correction didn't have correct title");
+
+    AnnotationView retractionView = annotationService.getFullAnnotationView(retraction.getID());
+    assertNotNull(retractionView, "returned null annotation view");
+    assertEquals(retractionView.getTitle(), "Retraction: " + title, "Retraction didn't have correct title");
+  }
+
+  @Test(dataProvider = "storedAnnotation")
+  public void testGetBasicAnnotationViewById(Annotation annotation, Map<Long, List<Annotation>> fullReplyMap) {
+    AnnotationView result = annotationService.getBasicAnnotationView(annotation.getID());
+    assertNotNull(result, "Returned null annotation view");
+    String expectedDoi = dummyDataStore.get(Article.class, annotation.getArticleID()).getDoi();
+    String expectedTitle = dummyDataStore.get(Article.class, annotation.getArticleID()).getTitle();
+
+    assertEquals(result.getArticleDoi(), expectedDoi, "AnnotationView had incorrect article doi");
+    assertEquals(result.getArticleTitle(), expectedTitle, "AnnotationView had incorrect article title");
+
+    checkAnnotationProperties(result, annotation);
+    assertTrue(ArrayUtils.isEmpty(result.getReplies()), "Returned annotation with replies");
+  }
+
+  @Test(dataProvider = "storedAnnotation")
+  public void testGetBasicAnnotationViewByURI(Annotation annotation, Map<Long, List<Annotation>> fullReplyMap) {
+    AnnotationView result = annotationService.getBasicAnnotationViewByUri(annotation.getAnnotationUri());
+    assertNotNull(result, "Returned null annotation view");
+    String expectedDoi = dummyDataStore.get(Article.class, annotation.getArticleID()).getDoi();
+    String expectedTitle = dummyDataStore.get(Article.class, annotation.getArticleID()).getTitle();
+
+    assertEquals(result.getArticleDoi(), expectedDoi, "AnnotationView had incorrect article doi");
+    assertEquals(result.getArticleTitle(), expectedTitle, "AnnotationView had incorrect article title");
+
+    checkAnnotationProperties(result, annotation);
+    assertTrue(ArrayUtils.isEmpty(result.getReplies()), "Returned annotation with replies");
   }
 
   @Test
   public void testCreateFlag() throws Exception {
-    UserProfile user = new UserProfile();
-    user.setAccountUri("id:test_creator");
-    String id = annotationService.createFlag(
-        "id://target", //target
-        "reason code", //context
-        "body",
-        "text/plain",   //mime type of body
-        user //AmbraUser
-    );
-    assertNotNull(id, "generated null id for Flag");
-    assertFalse(id.isEmpty(), "generated empty id for annotation");
+    UserProfile creator = new UserProfile("authIdForCreateFlag", "email@createFlag.org", "displayNameForCreateFlag");
+    dummyDataStore.store(creator);
+    Annotation annotation = new Annotation(creator, AnnotationType.COMMENT, 123l);
+    Long annotationId = Long.valueOf(dummyDataStore.store(annotation));
+
+    String comment = "This is spam";
+    Long flagId = annotationService.createFlag(creator, annotationId, FlagReasonCode.SPAM, comment);
+    assertNotNull(flagId, "returned null flag id");
+    Flag storedFlag = dummyDataStore.get(Flag.class, flagId);
+    assertNotNull(storedFlag, "didn't store flag to the database");
+    assertEquals(storedFlag.getReason(), FlagReasonCode.SPAM, "stored flag had incorrect reason code");
+    assertEquals(storedFlag.getComment(), comment, "stored flag had incorrect comment");
+    assertNotNull(storedFlag.getFlaggedAnnotation(), "stored flag had null annotation");
+    assertEquals(storedFlag.getFlaggedAnnotation().getID(), annotationId, "stored flag had incorrect annotation id");
   }
 
-  /**
-   * Data Provider for annotationService.createAnnotation().
-   *
-   * @return - 1 element arrays of dummy annotations which haven't been saved to the data store
-   */
-  @DataProvider(name = "annotationsToDelete")
-  public Object[][] annotationsToDelete() {
-    FormalCorrection formalCorrection = new FormalCorrection();
-    formalCorrection.setTitle("Formal Correction to delete");
+  @Test
+  public void testCreateReply() {
+    UserProfile creator = new UserProfile(
+        "authIdForCreateReply",
+        "email@createReply.org",
+        "displayNameForCreateReply");
+    dummyDataStore.store(creator);
+    Article article = new Article("id:doi-for-create-reply");
+    Long articleId = Long.valueOf(dummyDataStore.store(article));
+    Annotation annotation = new Annotation(creator, AnnotationType.COMMENT, articleId);
+    Long annotationId = Long.valueOf(dummyDataStore.store(annotation));
 
-    Comment comment = new Comment();
-    comment.setAnnotates(URI.create("id://another-annotation"));
-
-    return new Object[][]{
-        {dummyDataStore.store(formalCorrection)},
-        {dummyDataStore.store(comment)}
-    };
+    String title = "test title for reply";
+    String body = "test body for reply";
+    Long replyId = annotationService.createReply(creator, annotationId, title, body, null);
+    assertNotNull(replyId, "returned null reply id");
+    Annotation storedReply = dummyDataStore.get(Annotation.class, replyId);
+    assertNotNull(storedReply, "didn't store reply to the database");
+    assertEquals(storedReply.getType(), AnnotationType.REPLY, "Stored reply had incorrect type");
+    assertEquals(storedReply.getParentID(), annotation.getID(), "Stored reply had incorrect parent id");
+    assertEquals(storedReply.getArticleID(), annotation.getArticleID(), "stored reply had incorrect article id");
+    assertNotNull(storedReply.getAnnotationUri(), "reply didn't get an annotation uri generated");
+    assertEquals(storedReply.getTitle(), title, "reply had incorrect title");
+    assertEquals(storedReply.getBody(), body, "reply had incorrect body");
   }
 
-  @Test(dataProvider = "annotationsToDelete", expectedExceptions = {SecurityException.class})
-  public void testDeleteByNonAdmin(String annotationId) {
-    annotationService.deleteAnnotation(annotationId, DEFUALT_USER_AUTHID);
-  }
-
-  @Test(dataProvider = "annotationsToDelete", expectedExceptions = IllegalArgumentException.class,
-      dependsOnMethods = {"testDeleteByNonAdmin"})
-  public void testDeleteAnnotation(String annotationId) {
-    annotationService.deleteAnnotation(annotationId, DEFAULT_ADMIN_AUTHID);
-    annotationService.getAnnotation(annotationId); //Should throw IllegalArgumentException
-  }
-
-  /**
-   * DataProvider for testGetAnnotations. Also seeds the annotation Service with the dummy annotations created.
-   * <p/>
-   * Note that this implicitly tests annotationService.createAnnotation()
-   *
-   * @return - A list of annotation Ids, and a list of the corresponding dummy annotations
-   * @throws Exception - from annotationService.createAnnotation()
-   */
-  @DataProvider(name = "annotationIdList")
-  public Object[][] annotationIdList() throws Exception {
-
-    List<ArticleAnnotation> annotations = new LinkedList<ArticleAnnotation>();
-    FormalCorrection formalCorrection = new FormalCorrection();
-    formalCorrection.setAnnotates(URI.create("id://annotates"));
-    formalCorrection.setContext("context");
-    formalCorrection.setTitle("Formal Correction of a Very Formal Error");
-    formalCorrection.setCreator("id://John-Smith");
-    formalCorrection.setCreated(new Date());
-
-    Comment comment = new Comment();
-    comment.setAnnotates(URI.create("id://another-annotation"));
-    comment.setContext("context");
-    comment.setTitle("Comment title");
-    comment.setCreator("John Smith the 3rd");
-    comment.setCreated(new Date());
-
-    annotations.add(formalCorrection);
-    annotations.add(comment);
-
-    List<String> ids = dummyDataStore.store(annotations);
-
-    Journal journal = new Journal();
-    journal.setKey("PLoSONE");
-    journal.seteIssn("1932-6203");
-    dummyDataStore.store(journal);
-
-    Article article = new Article();
-    article.setDoi(formalCorrection.getAnnotates().toString());
-    article.seteIssn("1932-6203");
-
+  @Test
+  public void testCountComments() {
+    UserProfile user = new UserProfile("authIdForTestCountComments", "email@testCountComments.org", "displayNameTestCountComments");
+    dummyDataStore.store(user);
+    Article article = new Article("id:doi-test-count-comments");
     dummyDataStore.store(article);
 
-    Reply reply1 =  new Reply();
-    reply1.setRoot(comment.getId().toString());
-    reply1.setAnonymousCreator("anonymous creator for reply1");
-    reply1.setCreated(new Date());
-    reply1.setTitle("Test Reply1");
-    dummyDataStore.store(reply1);
+    Long commentId = Long.valueOf(dummyDataStore.store(new Annotation(user, AnnotationType.COMMENT, article.getID())));
+    dummyDataStore.store(new Annotation(user, AnnotationType.FORMAL_CORRECTION, article.getID()));
+    dummyDataStore.store(new Annotation(user, AnnotationType.MINOR_CORRECTION, article.getID()));
+    dummyDataStore.store(new Annotation(user, AnnotationType.RETRACTION, article.getID()));
+    dummyDataStore.store(new Annotation(user, AnnotationType.NOTE, article.getID()));
+    dummyDataStore.store(new Rating(user, article.getID()));
 
-    Reply reply2 =  new Reply();
-    reply2.setRoot(comment.getId().toString());
-    reply2.setAnonymousCreator("anonymous creator for reply2");
-    reply2.setCreated(new Date());
-    reply2.setTitle("Test Reply2");
-    dummyDataStore.store(reply2);
+    Annotation reply = new Annotation(user, AnnotationType.REPLY, article.getID());
+    reply.setParentID(commentId);
+    dummyDataStore.store(reply);
 
-    Article article1 = new Article();
-    article1.setDoi(comment.getAnnotates().toString());
-    article1.seteIssn("1932-6203");
-
-    dummyDataStore.store(article1);
-
-    return new Object[][]{
-        {ids, annotations}
-    };
+    assertEquals(annotationService.countAnnotations(article.getID(),
+        EnumSet.of(AnnotationType.NOTE, AnnotationType.COMMENT)),
+        2, "annotation service returned incorrect count of comments and notes");
+    assertEquals(annotationService.countAnnotations(article.getID(),
+        EnumSet.of(AnnotationType.FORMAL_CORRECTION, AnnotationType.MINOR_CORRECTION, AnnotationType.RETRACTION)),
+        3, "annotation service returned incorrect count of corrections");
+    assertEquals(annotationService.countAnnotations(article.getID(), EnumSet.allOf(AnnotationType.class)),
+        7, "annotation service returned incorrect count of comments and notes");
   }
-
-  /**
-   * DataProvider for testGetAnnotation. Also seeds the data store with the dummy annotations created.
-   *
-   * @return - A list of annotation Ids, and a list of the corresponding dummy annotations
-   * @throws Exception - from annotationService.createAnnotation()
-   */
-  @DataProvider(name = "annotationIds")
-  @SuppressWarnings("unchecked")
-  public Object[][] annotationIds() throws Exception {
-    Comment comment2 = new Comment();
-    comment2.setAnnotates(URI.create("id://test-annotates-1"));
-    comment2.setContext("context");
-    comment2.setCreator("Mr. Comment Creator");
-    comment2.setCreated(new Date());
-
-    //Set the body on the comment
-    AnnotationBlob body = new AnnotationBlob();
-    body.setBody("test body".getBytes());
-    body.setCIStatement("ci statement");
-    comment2.setBody(body);
-
-    MinorCorrection minorCorrection = new MinorCorrection();
-    minorCorrection.setAnnotates(URI.create("id://test"));
-    minorCorrection.setContext("minor correction");
-    minorCorrection.setTitle("A Minor Correction");
-    minorCorrection.setCreator("Kurt Goedel");
-    minorCorrection.setCreated(new Date());
-
-    AnnotationBlob body2 = new AnnotationBlob();
-    body2.setBody("test body2".getBytes());
-    body2.setCIStatement("ci statement");
-    minorCorrection.setBody(body2);
-
-    return new Object[][]{
-        {dummyDataStore.store(comment2), comment2},
-        {dummyDataStore.store(minorCorrection), minorCorrection}
-    };
-  }
-
-  /**
-   * Test annotationService.getAnnotation(); the Annotations should have been added by the dataprovider
-   *
-   * @param annotationId       - the id for the annotation to get
-   * @param expectedAnnotation - an annotation object with expected properties
-   */
-  @Test(dataProvider = "annotationIds")
-  public void testGetAnnotation(String annotationId, Annotation expectedAnnotation) {
-    Annotation annotation = annotationService.getAnnotation(annotationId);
-    assertNotNull(annotation, "returned null annotation");
-    assertEquals(annotation.getId(), URI.create(annotationId),
-        "Annotation didn't have correct id");
-    compareBasicAnnotationProperties(annotation, expectedAnnotation);
-  }
-
-  /**
-   * Test for annotationService.getArticleAnnotation()
-   *
-   * @param annotationId       - the id to look up
-   * @param expectedAnnotation - an annotation object with expected properties
-   */
-  @Test(dataProvider = "annotationIds")
-  public void testGetArticleAnnotation(String annotationId, ArticleAnnotation expectedAnnotation) {
-    ArticleAnnotation annotation = annotationService.getArticleAnnotation(annotationId);
-    assertNotNull(annotation, "returned null article annotation");
-    assertEquals(annotation.getId(), URI.create(annotationId),
-        "ArticleAnnotation didn't have correct id");
-    compareBasicAnnotationProperties(annotation, expectedAnnotation);
-  }
-
-  /**
-   * Test annotationService.getAnnotations(), which takes a list of annotation ids.  Annotations should've been added by
-   * the dataprovider
-   *
-   * @param annotationIds       - a list of annotation ids to pass to the annotationService
-   * @param expectedAnnotations - a list of Annotations with expected properties, corresponding to the id list
-   */
-  @Test(dataProvider = "annotationIdList")
-  public void testGetAnnotations(List<String> annotationIds, List<Annotation> expectedAnnotations) {
-    List<Annotation> annotations = annotationService.getAnnotations(annotationIds);
-    assertNotNull(annotations, "Returned null list of annotations");
-    assertEquals(annotations.size(), annotationIds.size(), "didn't return correct number of annotations");
-    for (int i = 0; i < annotations.size(); i++) {
-      Annotation annotation = annotations.get(i);
-      assertNotNull(annotation, "Returned a null annotation");
-      assertEquals(annotation.getId(), URI.create(annotationIds.get(i)),
-          "Annotation didn't have correct id");
-      compareBasicAnnotationProperties(annotation, expectedAnnotations.get(i));
-    }
-  }
-
-  /**
-   * DataProvider for tests of annotationService.getFeedAnnotationIds() and annotationService.getReplyIds()
-   *
-   * @param testMethod - the test method being invoked.  We take this in so we can store a Reply object for
-   *                   testGetReplyIds
-   * @return - start date, end date, and a limit of ids to return
-   */
-  @DataProvider(name = "startAndEndDates")
-  public Object[][] startAndEndDates(Method testMethod) {
-    Calendar tenMinutesAgo = Calendar.getInstance();
-    tenMinutesAgo.add(Calendar.MINUTE, -10);
-
-    return new Object[][]{
-        {tenMinutesAgo.getTime(), new Date(), 1},
-        {tenMinutesAgo.getTime(), new Date(), 0},
-        {tenMinutesAgo.getTime(), new Date(), 2}
-    };
-  }
-
-
-  @Test(dataProvider = "startAndEndDates", dependsOnMethods = {"testGetAnnotation", "testGetAnnotations"})
-  public void testGetFeedAnnotationIds(Date start, Date end, int limit) throws Exception {
-    Set<String> annotTypes = new HashSet<String>();
-    annotTypes.add(FormalCorrection.RDF_TYPE);
-    String journal = "PLoSONE";
-
-    List<String> feedAnnotationIds = annotationService.getFeedAnnotationIds(start, end, annotTypes, limit, journal);
-    assertNotNull(feedAnnotationIds, "null list of feed annotation ids");
-    assertTrue(feedAnnotationIds.size() > 0, "empty list of feed annotation ids");
-    //limit = 0 specifies no limit
-    assertTrue(limit == 0 || feedAnnotationIds.size() <= limit, "returned more ids than the specified limit");
-
-    for (String id : feedAnnotationIds) {
-      assertFalse(id.isEmpty(), "empty feed annotation id");
-      try {
-        URI.create(id);
-      } catch (Exception e) {
-        fail("annotation id that wasn't a valid URI");
-      }
-    }
-  }
-
-  @Test(dataProvider = "startAndEndDates", dependsOnMethods = {"testGetAnnotation", "testGetAnnotations"})
-  public void testGetReplyIds(Date start, Date end, int limit) throws Exception {
-    Set<String> annotTypes = new HashSet<String>();
-    annotTypes.add(Comment.RDF_TYPE);
-
-    String journal = "PLoSONE";
-    List<String> replyIds = annotationService.getReplyIds(start, end, annotTypes, limit, journal);
-    assertNotNull(replyIds, "null list of reply ids");
-    assertTrue(replyIds.size() > 0, "empty list of reply ids");
-    //limit = 0 specifies no limit
-    assertTrue(limit == 0 || replyIds.size() <= limit, "returned more ids than the specified limit");
-
-    for (String id : replyIds) {
-      assertFalse(id.isEmpty(), "empty reply id");
-      try {
-        URI.create(id);
-      } catch (Exception e) {
-        fail("reply id that wasn't a valid URI");
-      }
-    }
-  }
-
-  /**
-   * Data provicer for testListAnnotations().  Create annotations that all point to the same target
-   *
-   * @return - the target uri and a list of expected ids for the annotations
-   */
-  @DataProvider(name = "targetAnnotationList")
-  public Object[][] annotationList() {
-    URI target = URI.create("id://target-for-list-annoations");
-    Comment comment = new Comment();
-    comment.setAnnotates(target);
-    FormalCorrection formalCorrection = new FormalCorrection();
-    formalCorrection.setAnnotates(target);
-
-    List<Annotation> annotations = new ArrayList<Annotation>();
-    annotations.add(comment);
-    annotations.add(formalCorrection);
-    List<String> ids = dummyDataStore.store(annotations);
-
-    return new Object[][]{
-        {target, ids}
-    };
-  }
-
-  /**
-   * Test for annotationService.listAnnotations() method that takes a target as argument
-   * @param target - the URI of a target object for the annotations
-   * @param expectedIds - a list of ids for annotations that annotate the given target, and so should be returned
-   */
-  @Test(dataProvider = "targetAnnotationList")
-  public void testListAnnotationsByTarget(URI target, List<String> expectedIds) {
-    ArticleAnnotation[] annotations = annotationService.listAnnotations(target.toString(),
-        annotationService.getAllAnnotationClasses());
-    assertNotNull(annotations, "returned null list of annotations");
-    assertEquals(annotations.length, expectedIds.size(), "Didn't return correct number of annotations");
-
-    List<String> actualIds = new ArrayList<String>(annotations.length);
-    for (ArticleAnnotation annotation : annotations) {
-      actualIds.add(annotation.getId().toString());
-    }
-
-    for (String expectedId : expectedIds) {
-      assertTrue(actualIds.contains(expectedId), "Didn't return expected annotation with id: " + expectedId);
-    }
-  }
-
-  @DataProvider(name = "mediatorAnnotationList")
-  public Object[][] mediatorAnnotationList() {
-    String firstMediator = "test-mediator";
-    int firstState = 1;
-    Comment comment = new Comment();
-    comment.setMediator(firstMediator);
-    comment.setState(firstState);
-
-    MinorCorrection minorCorrection = new MinorCorrection();
-    minorCorrection.setMediator(firstMediator);
-    minorCorrection.setState(firstState);
-
-    List<String> expectedIds1 = new ArrayList<String>();
-    expectedIds1.add(dummyDataStore.store(comment));
-    expectedIds1.add(dummyDataStore.store(minorCorrection));
-
-    String secondMediator = "test-mediator-number-2";
-    int secondState = 25844;
-    Comment comment2 = new Comment();
-    comment2.setMediator(secondMediator);
-    comment2.setState(secondState);
-    List<String> expectedIds2 = new ArrayList<String>();
-    expectedIds2.add(dummyDataStore.store(comment2));
-
-    return new Object[][]{
-        {firstMediator, firstState, expectedIds1},
-        {secondMediator, secondState, expectedIds2}
-    };
-  }
-
-  /**
-   * Test for annotationService.listAnnotations() method that takes a mediator and state as arguments
-   * @param mediator - a test mediator to use
-   * @param state - a test state
-   * @param expectedIds - a list of ids of annotations that have the given mediator and state
-   */
-  @Test(dataProvider = "mediatorAnnotationList")
-  public void testListAnnotationsByMediator(String mediator, int state, List<String> expectedIds) {
-    ArticleAnnotation[] annotations = annotationService.listAnnotations(mediator, state);
-    assertNotNull(annotations, "returned null list of annotations");
-    assertEquals(annotations.length, expectedIds.size(), "Didn't return correct number of annotations");
-
-    List<String> actualIds = new ArrayList<String>(annotations.length);
-    for (ArticleAnnotation annotation : annotations) {
-      actualIds.add(annotation.getId().toString());
-    }
-
-    for (String expectedId : expectedIds) {
-      assertTrue(actualIds.contains(expectedId), "Didn't return expected annotation with id: " + expectedId);
-    }
-  }
-
-  /**
-   * Test for the annotationService.updateBodyAndContext() method
-   * @param annotationId - id of an annotation to update
-   * @param expectedAnnotation - annotation with expected properties set to compare
-   * @throws Exception - from updateBodyAndContext
-   */
-  @Test(dataProvider = "annotationIds")
-  public void testUpdateBodyAndContext(String annotationId, Annotation expectedAnnotation) throws Exception {
-    String newContext = "new context";
-    String newBody = "new body";
-
-    annotationService.updateBodyAndContext(annotationId, newBody, newContext, DEFUALT_USER_AUTHID);
-    ArticleAnnotation annotation = annotationService.getArticleAnnotation(annotationId);
-    assertNotNull(annotation.getBody(), "Didn't create a body for annotation");
-    assertEquals(new String(annotation.getBody().getBody()), newBody, "new body didn't get set");
-    assertEquals(annotation.getContext(), newContext, "new context didn't get set");
-    expectedAnnotation.setContext(newContext);
-    compareBasicAnnotationProperties(annotation, expectedAnnotation);
-  }
-
-  @DataProvider(name = "annotationClassConversion")
-  public Object[][] classConversionDataProvider() {
-    Article article = new Article();
-    article.setDoi("id://test-article");
-
-    dummyDataStore.store(article);
-
-    String annotates = article.getDoi();
-    Comment comment2 = new Comment();
-    comment2.setAnnotates(URI.create(annotates));
-    comment2.setContext("context");
-    comment2.setCreator("Mr. Comment Creator");
-    comment2.setCreated(new Date());
-
-    //Set the body on the comment
-    AnnotationBlob body = new AnnotationBlob();
-    body.setBody("test body".getBytes());
-    body.setCIStatement("ci statement");
-    comment2.setBody(body);
-
-    MinorCorrection minorCorrection = new MinorCorrection();
-    minorCorrection.setAnnotates(URI.create(annotates));
-    minorCorrection.setContext("minor correction");
-    minorCorrection.setTitle("A Minor Correction");
-    minorCorrection.setCreator("Kurt Godel");
-    minorCorrection.setCreated(new Date());
-    AnnotationBlob body2 = new AnnotationBlob();
-    body2.setBody("test body2".getBytes());
-    body2.setCIStatement("ci statement");
-    minorCorrection.setBody(body2);
-
-    return new Object[][]{
-        {dummyDataStore.store(comment2), MinorCorrection.class, comment2},
-        {dummyDataStore.store(minorCorrection), FormalCorrection.class, minorCorrection}
-    };
-  }
-
-  /**
-   * Test for annotationService.convertAnnotationToType()
-   * @param annotationId - id of the annotation to convert
-   * @param newClass - the class to convert to
-   * @param expectedAnnotation
-   * @throws Exception
-   */
-  @Test(dataProvider = "annotationClassConversion")
-  public void testConvertAnnotationToType(String annotationId, Class<? extends ArticleAnnotation> newClass, Annotation expectedAnnotation) throws Exception {
-    String newId = annotationService.convertAnnotationToType(annotationId, newClass);
-    assertNotNull(newId, "generated null id for converted annotation");
-    assertEquals(newId,annotationId,"Didn't return same Id for annotation");
-    Annotation newAnnotation = annotationService.getAnnotation(newId);
-    assertTrue(newClass.isAssignableFrom(newAnnotation.getClass()), "Didn't convert annotation to correct class; " +
-        "expected a subclass of " + newClass.getSimpleName() + " but got " + newAnnotation.getClass().getSimpleName());
-    compareBasicAnnotationProperties(newAnnotation, expectedAnnotation);
-  }
-
-  /**
-   * Compare some basic properties on annotations.
-   * <p/>
-   * The only properties we compare are: <ul> <li>annotates</li> <li>context</li> <li>title</li> <li>creator</li> </ul>
-   * <p/>
-   *
-   * @param actualAnnotation   - the annotation returned by annotationService
-   * @param expectedAnnotation - a dummy annotation with expected properties
-   */
-  private void compareBasicAnnotationProperties(Annotation actualAnnotation, Annotation expectedAnnotation) {
-    assertEquals(actualAnnotation.getAnnotates(), expectedAnnotation.getAnnotates(),
-        "Didn't have correct annotates value");
-    assertEquals(actualAnnotation.getContext(), expectedAnnotation.getContext(),
-        "Didn't have correct context");
-    assertEquals(actualAnnotation.getTitle(), expectedAnnotation.getTitle(),
-        "Didn't have correct title");
-    assertEquals(actualAnnotation.getCreator(), expectedAnnotation.getCreator(),
-        "Didn't have correct creator");
-  }
-
-  /**
-   * @return - a set of RDF Types
-   */
-  public static Set<String> getAnnotationTypes() {
-    Set<String> annotTypes = new HashSet<String>();
-    annotTypes.add(Comment.RDF_TYPE);
-    annotTypes.add(FormalCorrection.RDF_TYPE);
-    annotTypes.add(MinorCorrection.RDF_TYPE);
-    annotTypes.add(Retraction.RDF_TYPE);
-    return annotTypes;
-  }
-
 }

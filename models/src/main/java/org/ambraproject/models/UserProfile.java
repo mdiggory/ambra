@@ -33,8 +33,9 @@ public class UserProfile extends AmbraEntity {
   public static final String MONTHLY_ALERT_SUFFIX = "_monthly";
   public static final String WEEKLY_ALERT_SUFFIX = "_weekly";
 
-  //  TODO: These properties are legacy and should be removed once annotations are refactored
+  //TODO: This property is legacy and should be removed once annotations are refactored
   private String accountUri;
+
   private String profileUri;
 
   private int accountState;
@@ -48,6 +49,7 @@ public class UserProfile extends AmbraEntity {
   private String homePage;
   private String weblog;
   private String publications;
+  //Bad variable naming choice, the displayName should be refactored to be userName.
   private String displayName;
   private String suffix;
   private String positionType;

@@ -20,19 +20,13 @@
 
 package org.ambraproject.article.service;
 
-import org.ambraproject.ApplicationException;
+import org.ambraproject.model.article.ArticleInfo;
+import org.ambraproject.models.Article;
 import org.ambraproject.service.HibernateService;
 import org.ambraproject.article.AuthorExtra;
 import org.ambraproject.article.CitationReference;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Fetch article service.
@@ -40,38 +34,18 @@ import java.util.List;
 public interface FetchArticleService extends HibernateService {
   /**
    * Get the URI transformed as HTML.
-   * @param articleURI articleURI
-   * @param authId the authorization ID of the current user
+   * @param article The Article to transform into HTML
    * @return String representing the annotated article as HTML
    * @throws org.ambraproject.ApplicationException ApplicationException
    */
-  public String getURIAsHTML(final String articleURI, final String authId) throws Exception;
-
-  /**
-   * Return the annotated content as a String
-   * @param articleURI articleURI
-   * @param authId the authorization ID of the current user
-   * @return an the annotated content as a String
-   * @throws ParserConfigurationException ParserConfigurationException
-   * @throws SAXException SAXException
-   * @throws IOException IOException
-   * @throws URISyntaxException URISyntaxException
-   * @throws org.ambraproject.ApplicationException ApplicationException
-   * @throws NoSuchArticleIdException NoSuchArticleIdException
-   * @throws javax.xml.transform.TransformerException TransformerException
-   */
-  public String getAnnotatedContent(final String articleURI, final String authId)
-      throws ParserConfigurationException, SAXException, IOException, URISyntaxException,
-             ApplicationException, NoSuchArticleIdException,TransformerException;
-
+  public String getArticleAsHTML(final ArticleInfo article) throws Exception;
 
   /**
    * Get the article xml
-   * @param articleURI article uri
-   * @param authId the authorization ID of the current user
+   * @param article the article
    * @return article xml
    */
-  public Document getArticleDocument(String articleURI, final String authId);
+  public Document getArticleDocument(final ArticleInfo article);
 
 
   /**

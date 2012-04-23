@@ -38,10 +38,11 @@ public class GenerateSchemaSQL {
    *             <ul><li>ORACLE</li><li>MYSQL</li><li>HSQL</li></ul>
    *             <p/>
    *             according the sql dialect to be used (case insensitive)
+   *             The third argument is the directory in which to create files
    */
   public static void main(String[] args) {
-    if (args.length != 2) {
-      throw new IllegalArgumentException("Must provide two arguments: update|create sql_dialect\n valid SQL dialect options are oracle, hsql, and mysql");
+    if (args.length != 3) {
+      throw new IllegalArgumentException("Must provide three arguments: update|create sql_dialect output_dir\n valid SQL dialect options are oracle, hsql, and mysql");
     }
 
     boolean update = true;
@@ -51,7 +52,7 @@ public class GenerateSchemaSQL {
       throw new IllegalArgumentException("Didn't recognize argument " + args[0] +
           "; must be either \"update\" or \"create\"");
     }
-    SchemaGenerator gen = new SchemaGenerator(update);
+    SchemaGenerator gen = new SchemaGenerator(update, args[2]);
     SchemaGenerator.Dialect dialect = SchemaGenerator.Dialect.fromString(args[1]);
     gen.generateSQL(dialect);
   }

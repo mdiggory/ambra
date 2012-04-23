@@ -32,10 +32,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.topazproject.ambra.models.FormalCorrection;
 import org.topazproject.ambra.models.Issue;
 import org.topazproject.ambra.models.Journal;
-import org.topazproject.ambra.models.Retraction;
 import org.topazproject.ambra.models.Volume;
 
 import java.net.URI;
@@ -414,78 +412,6 @@ public class BrowseServiceTest extends BaseTest {
         assertTrue(csv.indexOf(articleInfo.getDoi()) != -1,
             "csv didn't contain expected article id: " + articleInfo.getDoi());
       }
-    }
-
-  }
-
-  @DataProvider(name = "correctionMap")
-  public Object[][] getCorrectionMap() {
-    Issue issue = (Issue) getArticleGroupList()[0][0];
-    List<URI> articleIds = issue.getArticleList();
-
-    FormalCorrection correction1 = new FormalCorrection();
-    correction1.setAnnotates(articleIds.get(0));
-    FormalCorrection correction2 = new FormalCorrection();
-    correction2.setAnnotates(articleIds.get(0));
-    FormalCorrection correction3 = new FormalCorrection();
-    correction3.setAnnotates(articleIds.get(1));
-
-    List<URI> correctionIds = new ArrayList<URI>();
-    correctionIds.add(URI.create(dummyDataStore.store(correction1)));
-    correctionIds.add(URI.create(dummyDataStore.store(correction2)));
-    correctionIds.add(URI.create(dummyDataStore.store(correction3)));
-
-    return new Object[][]{
-        {browseService.getArticleGrpList(issue, DEFAULT_ADMIN_AUTHID), correctionIds}
-    };
-  }
-
-  @Test(dataProvider = "correctionMap",
-      dependsOnMethods = {"testGetArticleGroupListByIssueId", "testGetArticleGroupList"},
-      alwaysRun = true, ignoreMissingDependencies = true)
-  public void testGetCorrectionMap(List<TOCArticleGroup> articleGroups, List<URI> expectedCorrections) {
-    Map<URI, FormalCorrection> results = browseService.getCorrectionMap(articleGroups);
-    assertNotNull(results, "returned null correction map");
-    assertEquals(results.size(), expectedCorrections.size(), "returned incorrect number of corrections");
-    for (URI id : expectedCorrections) {
-      assertTrue(results.containsKey(id), "didn't return entry for id: " + id);
-      assertNotNull(results.get(id), "returned null correction for id: " + id);
-    }
-
-  }
-
-  @DataProvider(name = "retractionMap")
-  public Object[][] getRetractionMap() {
-    Issue issue = (Issue) getArticleGroupList()[0][0];
-    List<URI> articleIds = issue.getArticleList();
-
-    Retraction retraction1 = new Retraction();
-    retraction1.setAnnotates(articleIds.get(0));
-    Retraction retraction2 = new Retraction();
-    retraction2.setAnnotates(articleIds.get(0));
-    Retraction retraction3 = new Retraction();
-    retraction3.setAnnotates(articleIds.get(1));
-
-    List<URI> retractionIds = new ArrayList<URI>();
-    retractionIds.add(URI.create(dummyDataStore.store(retraction1)));
-    retractionIds.add(URI.create(dummyDataStore.store(retraction2)));
-    retractionIds.add(URI.create(dummyDataStore.store(retraction3)));
-
-    return new Object[][]{
-        {browseService.getArticleGrpList(issue, DEFAULT_ADMIN_AUTHID), retractionIds}
-    };
-  }
-
-  @Test(dataProvider = "retractionMap",
-      dependsOnMethods = {"testGetArticleGroupListByIssueId", "testGetArticleGroupList"},
-      alwaysRun = true, ignoreMissingDependencies = true)
-  public void testGetRetractionMap(List<TOCArticleGroup> articleGroups, List<URI> expectedRetractions) {
-    Map<URI, Retraction> results = browseService.getRetractionMap(articleGroups);
-    assertNotNull(results, "returned null correction map");
-    assertEquals(results.size(), expectedRetractions.size(), "returned incorrect number of corrections");
-    for (URI id : expectedRetractions) {
-      assertTrue(results.containsKey(id), "didn't return entry for id: " + id);
-      assertNotNull(results.get(id), "returned null correction for id: " + id);
     }
 
   }

@@ -20,32 +20,21 @@
 package org.ambraproject.model.article;
 
 import org.ambraproject.model.UserProfileInfo;
-import org.ambraproject.models.Category;
+import org.ambraproject.views.ArticleCategory;
 import org.topazproject.otm.annotations.Id;
-import org.topazproject.otm.annotations.Projection;
-import org.topazproject.otm.annotations.View;
 
 import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 /**
  * The info about a single article that the UI needs.
  */
-@View(query=
-        "select a.id id, dc.date date, dc.title title, ci, " +
-        "(select a.articleType from Article aa) at, " +
-        "(select aa2.id rid, aa2.dublinCore.title rtitle from Article aa2 " +
-        "   where aa2 = a.relatedArticles.article) relatedArticles, " +
-        "(select fc.id from FormalCorrection fc where fc.annotates = a.id) corrections, " +
-        "(select r.id from Retraction r where r.annotates = a.id) retractions " +
-        "from Article a, CitationInfo ci " +
-        "where a.id = :id and dc := a.dublinCore and ci.id = dc.bibliographicCitation.id;")
 public class ArticleInfo implements Serializable {
 
   private static final long serialVersionUID = 3823215602197299918L;
@@ -58,16 +47,15 @@ public class ArticleInfo implements Serializable {
   public List<String>            authors = new ArrayList<String>();
   public List<String>            collaborativeAuthors = new ArrayList<String>();
   public Set<ArticleType>        articleTypes = new HashSet<ArticleType>();
-  public Set<URI>                corrections = new HashSet<URI>();
-  public Set<URI>                retractions = new HashSet<URI>();
   public Set<String>             journals = new HashSet<String>();
   private String                 publisher;
-  private List<String>           subjects = new LinkedList<String>();
+  private String                 rights;
   private String                 description;
-  private Set<String>            types;
+  private String                 journal;
   private String                 eIssn;
+  private Set<String>            types;
   private String                 pages;
-  private Set<Category>          categories;
+  private Set<ArticleCategory>   categories;
   private String                 eLocationId;
   private String                 volume;
   private String                 issue;
@@ -115,7 +103,6 @@ public class ArticleInfo implements Serializable {
    * Set the Date that this article was published
    * @param date Article date.
    */
-  @Projection("date")
   public void setDate(Date date) {
     this.date = date;
   }
@@ -134,7 +121,6 @@ public class ArticleInfo implements Serializable {
    *  
    * @param articleTitle Title.
    */
-  @Projection("title")
   public void setTitle(String articleTitle) {
     title = articleTitle;
     unformattedTitle = null;
@@ -209,7 +195,6 @@ public class ArticleInfo implements Serializable {
     this.journals = journals;
   }
 
-  @Projection("ci")
   public void setCi(CitationInfo ci) {
     // get the authors
     authors.clear();
@@ -224,34 +209,14 @@ public class ArticleInfo implements Serializable {
     }
   }
 
-  @Projection("at")
   public void setAt(Set<String> at) {
     articleTypes.clear();
     for (String a : at)
       articleTypes.add(ArticleType.getArticleTypeForURI(URI.create(a), true));
   }
 
-  @Projection("relatedArticles")
   public void setRelatedArticles(List<RelatedArticleInfo> relatedArticles) {
     this.relatedArticles = relatedArticles;
-  }
-
-  public Set<URI> getCorrections() {
-    return corrections;
-  }
-
-  @Projection("corrections")
-  public void setCorrections(Set<URI> corrections) {
-    this.corrections = corrections;
-  }
-
-  public Set<URI> getRetractions() {
-    return retractions;
-  }
-
-  @Projection("retractions")
-  public void setRetractions(Set<URI> retractions) {
-    this.retractions = retractions;
   }
 
   public String getPublisher() {
@@ -262,13 +227,51 @@ public class ArticleInfo implements Serializable {
     this.publisher = publisher;
   }
 
+  public String getJournal() {
+    return journal;
+  }
+
+  public void setJournal(String journal) {
+    this.journal = journal;
+  }
+
+  public String getRights() {
+    return rights;
+  }
+
+  public void setRights(String rights) {
+    this.rights = rights;
+  }
+
   /**
-   * Get article subject from Article.categories.
-   * @return Article subjects
+   * Return a list of all categories and sub categories collapsed into one list.
+   *
+   * @return
    */
-  public List<String> getSubjects() {
+  public List<String> getTransposedCategories()
+  {
+    //set categories
+    List<String> subjects = null;
+
+    if (categories != null) {
+      subjects = new ArrayList<String>(categories.size());
+
+      for (ArticleCategory category : categories) {
+        if (category.getMainCategory() != null
+            && ! subjects.contains(category.getMainCategory())) {
+          subjects.add(category.getMainCategory());
+        }
+        if (category.getSubCategory() != null
+            && ! subjects.contains(category.getSubCategory())) {
+          subjects.add(category.getSubCategory());
+        }
+      }
+      Collections.sort(subjects);
+    }
+
     return subjects;
   }
+
 
   /**
    * Get a displayable version of the Article Type by doing a lookup on the every element
@@ -330,11 +333,11 @@ public class ArticleInfo implements Serializable {
     this.types = types;
   }
 
-  public Set<Category> getCategories() {
+  public Set<ArticleCategory> getCategories() {
     return categories;
   }
 
-  public void setCategories(Set<Category> categories) {
+  public void setCategories(Set<ArticleCategory> categories) {
     this.categories = categories;
   }
 

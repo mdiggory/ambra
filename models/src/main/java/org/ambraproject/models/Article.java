@@ -76,6 +76,14 @@ public class Article extends AmbraEntity{
   private List<ArticleAuthor> authors;
   private List<ArticleEditor> editors;
 
+  public Article() {
+    super();
+  }
+
+  public Article(String doi) {
+    super();
+    this.doi = doi;
+  }
 
   public String getDoi() {
     return doi;

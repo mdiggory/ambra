@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ $HeadURL$
+  ~ $Id$
+  ~ Copyright (c) 2006-2012 by Public Library of Science http://plos.org http://ambraproject.org
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="org.ambraproject.models" default-lazy="false">
+
+  <class name="org.ambraproject.models.AnnotationCitation" table="annotationCitation">
+    <id name="ID" column="annotationCitationID" type="long">
+      <generator class="native"/>
+    </id>
+
+    <timestamp name="lastModified" column="lastModified"/>
+    <property name="created" column="created" type="timestamp" not-null="true" update="false"/>
+
+    <property name="title" column="title" type="text"/>
+    <property name="volume" column="volume" type="string"/>
+    <property name="issue" column="issue" type="string"/>
+    <property name="journal" column="journal" type="string"/>
+    <property name="publisher" column="publisherName" type="string"/>
+
+    <property name="year" column="year" type="string"/>
+    <property name="ELocationId" column="eLocationId" type="string"/>
+    <property name="url" column="url" type="string"/>
+
+    <property name="note" type="text" column="note"/>
+    <property name="summary" type="text" column="summary"/>
+
+    <list name="authors" cascade="all-delete-orphan" fetch="join">
+      <key column="annotationCitationID"/>
+      <index column="sortOrder"/>
+      <one-to-many class="CorrectedAuthor"/>
+    </list>
+
+    <list name="collaborativeAuthors" cascade="all-delete-orphan" fetch="join" table="annotationCitationCollabAuthor">
+      <key column="annotationCitationID"/>
+      <index column="sortOrder"/>
+      <element column="name" type="string"/>
+    </list>
+  </class>
+
+</hibernate-mapping>

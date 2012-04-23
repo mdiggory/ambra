@@ -21,9 +21,11 @@
 
 package org.ambraproject.testutils;
 
+import org.ambraproject.models.Annotation;
 import org.ambraproject.models.Article;
 import org.ambraproject.models.ArticleAsset;
 import org.ambraproject.models.Category;
+import org.ambraproject.models.Trackback;
 import org.ambraproject.models.UserProfile;
 import org.ambraproject.models.UserRole;
 import org.hibernate.HibernateException;
@@ -137,6 +139,19 @@ public class DummyHibernateDataStore implements DummyDataStore {
         return (Serializable) hibernateTemplate.findByCriteria(
             DetachedCriteria.forClass(UserRole.class)
                 .add(Restrictions.eq("roleName", ((UserRole) object).getRoleName()))
+                .setProjection(Projections.id()))
+            .get(0);
+      } else if (object instanceof Annotation) {
+        return (Serializable) hibernateTemplate.findByCriteria(
+            DetachedCriteria.forClass(Annotation.class)
+                .add(Restrictions.eq("annotationUri", ((Annotation) object).getAnnotationUri()))
+                .setProjection(Projections.id()))
+            .get(0);
+      } else if (object instanceof Trackback) {
+        return (Serializable) hibernateTemplate.findByCriteria(
+            DetachedCriteria.forClass(Trackback.class)
+                .add(Restrictions.eq("articleID", ((Trackback) object).getArticleID()))
+                .add(Restrictions.eq("url", ((Trackback) object).getUrl()))
                 .setProjection(Projections.id()))
             .get(0);
       } else {

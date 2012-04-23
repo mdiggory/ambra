@@ -22,22 +22,17 @@ package org.ambraproject.annotation.service;
 import it.unibo.cs.xpointer.Location;
 import it.unibo.cs.xpointer.XPointerAPI;
 import it.unibo.cs.xpointer.datatype.LocationList;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.util.List;
-
 import javax.xml.transform.TransformerException;
-
+import org.ambraproject.views.AnnotationView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.topazproject.ambra.models.ArticleAnnotation;
 import org.topazproject.dom.ranges.SelectionRange;
 import org.topazproject.dom.ranges.SelectionRangeList;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -63,7 +58,7 @@ public class Annotator {
    * @throws TransformerException if at least one annotation context is an invalid xpointer
    *         expression
    */
-  public static Document annotateAsDocument(Document document, ArticleAnnotation[] annotations)
+  public static Document annotateAsDocument(Document document, AnnotationView[] annotations)
                            throws URISyntaxException, TransformerException {
     LocationList[] lists = evaluate(document, annotations);
 
@@ -90,15 +85,14 @@ public class Annotator {
     Element aRoot = document.createElementNS(AML_NS, "aml:annotations");
     AnnotationModel.appendNSAttr(aRoot);
 
-    ArticleAnnotation annotation;
     for (int i = 0; i < annotations.length; i++) {
-      annotation = annotations[i];
-      if ((lists[i] != null) && (annotation.getContext() != null)) {
+      AnnotationView annotation = annotations[i];
+      if ((lists[i] != null) && (annotation.getXpath() != null)) {
         if (log.isDebugEnabled())
-          log.debug("Creating annotation node for " + annotation.getId() + "...");
+          log.debug("Creating annotation node for " + annotation.getID() + "...");
 
         Element a = document.createElementNS(AML_NS, "aml:annotation");
-        a.setAttributeNS(AML_NS, "aml:id", annotation.getId().toString());
+        a.setAttributeNS(AML_NS, "aml:id", annotation.getID().toString());
         aRoot.appendChild(a);
         AnnotationModel.appendToNode(a, annotation);
       }
@@ -122,7 +116,7 @@ public class Annotator {
     return document;
   }
 
-  private static LocationList[] evaluate(Document document, ArticleAnnotation[] annotations)
+  private static LocationList[] evaluate(Document document, AnnotationView[] annotations)
     throws URISyntaxException, TransformerException {
     LocationList[] lists = new LocationList[annotations.length];
 
@@ -130,7 +124,7 @@ public class Annotator {
 
     for (int i = 0; i < annotations.length; i++) {
       lists[i] = null;
-      annotationContext = annotations[i].getContext();
+      annotationContext = annotations[i].getXpath();
       if (annotationContext != null) {
         URI    context    = new URI(annotationContext);
         String expression = context.getFragment();
@@ -156,7 +150,7 @@ public class Annotator {
              * cause the article to fail rendering.
              */
             log.error ("Could not evaluate xPointer: " + expression + " in " +
-                       annotations[i].getId(), e);
+                       annotations[i].getID(), e);
           }
         }
       }
@@ -171,14 +165,14 @@ public class Annotator {
       this.document = document;
     }
 
-    public void addRegion(LocationList list, ArticleAnnotation annotation) {
+    public void addRegion(LocationList list, AnnotationView annotation) {
       int length = list.getLength();
 
       for (int i = 0; i < length; i++)
         addRegion(list.item(i), annotation);
     }
 
-    public void addRegion(Location location, ArticleAnnotation annotation) {
+    public void addRegion(Location location, AnnotationView annotation) {
       Range range;
 
       if (location.getType() == Location.RANGE)
@@ -191,7 +185,7 @@ public class Annotator {
       // Ignore it if this range is collapsed (ie. start == end)
       if (!range.getCollapsed()) {
         if (log.isDebugEnabled())
-          log.debug("Inserting selection range for " + annotation.getId());
+          log.debug("Inserting selection range for " + annotation.getID());
         insert(new SelectionRange(range, annotation));
       }
     }
@@ -211,28 +205,28 @@ public class Annotator {
         int numFormalCorrections = 0;
         int numRetractions = 0;
 
-        List<ArticleAnnotation> annotations = get(i).getUserDataList();
+        List<AnnotationView> annotations = get(i).getUserDataList();
 
-        int  c = annotations.size();
-        for (int j = 0; j < c; j++) {
-          ArticleAnnotation a     = annotations.get(j);
-          Element        aNode = document.createElementNS(nsUri, annotationsQName);
-          aNode.setAttributeNS(nsUri, idAttrQName, a.getId().toString());
+        for (AnnotationView a : annotations) {
+          Element aNode = document.createElementNS(nsUri, annotationsQName);
+          aNode.setAttributeNS(nsUri, idAttrQName, a.getID().toString());
           rNode.appendChild(aNode);
 
           assert a.getType() != null;
-          String atype = a.getType().toLowerCase();
-          if(atype.indexOf("comment") >= 0) {
-            numComments++;
-          }
-          else if(atype.indexOf("minorcorrection") >= 0) {
-            numMinorCorrections++;
-          }
-          else if(atype.indexOf("formalcorrection") >= 0) {
-            numFormalCorrections++;
-          }
-          else if(atype.indexOf("retraction") >= 0) {
-            numRetractions++;
+
+          switch(a.getType()) {
+            case NOTE:
+              numComments++;
+              break;
+            case MINOR_CORRECTION:
+              numMinorCorrections++;
+              break;
+            case FORMAL_CORRECTION:
+              numFormalCorrections++;
+              break;
+            case RETRACTION:
+              numRetractions++;
+              break;
           }
         }
 

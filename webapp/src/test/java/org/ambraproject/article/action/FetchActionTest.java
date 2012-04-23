@@ -34,13 +34,14 @@ public abstract class FetchActionTest extends BaseWebTest {
 
   @Autowired
   @Qualifier("articleInFilestore")
-  protected String doi;
+  private String doi;
 
-  protected Article article;
+  private Article article;
 
   @BeforeMethod
   public void storeArticle() {
     article = new Article();
+    article.setState(Article.STATE_ACTIVE);
     article.setDoi(doi);
     article.setTitle("Title from the database");
     article.setArchiveName("archive name from the database");
@@ -53,5 +54,9 @@ public abstract class FetchActionTest extends BaseWebTest {
     article.setCategories(new HashSet<Category>(0));
 
     dummyDataStore.store(article);
+  }
+
+  protected Article getArticleToFetch() {
+    return article;
   }
 }

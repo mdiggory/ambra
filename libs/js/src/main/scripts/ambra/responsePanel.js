@@ -81,8 +81,8 @@ ambra.responsePanel = {
       this.targetForm.commentTitle.value = 'RE: ' + threadTitle;
     }
 
-    if (this.targetForm.competingInterest) {
-      if (this.targetForm.competingInterest[0].checked == true) {
+    if (this.targetForm.ciData) {
+      if (this.targetForm.ciData[0].checked == true) {
         this.targetForm.ciStatementArea.disabled = true;
       }
     }
@@ -108,8 +108,8 @@ ambra.responsePanel = {
       this.targetForm.comment.value = "";
     }
 
-    if (this.targetForm.competingInterest) {
-      if (this.targetForm.competingInterest[0].checked == true) {
+    if (this.targetForm.ciData) {
+      if (this.targetForm.ciData[0].checked == true) {
         this.targetForm.ciStatement.value = "";
       } else {
         if (this.targetForm.ciStatementArea.value != this.targetForm.ciStatementArea.title) {
@@ -128,10 +128,10 @@ ambra.responsePanel = {
     this.targetForm.responseArea.value = targetObj.responseCue;
 
     //This method gets used on more then one form.  Sometimes CI will not be there
-    if(this.targetForm.competingInterest) {
+    if(this.targetForm.ciData) {
       this.targetForm.isCompetingInterest.value = "false";
-      this.targetForm.competingInterest[0].checked = false;
-      this.targetForm.competingInterest[1].checked = true;
+      this.targetForm.ciData[0].checked = false;
+      this.targetForm.ciData[1].checked = true;
       this.targetForm.ciStatementArea.value = "";
       this.targetForm.ciStatement.value = "";
     }
@@ -229,8 +229,8 @@ function sendResponseInfo(targetObj) {
        dojo.fx.wipeIn({ node:submitMsg, duration: 500 }).play();
        ambra.formUtil.enableFormFields(targetForm);
 
-       if (targetForm.competingInterest) {
-         if (targetForm.competingInterest[0].checked == true) {
+       if (targetForm.ciData) {
+         if (targetForm.ciData[0].checked == true) {
            targetForm.ciStatementArea.disabled = true;
          }
        }

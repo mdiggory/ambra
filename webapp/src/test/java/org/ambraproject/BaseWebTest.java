@@ -152,7 +152,7 @@ public abstract class BaseWebTest extends BaseTest {
     Map<String, Object> requestAttributes = new HashMap<String, Object>();
     requestAttributes.put(VirtualJournalContext.PUB_VIRTUALJOURNAL_CONTEXT,
         new VirtualJournalContext("journal", "dfltJournal", "http", 80, "localhost",
-            "ambra-webapp", new ArrayList<String>()));
+            "", new ArrayList<String>()));
     return requestAttributes;
   }
 }

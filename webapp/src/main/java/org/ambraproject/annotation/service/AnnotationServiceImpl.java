@@ -21,47 +21,46 @@
 
 package org.ambraproject.annotation.service;
 
-import org.ambraproject.annotation.FlagUtil;
+import org.ambraproject.ApplicationException;
+import org.ambraproject.annotation.Context;
+import org.ambraproject.annotation.ContextFormatter;
+import org.ambraproject.cache.Cache;
+import org.ambraproject.hibernate.URIGenerator;
+import org.ambraproject.models.Annotation;
+import org.ambraproject.models.AnnotationType;
 import org.ambraproject.models.Article;
-import org.ambraproject.models.ArticleAuthor;
-import org.ambraproject.models.ArticleEditor;
+import org.ambraproject.models.Flag;
+import org.ambraproject.models.FlagReasonCode;
 import org.ambraproject.models.UserProfile;
-import org.ambraproject.permission.service.PermissionsService;
-import org.apache.struts2.ServletActionContext;
+import org.ambraproject.service.HibernateServiceImpl;
+import org.ambraproject.views.AnnotationView;
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
-import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.jdbc.Work;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.transaction.annotation.Transactional;
-import org.topazproject.ambra.models.Annotation;
-import org.topazproject.ambra.models.AnnotationBlob;
-import org.topazproject.ambra.models.ArticleAnnotation;
-import org.topazproject.ambra.models.ArticleContributor;
-import org.topazproject.ambra.models.Citation;
-import org.topazproject.ambra.models.Comment;
-import org.topazproject.ambra.models.FormalCorrection;
-import org.topazproject.ambra.models.RatingSummary;
-import org.topazproject.ambra.models.Retraction;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
+import javax.annotation.Nullable;
 import java.net.URISyntaxException;
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -69,25 +68,12 @@ import java.util.Set;
  *         <p/>
  *         org.ambraproject.annotation.service
  */
-public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements AnnotationService {
+public class AnnotationServiceImpl extends HibernateServiceImpl implements AnnotationService {
   private static final Logger log = LoggerFactory.getLogger(AnnotationServiceImpl.class);
   private static final SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
-  /**
-   * The PEP is just used to check permissions
-   */
 
-  protected static final Set<Class<? extends ArticleAnnotation>> ALL_ANNOTATION_CLASSES = new HashSet<Class<? extends ArticleAnnotation>>();
-  private PermissionsService permissionsService;
-  private org.ambraproject.cache.Cache articleHtmlCache;
+  private Cache articleHtmlCache;
 
-  static {
-    ALL_ANNOTATION_CLASSES.add(ArticleAnnotation.class);
-  }
-
-  @Required
-  public void setPermissionsService(PermissionsService ps) {
-    permissionsService = ps;
-  }
 
   /**
    * @param articleHtmlCache The Article(transformed) cache to use
@@ -97,440 +83,451 @@ public class AnnotationServiceImpl extends BaseAnnotationServiceImpl implements 
     this.articleHtmlCache = articleHtmlCache;
   }
 
-  @Override
-  public Set<Class<? extends ArticleAnnotation>> getAllAnnotationClasses() {
-    return ALL_ANNOTATION_CLASSES;
-  }
-
-  @Override
-  @Transactional(rollbackFor = Throwable.class)
-  public void deleteAnnotation(String annotationId, String authId) throws SecurityException {
-    permissionsService.checkRole(PermissionsService.ADMIN_ROLE, authId);
-    //We need to call getAnnotation() because we don't know the class to which the id corresponds
-    Annotation annotation = getAnnotation(annotationId);
-    hibernateTemplate.delete(annotation);
-//    hibernateTemplate.evict(annotation);
-
-    //Kick the article out of the cache
-    if(annotation.getAnnotates() != null) {
-      articleHtmlCache.remove(annotation.getAnnotates().toString());
-    }
-  }
-
+  /**
+   * Get a list of all annotations satisfying the given criteria.
+   *
+   * @param startDate  search for annotation after start date.
+   * @param endDate    is the date to search until. If null, search until present date
+   * @param annotTypes List of annotation types
+   * @param maxResults the maximum number of results to return, or 0 for no limit
+   * @param journal    journalName
+   * @return the (possibly empty) list of article annotations.
+   * @throws ParseException     if any of the dates or query could not be parsed
+   * @throws URISyntaxException if an element of annotType cannot be parsed as a URI
+   */
   @Override
   @Transactional(readOnly = true)
   @SuppressWarnings("unchecked")
-  public List<String> getFeedAnnotationIds(final Date startDate, final Date endDate,
-      final Set<String> annotTypes, final int maxResults, final String journal) throws ParseException, URISyntaxException {
-    return (List<String>)hibernateTemplate.execute(new HibernateCallback() {
-      public Object doInHibernate(Session session) throws HibernateException, SQLException {
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("select " +
-            "a.annotationUri " +
-            "from " +
-            "Annotation a " +
-            "join article ar on a.annotates = ar.doi " +
-            "join Journal j on ar.eIssn = j.eIssn " +
-            "where j.journalKey = :journal");
-
-        if(startDate != null){
-          sb.append(" and a.creationDate > :startDate");
-        }
-
-        if(endDate != null){
-          sb.append(" and a.creationDate < :endDate");
-        }
-
-        if(annotTypes != null){
-          sb.append(" and a.type in :types");
-        } else {
-          sb.append(" and a.type != '" + RatingSummary.RDF_TYPE + "'");
-        }
-
-        sb.append(" order by a.creationDate desc");
-
-        Query q = session.createSQLQuery(sb.toString());
-        q.setParameter("journal", journal);
-
-        if(startDate != null){
-          q.setParameter("startDate", startDate);
-        }
-
-        if (endDate != null){
-          q.setParameter("endDate", endDate);
-        }
-
-        if(annotTypes != null){
-          q.setParameterList("types", annotTypes);
-        }
-
-        if (maxResults > 0) {
-          q.setMaxResults(maxResults);
-        }
-
-        List results = q.list();
-        //This gets around the problem of Hibernate returning URI ids
-        List<String> ids = new ArrayList<String>(results.size());
-        for (Object o : results) {
-          String id = (String) o;
-            ids.add(id);
-        }
-
-        return ids;
-      }
-    });
-  }
-
-  @Override
-  @Transactional(readOnly = true)
-  @SuppressWarnings("unchecked")
-  public List<String> getReplyIds(final Date startDate, final Date endDate,
-      final Set<String> annotTypes, final int maxResults, final String journal) throws ParseException, URISyntaxException {
-    //We want all replies between the dates whose "root" property is an article annotation of one of the given types
-    //Query for "roots"
-
-    return (List<String>)hibernateTemplate.execute(new HibernateCallback() {
-      public Object doInHibernate(Session session) throws HibernateException, SQLException {
-
-       StringBuilder sb = new StringBuilder();
-        sb.append("select " +
-            "r.replyUri " +
-            "from " +
-            "Reply r " +
-            "join Annotation a on a.annotationUri = r.root " +
-            "join article ar on a.annotates = ar.doi " +
-            "join Journal j on ar.eIssn = j.eIssn " +
-            "where j.journalKey = :journal");
-
-        if(startDate!=null){
-          sb.append(" and a.creationDate > :startDate");
-        }
-
-        if(endDate!=null){
-          sb.append(" and a.creationDate < :endDate");
-        }
-
-        if(annotTypes!=null){
-            sb.append(" and a.type = :type");
-        }
-
-        sb.append(" order by a.creationDate desc");
-
-        Query q = session.createSQLQuery(sb.toString());
-        q.setParameter("journal", journal);
-
-        if(startDate!=null){
-          q.setParameter("startDate", startDate);
-        }
-
-        if (endDate!=null){
-          q.setParameter("endDate", endDate);
-        }
-
-        if(annotTypes!=null){
-          for (String type : annotTypes) {
-            q.setParameter("type", type);
-          }
-        }
-
-        if (maxResults > 0) {
-          q.setMaxResults(maxResults);
-        }
-
-        List<Object> results = q.list();
-
-        List<String> ids = new ArrayList<String>(results.size());
-        for (Object row : results) {
-            ids.add(row.toString());
-        }
-        return ids;
-      }
-    });
-  }
-
-  @Override
-  @Transactional(readOnly = true)
-  public List<Annotation> getAnnotations(List<String> annotIds) {
-    List<Annotation> annotations = new ArrayList<Annotation>(annotIds.size());
-    for (String id : annotIds) {
-      try {
-        annotations.add(getAnnotation(id));
-      } catch (SecurityException e) {
-        log.debug("Filtering URI " + id + " from Article list due to PEP SecurityException", e);
-      } catch (IllegalArgumentException e) {
-        log.debug("Ignored illegal annotation id:" + id);
-      }
-    }
-    return annotations;
-  }
-
-  @Override
-  @SuppressWarnings("unchecked")
-  @Transactional(readOnly = true)
-  public ArticleAnnotation[] listAnnotations(final String target,
-      final Set<Class<? extends ArticleAnnotation>> annotationClassTypes) throws SecurityException {
-    return (ArticleAnnotation[])hibernateTemplate.execute(new HibernateCallback() {
-      public Object doInHibernate(Session session) throws HibernateException, SQLException {
-        List<ArticleAnnotation> annotations = new ArrayList<ArticleAnnotation>();
-
-        if(annotationClassTypes == null || annotationClassTypes.size() == 0) {
-          annotations.addAll(session
-            .createCriteria(ArticleAnnotation.class)
-            .add(Restrictions.eq("annotates", URI.create(target)))
-            .addOrder(Order.asc("created"))
-            .list());
-        } else {
-          for (Class<? extends ArticleAnnotation> clazz : annotationClassTypes) {
-            annotations.addAll(session
-              .createCriteria(clazz)
-              .add(Restrictions.eq("annotates", URI.create(target)))
-              .list());
-          }
-        }
-
-        return annotations.toArray(new ArticleAnnotation[annotations.size()]);
-      }
-    });
-  }
-
-
-  @Override
-  @Transactional(readOnly = true)
-  public ArticleAnnotation getArticleAnnotation(String annotationId) throws SecurityException, IllegalArgumentException {
-    Annotation annotation = getAnnotation(annotationId);
-    if (!(annotation instanceof ArticleAnnotation)) {
-      throw new IllegalArgumentException("Annotation corresponding to id: "
-          + annotationId + " wasn't an article annotation");
-    }
-    return (ArticleAnnotation) annotation;
-  }
-
-  @Override
-  @Transactional(readOnly = true)
-  @SuppressWarnings("unchecked")
-  public Annotation getAnnotation(final String annotationId) throws SecurityException, IllegalArgumentException {
-    //We have to create a criteria instead of calling session.get()
-    // because we don't know what class the id corresponds to
-
-    return (Annotation)hibernateTemplate.execute(new HibernateCallback() {
-      public Object doInHibernate(Session session) throws HibernateException, SQLException {
-        Annotation annotation;
-
-        try {
-          annotation = (Annotation) session.createCriteria(Annotation.class)
-              .add(Restrictions.eq("id", URI.create(annotationId)))
-              .list().get(0);
-        } catch (IndexOutOfBoundsException e) {
-          //This means the list was empty
-          throw new IllegalArgumentException("No annotation for specified id: " + annotationId);
-        }
-        return annotation;
-      }
-    });
-  }
-
-  @Override
-  @Transactional(rollbackFor = Throwable.class)
-  public void updateBodyAndContext(String id, String body, String context, String authId) throws SecurityException, IllegalArgumentException, UnsupportedEncodingException {
-    permissionsService.checkLogin(authId);
-
-    ArticleAnnotation annotation = getArticleAnnotation(id);
-    if (annotation.getBody() == null) {
-      annotation.setBody(new AnnotationBlob());
-    }
-    annotation.getBody().setBody(body.getBytes(getEncodingCharset()));
-    annotation.setContext(context);
-    hibernateTemplate.update(annotation);
-
-    //Kick the article out of the cache
-    if(annotation.getAnnotates() != null) {
-      articleHtmlCache.remove(annotation.getAnnotates().toString());
-    }
-  }
-
-  @Override
-  @Transactional(readOnly = true)
-  @SuppressWarnings("unchecked")
-  public ArticleAnnotation[] listAnnotations(final String mediator, final int state) throws SecurityException {
-    return (ArticleAnnotation[])hibernateTemplate.execute(new HibernateCallback() {
-      public Object doInHibernate(Session session) throws HibernateException, SQLException {
-        List results = session.createCriteria(ArticleAnnotation.class)
-            .add(Restrictions.eq("mediator", mediator))
-            .add(Restrictions.eq("state", state))
-            .list();
-
-        return results.toArray(new ArticleAnnotation[results.size()]);
-      }
-    });
-  }
-
-
-  @Override
-  @Transactional(rollbackFor = Throwable.class)
-  @SuppressWarnings("unchecked")
-  public String convertAnnotationToType(final String srcAnnotationId, Class<? extends ArticleAnnotation> newAnnotationClassType) throws Exception {
-    final String newClassName = newAnnotationClassType.getSimpleName();
-    final String newType = (String) newAnnotationClassType.getMethod("getType").invoke(newAnnotationClassType.newInstance());
-    hibernateTemplate.execute(new HibernateCallback() {
+  public List<AnnotationView> getAnnotations(final Date startDate, final Date endDate,
+                                             final Set<String> annotTypes, final int maxResults, final String journal)
+      throws ParseException, URISyntaxException {
+    /***
+     * There may be a more efficient way to do this other than querying the database twice, at some point in time
+     * we might improve how hibernate does the object mappings
+     *
+     * This execute returns annotationIDs, article DOIs and titles, which are needed to construction the annotionView
+     * object
+     */
+    Map<Long, String[]> results = (Map<Long, String[]>) hibernateTemplate.execute(new HibernateCallback() {
       @Override
       public Object doInHibernate(Session session) throws HibernateException, SQLException {
-        session.doWork(new Work() {
-          @Override
-          public void execute(Connection connection) throws SQLException {
-            Statement statement = connection.createStatement();
-            statement.executeUpdate(
-                "update Annotation set class = '" + newClassName + "'," +
-                    "type = '" +  newType  + "'" +
-                    " where annotationUri = '" + srcAnnotationId + "';");
-            statement.close();
-          }
-        });
-        return null;
+
+        /**
+         * We have to do this with SQL because of how the mappings are currently defined
+         * And hence, there is no way to unit test this
+         */
+
+        StringBuilder sqlQuery = new StringBuilder();
+        Map<String, Object> params = new HashMap<String, Object>(3);
+
+        sqlQuery.append("select ann.annotationID, art.doi, art.title ");
+        sqlQuery.append("from annotation ann ");
+        sqlQuery.append("join article art on art.articleID = ann.articleID ");
+        sqlQuery.append("join Journal j on art.eIssn = j.eIssn ");
+        sqlQuery.append("where j.journalKey = :journal ");
+        params.put("journal", journal);
+
+        if (startDate != null) {
+          sqlQuery.append(" and ann.created > :startDate");
+          params.put("startDate", startDate);
+        }
+
+        if (endDate != null) {
+          sqlQuery.append(" and ann.created < :endDate");
+          params.put("endDate", endDate);
+        }
+
+        if (annotTypes != null) {
+          sqlQuery.append(" and ann.type in (:annotTypes)");
+          params.put("annotTypes", annotTypes);
+        }
+
+        sqlQuery.append(" order by ann.created desc");
+
+        SQLQuery query = session.createSQLQuery(sqlQuery.toString());
+        query.setProperties(params);
+
+        if (maxResults > 0) {
+          query.setMaxResults(maxResults);
+        }
+
+        List<Object[]> tempResults = query.list();
+        Map<Long, String[]> results = new HashMap<Long, String[]>(tempResults.size());
+
+        for (Object[] obj : tempResults) {
+          //This forces this method to return Long values and not BigInteger
+          results.put((((Number) obj[0]).longValue()), new String[]{(String) obj[1], (String) obj[2]});
+        }
+
+        return results;
       }
     });
 
-    Annotation newAnnotation = getAnnotation(srcAnnotationId);
+    //The previous query puts annotationID and doi into the map. annotationID is key
+    //I do this to avoid extra doi lookups later in the code.
 
-    if (newAnnotation instanceof FormalCorrection) {
-      HibernateAnnotationUtil.createDefaultCitation((FormalCorrection)newAnnotation, getArticleCitation((ArticleAnnotation) newAnnotation), hibernateTemplate);
-    } else if (newAnnotation instanceof Retraction) {
-      HibernateAnnotationUtil.createDefaultCitation((Retraction)newAnnotation, getArticleCitation((ArticleAnnotation) newAnnotation), hibernateTemplate);
+    if (results.size() > 0) {
+      DetachedCriteria criteria = DetachedCriteria.forClass(Annotation.class)
+          .add(Restrictions.in("ID", results.keySet()))
+          .addOrder(Order.desc("created"))
+          .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+
+      List<Annotation> annotations = hibernateTemplate.findByCriteria(criteria);
+      List<AnnotationView> views = new ArrayList<AnnotationView>(annotations.size());
+
+      for (Annotation ann : annotations) {
+        String articleDoi = results.get(ann.getID())[0];
+        String articleTitle = results.get(ann.getID())[1];
+        views.add(buildAnnotationView(ann, articleDoi, articleTitle, false));
+      }
+
+      return views;
+    } else {
+      return new ArrayList<AnnotationView>();
     }
-
-    //Kick the article out of the cache
-    articleHtmlCache.remove(newAnnotation.getAnnotates().toString());
-
-    return srcAnnotationId;
   }
 
   @Override
-  @Transactional(rollbackFor = Throwable.class)
-  public String createAnnotation(Class<? extends ArticleAnnotation> annotationClass, String mimeType, String target,
-                                 String context, String olderAnnotation, String title, String body, String ciStatement,
-                                 boolean isPublic, UserProfile user) throws Exception {
-
-    final String contentType = getContentType(mimeType);
-    String userId = user.getAccountUri();
-
-    AnnotationBlob blob = new AnnotationBlob(contentType);
-    blob.setCIStatement(ciStatement);
-    blob.setBody(body.getBytes(getEncodingCharset()));
-
-    final ArticleAnnotation annotation = annotationClass.newInstance();
-
-    annotation.setMediator(getApplicationId());
-    annotation.setAnnotates(URI.create(target));
-    annotation.setContext(context);
-    annotation.setTitle(title);
-    annotation.setCreator(userId);
-    annotation.setBody(blob);
-    annotation.setCreated(new Date());
-
-    String newId = hibernateTemplate.save(annotation).toString();
-    log.info("Created Annotation of type: " + annotationClass.getSimpleName() + " with generated id: " + newId);
-    return newId;
-  }
-
-  @Override
-  @Transactional(rollbackFor = Throwable.class)
-  public String createComment(String target, String context, String olderAnnotation, String title, String mimeType,
-                              String body, String ciStatement, boolean isPublic, UserProfile user) throws Exception {
-    if (log.isDebugEnabled()) {
-      log.debug("creating Comment for target: " + target + "; context: " + context +
-          "; supercedes: " + olderAnnotation + "; title: " + title + "; mimeType: " +
-          mimeType + "; body: " + body + "; ciStatment: " + ciStatement + "; isPublic: " + isPublic);
+  @Transactional(readOnly = true)
+  public AnnotationView[] listAnnotations(final Long articleID,
+                                          final Set<AnnotationType> annotationTypes,
+                                          final AnnotationOrder order) {
+    //Basic criteria
+    DetachedCriteria criteria = DetachedCriteria.forClass(Annotation.class)
+        .add(Restrictions.eq("articleID", articleID))
+        .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+    //restrict by type
+    if (annotationTypes != null && !annotationTypes.isEmpty()) {
+      criteria.add(Restrictions.in("type", annotationTypes));
     }
+    switch (order) {
+      case OLDEST_TO_NEWEST:
+        criteria.addOrder(Order.asc("created"));
+        break;
+      case MOST_RECENT_REPLY:
+        //Still going to have to sort the results after creating views, because 'Most Recent Reply' isn't something that's stored on the database level
+        //but ordering newest to oldest makes it more likely that the annotations will be in close to the correct order by the time we sort
+        criteria.addOrder(Order.desc("created"));
+        break;
+    }
+    List annotationResults = hibernateTemplate.findByCriteria(criteria);
 
-    String annotationId = createAnnotation(Comment.class, mimeType, target, context,
-        olderAnnotation, title, body, ciStatement, true, user);
 
-    String ip = "";
-
+    //Don't want to call buildAnnotationView() here because that would involve loading up the reply map for each annotation,
+    // when we only need to do it once. So load up the info we need to build annotation views here
+    Object[] articleTitleAndDoi;
     try {
-      //In the unit tests, this throws an exception.  Let's ignore it and keep going
-      ip = ServletActionContext.getRequest().getRemoteAddr();
-    } catch (NullPointerException ex) {}
+      articleTitleAndDoi = (Object[]) hibernateTemplate.findByCriteria(
+          DetachedCriteria.forClass(Article.class)
+              .add(Restrictions.eq("ID", articleID))
+              .setProjection(Projections.projectionList()
+                  .add(Projections.property("doi"))
+                  .add(Projections.property("title"))),
+          0, 1).get(0);
 
-    log.debug("Comment created with ID: {} for user: {} for IP: {} ",
-      new String[] { annotationId, user.toString(), ip });
+    } catch (IndexOutOfBoundsException e) {
+      throw new IllegalArgumentException("article " + articleID + " didn't exist");
+    }
+    String articleDoi = (String) articleTitleAndDoi[0];
+    String articleTitle = (String) articleTitleAndDoi[1];
 
-    return annotationId;
+    Map<Long, List<Annotation>> replyMap = buildReplyMap(articleID);
+
+
+    List<AnnotationView> viewResults = new ArrayList<AnnotationView>(annotationResults.size());
+
+    for (Object annotation : annotationResults) {
+      viewResults.add(new AnnotationView((Annotation) annotation, articleDoi, articleTitle, replyMap));
+    }
+
+    if (order == AnnotationOrder.MOST_RECENT_REPLY) {
+      //Order the results by the most recent reply date
+      Collections.sort(viewResults, new Comparator<AnnotationView>() {
+        @Override
+        public int compare(AnnotationView view1, AnnotationView view2) {
+          return -1 * view1.getLastReplyDate().compareTo(view2.getLastReplyDate());
+        }
+      });
+    }
+
+    return viewResults.toArray(new AnnotationView[viewResults.size()]);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public AnnotationView[] listAnnotationsNoReplies(final Long articleID,
+                                                   final Set<AnnotationType> annotationTypes,
+                                                   final AnnotationOrder order) {
+    if (order == AnnotationOrder.MOST_RECENT_REPLY) {
+      throw new IllegalArgumentException("Cannot specify Most Recent Reply order type when replies are not being loaded up");
+    }
+    //Basic criteria
+    DetachedCriteria criteria = DetachedCriteria.forClass(Annotation.class)
+        .add(Restrictions.eq("articleID", articleID))
+        .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+    //restrict by type
+    if (annotationTypes != null && !annotationTypes.isEmpty()) {
+      criteria.add(Restrictions.in("type", annotationTypes));
+    }
+    switch (order) {
+      case OLDEST_TO_NEWEST:
+        criteria.addOrder(Order.asc("created"));
+        break;
+    }
+    List annotationResults = hibernateTemplate.findByCriteria(criteria);
+    //Don't want to call buildAnnotationView() here because that would involve finding the article title and doi for each annotation,
+    // when we only need to do it once. So load up the info we need to build annotation views here
+    Object[] articleTitleAndDoi;
+    try {
+      articleTitleAndDoi = (Object[]) hibernateTemplate.findByCriteria(
+          DetachedCriteria.forClass(Article.class)
+              .add(Restrictions.eq("ID", articleID))
+              .setProjection(Projections.projectionList()
+                  .add(Projections.property("doi"))
+                  .add(Projections.property("title"))),
+          0, 1).get(0);
+
+    } catch (IndexOutOfBoundsException e) {
+      throw new IllegalArgumentException("article " + articleID + " didn't exist");
+    }
+    String articleDoi = (String) articleTitleAndDoi[0];
+    String articleTitle = (String) articleTitleAndDoi[1];
+
+    List<AnnotationView> viewResults = new ArrayList<AnnotationView>(annotationResults.size());
+    for (Object annotation : annotationResults) {
+      viewResults.add(new AnnotationView((Annotation) annotation, articleDoi, articleTitle, null));
+    }
+    return viewResults.toArray(new AnnotationView[viewResults.size()]);
+  }
+
+  @Override
+  public int countAnnotations(Long articleID, Set<AnnotationType> annotationTypes) {
+    if (annotationTypes != null && !annotationTypes.isEmpty()) {
+      return ((Number) hibernateTemplate.findByCriteria(
+          DetachedCriteria.forClass(Annotation.class)
+              .add(Restrictions.eq("articleID", articleID))
+              .add(Restrictions.in("type", annotationTypes))
+              .setProjection(Projections.rowCount())
+      ).get(0)).intValue();
+    } else {
+      return ((Number) hibernateTemplate.findByCriteria(
+          DetachedCriteria.forClass(Annotation.class)
+              .add(Restrictions.eq("articleID", articleID))
+              .setProjection(Projections.rowCount())
+      ).get(0)).intValue();
+    }
+  }
+
+
+  @Override
+  public Long createComment(UserProfile user, String articleDoi, String title, String body, String ciStatement, Context context, boolean flagAsCorrection) {
+    if (articleDoi == null) {
+      throw new IllegalArgumentException("Attempted to create comment with null article id");
+    } else if (user == null || user.getID() == null) {
+      throw new IllegalArgumentException("Attempted to create comment without a creator");
+    } else if (body == null || body.isEmpty()) {
+      throw new IllegalArgumentException("Attempted to create comment with no body");
+    }
+    String xpath = null;
+    if (context != null) {
+      try {
+        //ContextFormatter.asXPointer() can return null or empty if the context doesn't indicate a path
+        xpath = ContextFormatter.asXPointer(context);
+      } catch (ApplicationException e) {
+        throw new IllegalArgumentException("Invalid context", e);
+      }
+    }
+    log.debug("Creating comment on article: {}; title: {}; body: {}", new Object[]{articleDoi, title, body});
+    Long articleID;
+    try {
+      articleID = (Long) hibernateTemplate.findByCriteria(
+          DetachedCriteria.forClass(Article.class)
+              .add(Restrictions.eq("doi", articleDoi))
+              .setProjection(Projections.id())
+      ).get(0);
+    } catch (IndexOutOfBoundsException e) {
+      throw new IllegalArgumentException("Invalid doi: " + articleDoi);
+    }
+    //If the xpointer was valid, it's an inline note. Else it's a general comment
+    AnnotationType type;
+    if (!StringUtils.isEmpty(xpath)) {
+      type = AnnotationType.NOTE;
+      //kick the article out of cache
+      articleHtmlCache.remove(articleDoi);
+    } else {
+      type = AnnotationType.COMMENT;
+    }
+
+    //generate an annotation uri
+    Annotation comment = new Annotation(user, type, articleID);
+    comment.setAnnotationUri(URIGenerator.generate(comment));
+    comment.setTitle(title);
+    comment.setBody(body);
+    comment.setCompetingInterestBody(ciStatement);
+    comment.setXpath(xpath);
+    Long id = (Long) hibernateTemplate.save(comment);
+    if (flagAsCorrection) {
+      Flag flag = new Flag(user, FlagReasonCode.CORRECTION, comment);
+      flag.setComment("Note created and flagged as a correction");
+      hibernateTemplate.save(flag);
+    }
+
+    return id;
+  }
+
+  @Override
+  public Long createReply(UserProfile user, Long parentId, String title, String body, @Nullable String ciStatement) {
+    if (parentId == null) {
+      throw new IllegalArgumentException("Attempting to create reply with null parent id");
+    }
+    log.debug("Creating reply to {}; title: {}; body: {}", new Object[]{parentId, title, body});
+    Long articleID;
+    try {
+      articleID = (Long) hibernateTemplate.findByCriteria(
+          DetachedCriteria.forClass(Annotation.class)
+              .add(Restrictions.eq("ID", parentId))
+              .setProjection(Projections.property("articleID")), 0, 1)
+          .get(0);
+    } catch (IndexOutOfBoundsException e) {
+      throw new IllegalArgumentException("Invalid annotation id: " + parentId);
+    }
+
+    Annotation reply = new Annotation(user, AnnotationType.REPLY, articleID);
+    reply.setParentID(parentId);
+    reply.setTitle(title);
+    reply.setBody(body);
+    reply.setCompetingInterestBody(ciStatement);
+    reply.setAnnotationUri(URIGenerator.generate(reply));
+    return (Long) hibernateTemplate.save(reply);
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  public AnnotationView getFullAnnotationView(Long annotationId) {
+    if (annotationId == null) {
+      throw new IllegalArgumentException("No annotation id specified");
+    }
+    log.debug("populating view object for annotation {}", annotationId);
+    Annotation annotation = (Annotation) hibernateTemplate.get(Annotation.class, annotationId);
+    if (annotation == null) {
+      throw new IllegalArgumentException("Specified id that does not correspond to an annotation; " + annotationId);
+    }
+
+    return buildAnnotationView(annotation, true);
+  }
+
+  @Override
+  public AnnotationView getBasicAnnotationView(Long annotationId) {
+    if (annotationId == null) {
+      throw new IllegalArgumentException("No annotation id specified");
+    }
+    log.debug("populating view object for annotation {}", annotationId);
+    Annotation annotation = (Annotation) hibernateTemplate.get(Annotation.class, annotationId);
+    if (annotation == null) {
+      throw new IllegalArgumentException("Specified id that does not correspond to an annotation; " + annotationId);
+    }
+    return buildAnnotationView(annotation, false);
+  }
+
+  @Override
+  public AnnotationView getBasicAnnotationViewByUri(String annotationUri) {
+    if (annotationUri == null) {
+      throw new IllegalArgumentException("No annotation URI specified");
+    }
+    log.debug("populating view object for annotation {}", annotationUri);
+    Annotation annotation;
+    try {
+      annotation = (Annotation) hibernateTemplate.findByCriteria(
+          DetachedCriteria.forClass(Annotation.class)
+              .add(Restrictions.eq("annotationUri", annotationUri))
+              .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
+      ).get(0);
+    } catch (IndexOutOfBoundsException e) {
+      throw new IllegalArgumentException("Specified URI that does not correspond to an annotation; " + annotationUri);
+    }
+    return buildAnnotationView(annotation, false);
+  }
+
+  @SuppressWarnings("unchecked")
+  private AnnotationView buildAnnotationView(Annotation annotation,
+                                             String articleDoi,
+                                             String articleTitle,
+                                             boolean loadAllReplies) {
+    Map<Long, List<Annotation>> fulReplyMap = null;
+    if (loadAllReplies) {
+      fulReplyMap = buildReplyMap(annotation.getArticleID());
+    }
+
+    return new AnnotationView(annotation, articleDoi, articleTitle, fulReplyMap);
+  }
+
+  /**
+   * Build up a map of id, and replies to that id so we can initialize the reply tree
+   *
+   * @param articleId
+   * @return
+   */
+  @SuppressWarnings("unchecked")
+  private Map<Long, List<Annotation>> buildReplyMap(Long articleId) {
+    Map<Long, List<Annotation>> fullReplyMap = new HashMap<Long, List<Annotation>>();
+    List<Annotation> allReplies = hibernateTemplate.findByCriteria(
+        DetachedCriteria.forClass(Annotation.class)
+            .add(Restrictions.eq("articleID", articleId))
+            .add(Restrictions.eq("type", AnnotationType.REPLY))
+    );
+    for (Annotation reply : allReplies) {
+      //parent id should never be null on a reply
+      if (reply.getParentID() == null) {
+        log.warn("Found a reply with null parent id.  Reply id: " + reply.getID());
+      } else {
+        if (!fullReplyMap.containsKey(reply.getParentID())) {
+          fullReplyMap.put(reply.getParentID(), new ArrayList<Annotation>());
+        }
+        fullReplyMap.get(reply.getParentID()).add(reply);
+      }
+    }
+    return Collections.unmodifiableMap(fullReplyMap);
+  }
+
+  @SuppressWarnings("unchecked")
+  private AnnotationView buildAnnotationView(Annotation annotation, boolean loadAllReplies) {
+    Object values[];
+    try {
+      values = (Object[]) hibernateTemplate.findByCriteria(
+          DetachedCriteria.forClass(Article.class)
+              .add(Restrictions.eq("ID", annotation.getArticleID()))
+              .setProjection(Projections.projectionList()
+                  .add(Projections.property("doi"))
+                  .add(Projections.property("title"))),
+          0, 1).get(0);
+
+    } catch (IndexOutOfBoundsException e) {
+      //this should never happen
+      throw new IllegalStateException("Annotation " + annotation.getID() + " pointed to an article that didn't exist;" +
+          " articleID: " + annotation.getArticleID());
+    }
+
+    String articleDoi = (String) values[0];
+    String articleTitle = (String) values[1];
+
+    return buildAnnotationView(annotation, articleDoi, articleTitle, loadAllReplies);
   }
 
   @Override
   @Transactional(rollbackFor = Throwable.class)
-  public String createFlag(String target, String reasonCode, String body, String mimeType, UserProfile user) throws Exception {
-    final String flagBody = FlagUtil.createFlagBody(reasonCode, body);
-    return createComment(target, null, null, null, mimeType, flagBody, null, true, user);
+  public Long createFlag(UserProfile user, Long annotationId, FlagReasonCode reasonCode, String body) {
+    if (annotationId == null) {
+      throw new IllegalArgumentException("No annotation id specified");
+    }
+    Annotation flaggedAnnotation = (Annotation) hibernateTemplate.get(Annotation.class, annotationId);
+    if (flaggedAnnotation == null) {
+      throw new IllegalArgumentException("Id " + annotationId + " didn't correspond to an annotation");
+    }
+
+    log.debug("Creating flag on annotation: {} with reason code: {}", annotationId, reasonCode);
+    Flag flag = new Flag(user, reasonCode, flaggedAnnotation);
+    flag.setComment(body);
+    return (Long) hibernateTemplate.save(flag);
   }
 
-  /*
-  * Create a citation object from the article class.
-  *
-  **/
-  private Citation getArticleCitation(ArticleAnnotation annotation) {
-    List<Article> articles = hibernateTemplate.findByCriteria(DetachedCriteria.forClass(Article.class)
-          .add(Restrictions.eq("doi", annotation.getAnnotates().toString())));
-
-    if (articles.size() == 0) {
-      throw new IllegalArgumentException("Article " + annotation.getAnnotates() + " not found");
-    }
-
-    Article article = articles.get(0);
-    Citation c = new Citation();
-
-    c.setTitle(article.getTitle());
-    c.setJournal(article.getJournal());
-
-    Date date = article.getDate();
-
-    if(article.getDate() != null) {
-      c.setYear(Integer.parseInt(yearFormat.format(date)));
-      c.setDisplayYear(yearFormat.format(date));
-    }
-
-    c.setDoi(article.getDoi());
-    c.setELocationId(article.geteLocationId());
-    c.setVolume(article.getVolume());
-    c.setIssue(article.getIssue());
-    c.setPublisherName(article.getPublisherName());
-    c.setPublisherLocation(article.getPublisherLocation());
-    c.setPages(article.getPages());
-
-    List<ArticleAuthor> authors = article.getAuthors();
-    if (authors != null) {
-      c.setAnnotationArticleAuthors(new ArrayList<ArticleContributor>());
-      for (ArticleAuthor author : authors) {
-        ArticleContributor newAuthor = new ArticleContributor();
-        newAuthor.setGivenNames(author.getGivenNames());
-        newAuthor.setSurnames(author.getSurnames());
-        newAuthor.setSuffix(author.getSuffix());
-        newAuthor.setFullName(author.getFullName());
-        newAuthor.setIsAuthor(true);
-
-        newAuthor.setId(null);
-        c.getAnnotationArticleAuthors().add(newAuthor);
-      }
-    }
-
-    // article editor information is stored in the article object
-    List<ArticleEditor> editors = article.getEditors();
-    if (editors != null) {
-      c.setAnnotationArticleEditors(new ArrayList<ArticleContributor>());
-      for (ArticleEditor editor : editors) {
-        ArticleContributor newEditor = new ArticleContributor();
-        newEditor.setGivenNames(editor.getGivenNames());
-        newEditor.setSurnames(editor.getSurnames());
-        newEditor.setSuffix(editor.getSuffix());
-        newEditor.setFullName(editor.getFullName());
-        newEditor.setIsAuthor(false);
-
-        newEditor.setId(null);
-        c.getAnnotationArticleEditors().add(newEditor);
-      }
-    }
-
-    return c;
-  }
 }

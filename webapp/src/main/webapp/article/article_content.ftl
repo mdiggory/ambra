@@ -21,7 +21,7 @@
 
 <#import "article_variables.ftl" as article>
 <#import "/global/global_variables.ftl" as global>
-<@s.url id="createDiscussionURL" namespace="/annotation/secure" action="startDiscussion" includeParams="none" target="${articleURI}" />
+<@s.url id="createDiscussionURL" namespace="/annotation/secure" action="startDiscussion" includeParams="none" articleURI="${articleURI}" />
 <div id="researchArticle" class="content">
   <span rel="dc:publisher" href="${Request[freemarker_config.journalContextAttributeKey].baseUrl}"></span>
   <a id="top" name="top"></a>
@@ -31,30 +31,30 @@
   <h1 xpathLocation="noSelect" property="dc:title" datatype="" rel="dc:type" href="http://purl.org/dc/dcmitype/Text"><@articleFormat>${article.docTitle}</@articleFormat></h1>
   <#if article.description ??><div property="dc:description" datatype="" style="display:none; visibility:hidden;"><@articleFormat>${article.description}</@articleFormat></div></#if>
   <span property="dc:date" content="${article.date}" datatype="xsd:date" rel="dc:identifier" href="http://dx.doi.org/${article.shortDOI}"></span>
-  <#if article.articleSubjects??>
-  <#list article.articleSubjects as articleSubject>
-  <span property="dc:subject" content="${articleSubject}"></span>
+  <#if article.dcCategories??>
+  <#list article.dcCategories as dcCategory>
+  <span property="dc:subject" content="${dcCategory}"></span>
   </#list>
   </#if>
   <#assign tab="article" />
   <#include "article_tabs.ftl">
-  <#if (numRetractions > 0)>
+  <#if (retractions?size > 0)>
   <div id="retractionHtmlId" class="retractionHtmlId" xpathLocation="noSelect">
     <div id="retractionlist">
     <#list retractions as retraction>
-      <@s.url id="retractionFeedbackURL" includeParams="get" namespace="/annotation" action="listThread" inReplyTo="${retraction.id}" root="${retraction.id}" />
+      <@s.url id="retractionFeedbackURL" includeParams="get" namespace="/annotation" action="listThread" inReplyTo="${retraction.id?c}" root="${retraction.id?c}" />
       <div><p class="retractionHtmlId">Retraction: ${retraction.title}</p>
         ${retraction.escapedComment} (<a href="${retractionFeedbackURL}">comment on this retraction</a>)</div>
     </#list>
     </div>
   </div>
   </#if>
-  <#if (numFormalCorrections > 0)>
+  <#if (formalCorrections?size > 0)>
   <div id="fch" class="fch" xpathLocation="noSelect">
     <p class="fch"><strong> Formal Correction:</strong> This article has been <em>formally corrected</em> to address the following errors.</p>
     <ol id="fclist" class="fclist">
     <#list formalCorrections as correction>
-      <li><span>${correction.getCommentWithUrlLinkingNoPTags(true)} (<a class="formalCorrectionHref" href="#" annid="${correction.id}">read formal correction)</a></span></li>
+      <li><span>${correction.getCommentWithUrlLinkingNoPTags(true)} (<a class="formalCorrectionHref" href="#" annid="${correction.annotationUri}">read formal correction)</a></span></li>
     </#list>
     </ol>
   </div>

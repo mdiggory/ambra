@@ -42,7 +42,6 @@
 
   <bean id="fetchArticleService" class="org.ambraproject.article.service.FetchArticleServiceImpl">
     <property name="sessionFactory" ref="hibernateSessionFactory"/>
-    <property name="articleService" ref="articleService"/>
     <property name="articleHtmlCache" ref="articleHtmlCache" />
   </bean>
 
@@ -55,8 +54,9 @@
     <property name="largeImageRep" value="PNG_L"/>
   </bean>
 
-  <bean id="trackBackService" class="org.ambraproject.annotation.service.TrackbackServiceImpl">
+  <bean id="trackBackService" class="org.ambraproject.trackback.TrackbackServiceImpl">
     <property name="sessionFactory" ref="hibernateSessionFactory"/>
+    <property name="configuration" ref="ambraConfiguration"/>
   </bean>
 
   <!-- Defined in webapp/src/main/resources/ambra/configuration/defaults.xml -->
@@ -128,16 +128,15 @@
 
   <bean id="feedService" class="org.ambraproject.feed.service.FeedServiceImpl">
     <property name="sessionFactory" ref="hibernateSessionFactory"/>
-    <property name="articleService" ref="articleService"/>
     <property name="annotationService" ref="annotationService"/>
     <property name="journalService" ref="journalService"/>
-    <property name="feedCache" ref="feedCache"/>
     <property name="solrHttpService" ref="solrHttpService"/>
     <property name="browseService" ref="browseService"/>
     <property name="configuration" ref="ambraConfiguration" />
     <property name="solrFieldConverter" ref="solrFieldConverter" />
   </bean>
 
+  <!--TODO: Neither DocumentBuilder nor DocumentBuilderFactory are thread safe ... find a solution, possibly using ThreadLocals-->
   <bean id="documentBuilder" class="javax.xml.parsers.DocumentBuilder" factory-bean="documentBuilderFactory"
         factory-method="newDocumentBuilder"/>
 
@@ -184,20 +183,8 @@
     <property name="sessionFactory" ref="hibernateSessionFactory"/>
   </bean>
 
-  <bean id="annotationConverter" class="org.ambraproject.annotation.service.AnnotationConverterImpl"/>
-
-  <bean id="replyService" class="org.ambraproject.annotation.service.ReplyServiceImpl">
-    <property name="sessionFactory" ref="hibernateSessionFactory"/>
-    <property name="encodingCharset" ref="defaultEncodingCharset"/>
-    <property name="defaultType" value="http://www.w3.org/2001/12/replyType#Comment"/>
-    <property name="applicationId" ref="applicationId"/>
-    <property name="permissionsService" ref="permissionsService"/>
-  </bean>
-
   <bean id="annotationService" class="org.ambraproject.annotation.service.AnnotationServiceImpl">
     <property name="sessionFactory" ref="hibernateSessionFactory"/>
-    <property name="encodingCharset" ref="defaultEncodingCharset"/>
-    <property name="applicationId" ref="applicationId"/>
     <property name="articleHtmlCache" ref="articleHtmlCache"/>
   </bean>
 
@@ -280,14 +267,6 @@
     <property name="mappingLocations">
       <list>
         <value>WEB-INF/hibernateMappings/CustomTypes.hbm.xml</value>
-        <value>WEB-INF/hibernateMappings/Citation.hbm.xml</value>
-
-        <value>WEB-INF/hibernateMappings/Annotation.hbm.xml</value>
-        <value>WEB-INF/hibernateMappings/ByteArrayBlob.hbm.xml</value>
-        <value>WEB-INF/hibernateMappings/RatingContent.hbm.xml</value>
-        <value>WEB-INF/hibernateMappings/TrackbackContent.hbm.xml</value>
-        <value>WEB-INF/hibernateMappings/RatingSummaryContent.hbm.xml</value>
-        <value>WEB-INF/hibernateMappings/Reply.hbm.xml</value>
 
         <value>WEB-INF/hibernateMappings/Aggregations.hbm.xml</value>
         <value>WEB-INF/hibernateMappings/CitedPerson.hbm.xml</value>
@@ -313,9 +292,6 @@
     <constructor-arg index="0" ref="browseSolrEhcache"/>
     <constructor-arg index="1" value="false"/>
   </bean>
-  <bean id="feedCache" class="org.ambraproject.cache.EhcacheProvider">
-    <constructor-arg index="0" ref="feedEhcache"/>
-  </bean>
   <bean id="articleHtmlCache" class="org.ambraproject.cache.EhcacheProvider">
     <constructor-arg index="0" ref="articleHtmlEhcache"/>
   </bean>
@@ -335,10 +311,6 @@
 
   <bean id="browseSolrEhcache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
     <property name="cacheName" value="BrowseSolrCache"/>
-  </bean>
-
-  <bean id="feedEhcache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
-    <property name="cacheName" value="FeedCache"/>
   </bean>
 
   <bean id="articleHtmlEhcache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  $HeadURL:: http://svn.ambraproject.org/svn/ambra/ambra/branches/new-nlm-dtd-3.0/ambra#$
-  $Id: crossref.xsl 10452 2012-03-01 02:21:25Z lmurdock $
+  $HeadURL::                                                                            $
+  $Id$
   
   Copyright (c) 2007-2010 by Public Library of Science
   http://plos.org

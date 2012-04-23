@@ -1,6 +1,6 @@
 <#--
-  $HeadURL:: http://ambraproject.org/svn/ambra/head/ambra/webapp/src/main/webapp/articl#$
-  $Id: article_related.ftl 7744 2009-06-12 16:37:30Z josowski $
+  $HeadURL::                                                                            $
+  $Id$
 
   Copyright (c) 2007-2010 by Public Library of Science
   http://plos.org
@@ -57,12 +57,8 @@
       Search for related blog posts on <a href="http://blogsearch.google.com/blogsearch?as_q=%22${articleInfoX.unformattedTitle?url}%22">Google Blogs</a>
 
       <h3>Trackbacks</h3>
-      <#assign trackbackListCounter=0 />
-      <#list trackbackList as t>
-        <#assign trackbackListCounter=(trackbackListCounter + 1) />
-      </#list>
-      <#if (trackbackListCounter < 1) || (trackbackListCounter > 1)>
-        <@s.a href="${relatedTabURL}#trackbackLinkAnchor">${trackbackListCounter} trackbacks</@s.a>
+      <#if trackbackCount < 1 || trackbackCount gt 1>
+        <@s.a href="${relatedTabURL}#trackbackLinkAnchor">${trackbackCount} trackbacks</@s.a>
       <#else>
         <@s.a href="${relatedTabURL}#trackbackLinkAnchor">1 trackback</@s.a>
       </#if>

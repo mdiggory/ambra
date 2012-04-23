@@ -21,7 +21,9 @@
 
 package org.ambraproject.article.service;
 
+import org.ambraproject.models.AnnotationType;
 import org.ambraproject.models.ArticleAsset;
+import org.ambraproject.views.AnnotationView;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.ambraproject.filestore.FSIDMapper;
@@ -29,23 +31,19 @@ import org.ambraproject.filestore.FileStoreService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
-import org.springframework.transaction.annotation.Transactional;
 import org.ambraproject.ApplicationException;
 import org.ambraproject.annotation.service.AnnotationService;
 import org.ambraproject.annotation.service.Annotator;
 import org.ambraproject.article.AuthorExtra;
+import org.ambraproject.model.article.ArticleInfo;
 import org.ambraproject.article.CitationReference;
 import org.ambraproject.cache.Cache;
-import org.topazproject.ambra.models.ArticleAnnotation;
 import org.ambraproject.service.HibernateServiceImpl;
 import org.ambraproject.service.XMLService;
-import org.ambraproject.util.TextUtils;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
-
 import javax.activation.DataSource;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
@@ -53,12 +51,11 @@ import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 /**
  * Fetch article service.
@@ -70,14 +67,22 @@ public class FetchArticleServiceImpl extends HibernateServiceImpl implements Fet
 
   private static final Logger log = LoggerFactory.getLogger(FetchArticleServiceImpl.class);
   private AnnotationService annotationService;
-  private ArticleService articleService;
   private FileStoreService fileStoreService;
   private Cache articleHtmlCache;
 
-  private String getTransformedArticle(final String articleURI, final String authId)
+  private String getTransformedArticle(final ArticleInfo article)
       throws ApplicationException, NoSuchArticleIdException {
     try {
-      return articleTransformService.getTransformedDocument(getAnnotatedContentAsDocument(articleURI, authId));
+//      Document dom = getAnnotatedContentAsDocument(article);
+//
+//      if(log.isDebugEnabled()) {
+//        DOMImplementationLS domImplLS = (DOMImplementationLS) dom
+//          .getImplementation();
+//        LSSerializer serializer = domImplLS.createLSSerializer();
+//        log.debug(serializer.writeToString(dom));
+//      }
+
+      return articleTransformService.getTransformedDocument(getAnnotatedContentAsDocument(article));
     } catch (ApplicationException ae) {
       throw ae;
     } catch (NoSuchArticleIdException nsae) {
@@ -89,18 +94,17 @@ public class FetchArticleServiceImpl extends HibernateServiceImpl implements Fet
 
   /**
    * Get the URI transformed as HTML.
-   * @param articleURI articleURI
-   * @param authId the authorization ID of the current user
+   * @param article The article to transform
    * @return String representing the annotated article as HTML
    * @throws org.ambraproject.ApplicationException ApplicationException
    */
-  public String getURIAsHTML(final String articleURI, final String authId) throws Exception {
-    final Object lock = (ARTICLE_LOCK + articleURI).intern();  // lock @ Article level
+  public String getArticleAsHTML(final ArticleInfo article) throws Exception {
+    final Object lock = (ARTICLE_LOCK + article.getDoi()).intern(); //lock @ Article level
 
-    String content = articleHtmlCache.get(articleURI,
+    String content = articleHtmlCache.get(article.getDoi(),
       new Cache.SynchronizedLookup<String, Exception>(lock) {
         public String lookup() throws Exception {
-          return getTransformedArticle(articleURI, authId);
+          return getTransformedArticle(article);
         }
       });
     
@@ -108,30 +112,8 @@ public class FetchArticleServiceImpl extends HibernateServiceImpl implements Fet
   }
 
   /**
-   * Return the annotated content as a String
-   * @param articleURI articleURI
-   * @param authId the authorization ID of the current user
    *
-   * @return an the annotated content as a String
-   * @throws javax.xml.parsers.ParserConfigurationException ParserConfigurationException
-   * @throws org.xml.sax.SAXException SAXException
-   * @throws java.io.IOException IOException
-   * @throws java.net.URISyntaxException URISyntaxException
-   * @throws org.ambraproject.ApplicationException ApplicationException
-   * @throws NoSuchArticleIdException NoSuchArticleIdException
-   * @throws javax.xml.transform.TransformerException TransformerException
-   */
-  public String getAnnotatedContent(final String articleURI, final String authId)
-      throws ParserConfigurationException, SAXException, IOException, URISyntaxException,
-             ApplicationException, NoSuchArticleIdException,TransformerException{
-    return TextUtils.getAsXMLString(getAnnotatedContentAsDocument(articleURI, authId));
-  }
-
-  /**
-   *
-   * @param articleDOI - the DOI of the (Article) content
-   * @param authId the authorization ID of the current user
-   *
+   * @param article- the Article content
    * @return Article DOM document
    * @throws java.io.IOException
    * @throws NoSuchArticleIdException
@@ -139,24 +121,27 @@ public class FetchArticleServiceImpl extends HibernateServiceImpl implements Fet
    * @throws org.xml.sax.SAXException
    * @throws org.ambraproject.ApplicationException
    */
-  private Document getAnnotatedContentAsDocument(final String articleDOI, final String authId)
+  private Document getAnnotatedContentAsDocument(final ArticleInfo article)
       throws IOException, NoSuchArticleIdException, ParserConfigurationException, SAXException,
              ApplicationException {
     DataSource content;
 
     try {
-      content = getArticleXML(articleDOI, authId);
+      content = getArticleXML(article.getDoi());
     } catch (NoSuchArticleIdException ex) {
-      throw new NoSuchArticleIdException(articleDOI,
+      throw new NoSuchArticleIdException(article.getDoi(),
                                          "(representation=" + articleTransformService.getArticleRep() + ")",
                                          ex);
     }
 
-    final ArticleAnnotation[] annotations = annotationService.listAnnotations(articleDOI, null);
+    final AnnotationView[] annotations = annotationService.listAnnotationsNoReplies(
+        article.getId(),
+        EnumSet.of(AnnotationType.MINOR_CORRECTION, AnnotationType.FORMAL_CORRECTION, AnnotationType.RETRACTION, AnnotationType.NOTE),
+        AnnotationService.AnnotationOrder.OLDEST_TO_NEWEST);
     return applyAnnotationsOnContentAsDocument(content, annotations);
   }
 
-  private DataSource getArticleXML(final String articleDoi, final String authId)
+  private DataSource getArticleXML(final String articleDoi)
     throws NoSuchArticleIdException {
     String fsid = FSIDMapper.doiTofsid(articleDoi, "XML");
 
@@ -174,7 +159,7 @@ public class FetchArticleServiceImpl extends HibernateServiceImpl implements Fet
   }
 
   private Document applyAnnotationsOnContentAsDocument(DataSource content,
-                                                       ArticleAnnotation[] annotations)
+                                                       AnnotationView[] annotations)
           throws ApplicationException
   {
     Document doc = null;
@@ -215,15 +200,6 @@ public class FetchArticleServiceImpl extends HibernateServiceImpl implements Fet
     this.annotationService = annotationService;
   }
 
-
-  /**
-   * @param articleService The articleService to set.
-   */
-  @Required
-  public void setArticleService(ArticleService articleService) {
-    this.articleService = articleService;
-  }
-
   /**
    * @param articleTransformService The articleXmlUtils to set.
    */
@@ -234,17 +210,17 @@ public class FetchArticleServiceImpl extends HibernateServiceImpl implements Fet
 
   /**
    * Get the article xml
-   * @param articleURI article uri
-   * @param authId the authorization ID of the current user
+   * @param article article uri
    *
    * @return article xml
    */
-  public Document getArticleDocument(String articleURI, final String authId) {
+  public Document getArticleDocument(final ArticleInfo article) {
     Document doc = null;
     DataSource content = null;
+    String articleURI = article.getDoi();
 
     try {
-      content = getArticleXML(articleURI, authId);
+      content = getArticleXML(articleURI);
     } catch (Exception e) {
       log.warn("Article " + articleURI + " not found.");
       return null;

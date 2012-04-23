@@ -36,8 +36,8 @@
   <#assign docTitle = articleInfoX.title />
   <#assign date = articleInfoX.date?string("yyyy-MM-dd") />
   <#assign articlePublisher = articleInfoX.publisher!"" />
-  <#if articleInfoX.subjects??>
-    <#assign articleSubjects = articleInfoX.subjects />
+  <#if articleInfoX.transposedCategories??>
+    <#assign dcCategories = articleInfoX.transposedCategories />
   </#if>
   <#if articleInfoX.description??>
     <#assign description = articleInfoX.description />

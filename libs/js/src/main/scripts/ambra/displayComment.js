@@ -149,11 +149,10 @@ ambra.displayComment = {
     
     // Insert title link text
     var titleLink = document.createElement('a');
-    titleLink.href = _namespace + '/annotation/listThread.action?inReplyTo=' + jsonObj.annotationId + '&root=' + jsonObj.annotationId; 
+    titleLink.href = _namespace + '/annotation/listThread.action?inReplyTo=' + jsonObj.annotationId + '&root=' + jsonObj.annotationId;
     titleLink.className = "discuss icon";
     titleLink.title="View full note";
-    //alert("jsonObj.annotation.commentTitle = " + jsonObj.annotation.commentTitle);
-    titleLink.innerHTML = jsonObj.annotation.commentTitle;
+    titleLink.innerHTML = jsonObj.annotation.title;
     titleDocFrag.appendChild(titleLink);
 
     return titleDocFrag;    
@@ -172,12 +171,12 @@ ambra.displayComment = {
   buildDisplayDetail: function (jsonObj) {
     // Insert creator detail info
     var annotationId = jsonObj.annotationId;
-    var tooltipId = annotationId.substring(annotationId.lastIndexOf('/') + 1, annotationId.length);
+    var tooltipId = jsonObj.annotationId;
     //alert("tooltipId = " + tooltipId);
     
     var creatorId = jsonObj.creatorUserName;
     var creatorLink = document.createElement('a');
-    creatorLink.href = _namespace + '/user/showUser.action?userAccountUri=' + jsonObj.annotation.creator;
+    creatorLink.href = _namespace + '/user/showUser.action?userId=' + jsonObj.annotation.creatorID;
 //   creatorLink.title = "Annotation Author";
     creatorLink.className = "user icon";
     creatorLink.appendChild(document.createTextNode(creatorId));
@@ -249,7 +248,7 @@ ambra.displayComment = {
   buildDisplayBody: function (jsonObj) {
     // Insert formatted comment
     var commentFrag = document.createDocumentFragment();
-    commentFrag = jsonObj.annotation.escapedTruncatedComment;
+    commentFrag = jsonObj.annotation.truncatedBody;
     
     return commentFrag;
   },
@@ -273,8 +272,8 @@ ambra.displayComment = {
     if (jsonObj.cisStartDateMillis < jsonObj.annotation.createdAsMillis) {
       var ciStatementFrag = document.createDocumentFragment();
 
-      if (jsonObj.annotation.truncatedCIStatement) {
-        ciStatementFrag = "<div class=\"cis\"><strong>" + this.ciStatementMsg + "</strong>" + jsonObj.annotation.truncatedCIStatement + "</div>";
+      if (jsonObj.annotation.truncatedCompetingInterestStatement) {
+        ciStatementFrag = "<div class=\"cis\"><strong>" + this.ciStatementMsg + "</strong>" + jsonObj.annotation.truncatedCompetingInterestStatement + "</div>";
       } else {
         ciStatementFrag = "<div class=\"cis\"><strong>" + this.noCIStatementMsg + "</strong></div>";
       }
@@ -377,7 +376,7 @@ ambra.displayComment = {
       newListItem.className = 'active';
 
     var titleNode = document.createElement('span');
-    titleNode.innerHTML = jsonObj.annotation.commentTitle;
+    titleNode.innerHTML = jsonObj.annotation.title;
     
     newListItem.appendChild(titleNode);
     //newListItem.appendChild(this.buildDisplayHeader(jsonObj));

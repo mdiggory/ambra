@@ -28,10 +28,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.topazproject.ambra.models.Comment;
-import org.topazproject.ambra.models.FormalCorrection;
 import org.topazproject.ambra.models.Issue;
-import org.topazproject.ambra.models.MinorCorrection;
 
 import java.io.Serializable;
 import java.net.URI;
@@ -57,9 +54,6 @@ public class AmbraIdGeneratorTest extends AbstractTestNGSpringContextTests {
   @DataProvider(name = "unsavedObjects")
   public Object[][] getUnsavedObjects() {
     return new Object[][]{
-        {new Comment(), URI.class, idGenerator.getPrefix() + "annotation/" },
-        {new MinorCorrection(), URI.class, idGenerator.getPrefix() + "annotation/" },
-        {new FormalCorrection(), URI.class, idGenerator.getPrefix() + "annotation/" },
         {new Issue(), URI.class, idGenerator.getPrefix() + "aggregation/"}
     };
   }
@@ -76,15 +70,11 @@ public class AmbraIdGeneratorTest extends AbstractTestNGSpringContextTests {
 
   @DataProvider(name = "objectsWithIdSet")
   public Object[][] getObjectsWithExpectedId() {
-    Comment comment = new Comment();
-    comment.setId(URI.create("id://comment-id"));
-
     Issue issue = new Issue();
     issue.setId(URI.create("id://issue-id"));
 
     return new Object[][]{
-        {comment, comment.getId()},
-        {issue, issue.getId()},
+        {issue, issue.getId()}
     };
   }
 
@@ -99,15 +89,12 @@ public class AmbraIdGeneratorTest extends AbstractTestNGSpringContextTests {
   @DataProvider(name = "savedObjects")
   public Object[][] getSavedObjects() {
     session.beginTransaction();
-    Comment comment = new Comment();
-    comment.setId((URI) session.save(comment));
 
     Issue issue = new Issue();
     issue.setId((URI) session.save(issue));
 
     session.getTransaction().commit();
     return new Object[][]{
-        {comment, comment.getId()},
         {issue, issue.getId()}
     };
   }

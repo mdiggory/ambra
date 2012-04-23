@@ -19,41 +19,31 @@
  */
 package org.ambraproject.annotation.action;
 
-import java.util.List;
-
+import org.ambraproject.Constants;
+import org.ambraproject.action.BaseSessionAwareActionSupport;
+import org.ambraproject.annotation.service.AnnotationService;
+import org.ambraproject.util.ProfanityCheckingService;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.commons.lang.StringUtils;
-
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-import org.ambraproject.action.BaseSessionAwareActionSupport;
-import org.ambraproject.annotation.service.ReplyService;
-import org.ambraproject.util.ProfanityCheckingService;
-
-import org.topazproject.ambra.models.Annotation;
-import org.topazproject.ambra.models.AnnotationBlob;
-
-import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
+import java.util.List;
 
 /**
  * Action for creating a reply.
  */
-@SuppressWarnings("serial")
 public class CreateReplyAction extends BaseSessionAwareActionSupport {
-  private String replyId;
-  private String root;
-  private String inReplyTo;
+  private Long replyId;
+  private Long inReplyTo;
   private String commentTitle;
-  private String mimeType = "text/plain";
   private String comment;
   private String ciStatement;
   private boolean isCompetingInterest = false;
   
   private ProfanityCheckingService profanityCheckingService;
-  protected ReplyService replyService;
+  private AnnotationService annotationService;
 
   private static final Logger log = LoggerFactory.getLogger(CreateReplyAction.class);
 
@@ -70,8 +60,9 @@ public class CreateReplyAction extends BaseSessionAwareActionSupport {
 
       if (profaneWordsInBody.isEmpty() && profaneWordsInTitle.isEmpty() &&
           profaneWordsCiStatement.isEmpty()) {
-        replyId = replyService.createReply(root, inReplyTo, commentTitle, mimeType, comment,
-            ciStatement, getCurrentUser());
+        //create the reply
+        replyId = annotationService.createReply(getCurrentUser(), inReplyTo, commentTitle, comment, ciStatement);
+
       } else {
         addProfaneMessages(profaneWordsInBody, "comment", "comment");
         addProfaneMessages(profaneWordsInTitle, "commentTitle", "title");
@@ -79,7 +70,7 @@ public class CreateReplyAction extends BaseSessionAwareActionSupport {
         return INPUT;
       }
     } catch (Exception e) {
-      log.error("Could not create reply to root: " + root + " and inReplyTo: " + inReplyTo, e);
+      log.error("Could not create reply to: " + inReplyTo, e);
       addActionError("Reply creation failed with error message: " + e.getMessage());
       return ERROR;
     }
@@ -101,9 +92,9 @@ public class CreateReplyAction extends BaseSessionAwareActionSupport {
       addFieldError("commentTitle", "A title is required.");
       invalid = true;
     } else {
-      if (commentTitle.length() > Annotation.MAX_TITLE_LENGTH) {
+      if (commentTitle.length() > Constants.Length.COMMENT_TITLE_MAX) {
         addFieldError("commentTitle", "Your title is " + commentTitle.length() +
-            " characters long, it can not be longer than " + Annotation.MAX_TITLE_LENGTH + ".");
+            " characters long, it can not be longer than " + Constants.Length.COMMENT_TITLE_MAX + ".");
         invalid = true;
       }
     }
@@ -112,9 +103,9 @@ public class CreateReplyAction extends BaseSessionAwareActionSupport {
       addFieldError("comment", "You must say something in your comment");
       invalid = true;
     } else {
-      if (comment.length() > AnnotationBlob.MAX_BODY_LENGTH) {
+      if (comment.length() > Constants.Length.COMMENT_BODY_MAX) {
         addFieldError("comment", "Your comment is " + comment.length() +
-            " characters long, it can not be longer than " + AnnotationBlob.MAX_BODY_LENGTH + ".");
+            " characters long, it can not be longer than " + Constants.Length.COMMENT_BODY_MAX + ".");
         invalid = true;
       }
     }
@@ -124,10 +115,10 @@ public class CreateReplyAction extends BaseSessionAwareActionSupport {
         addFieldError("statement", "You must say something in your competing interest statement");
         invalid = true;
       } else {
-        if (ciStatement.length() > AnnotationBlob.MAX_CISTATEMENT_LENGTH) {
+        if (ciStatement.length() > Constants.Length.CI_STATEMENT_MAX) {
           addFieldError("statement", "Your competing interest statement is " +
               ciStatement.length() + " characters long, it can not be longer than " + 
-              AnnotationBlob.MAX_CISTATEMENT_LENGTH + ".");
+              Constants.Length.CI_STATEMENT_MAX + ".");
           invalid = true;
         }
       }
@@ -136,7 +127,7 @@ public class CreateReplyAction extends BaseSessionAwareActionSupport {
     return invalid;
   }
 
-  public String getReplyId() {
+  public Long getReplyId() {
     return replyId;
   }
 
@@ -156,52 +147,24 @@ public class CreateReplyAction extends BaseSessionAwareActionSupport {
     this.isCompetingInterest = isCompetingInterest;
   }
 
-  public void setRoot(final String root) {
-    this.root = root;
-  }
-
-  public void setInReplyTo(final String inReplyTo) {
+  public void setInReplyTo(final Long inReplyTo) {
     this.inReplyTo = inReplyTo;
   }
 
   public void setCommentTitle(final String commentTitle) {
     this.commentTitle = commentTitle;
   }
-
-  public void setMimeType(final String mimeType) {
-    this.mimeType = mimeType;
-  }
-
   public void setComment(final String comment) {
     this.comment = comment;
   }
 
-  @RequiredStringValidator(message = "The annotation id to which it applies is required")
-  public String getRoot() {
-    return root;
-  }
-
-  @RequiredStringValidator(message = "The annotation/reply id to which it applies is required")
-  public String getInReplyTo() {
-    return inReplyTo;
-  }
-
-  @RequiredStringValidator(message = "A title is required")
-  public String getCommentTitle() {
-  return commentTitle;
-  }
-
-  @RequiredStringValidator(message = "A reply is required")
-  public String getComment() {
-  return comment;
-  }
-
+  @Required
   public void setProfanityCheckingService(final ProfanityCheckingService profanityCheckingService) {
     this.profanityCheckingService = profanityCheckingService;
   }
 
   @Required
-  public void setReplyService(final ReplyService replyService) {
-    this.replyService = replyService;
+  public void setAnnotationService(AnnotationService annotationService) {
+    this.annotationService = annotationService;
   }
 }

@@ -21,6 +21,7 @@
 
 package org.ambraproject.article.service;
 
+import org.ambraproject.BaseTest;
 import org.ambraproject.model.article.ArticleInfo;
 import org.ambraproject.models.Article;
 import org.ambraproject.models.ArticleAsset;
@@ -31,16 +32,14 @@ import org.ambraproject.models.Category;
 import org.ambraproject.models.CitedArticle;
 import org.ambraproject.models.CitedArticleAuthor;
 import org.ambraproject.models.CitedArticleEditor;
+import org.ambraproject.models.UserProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.ambraproject.BaseTest;
-import org.topazproject.ambra.models.FormalCorrection;
 import org.topazproject.ambra.models.Issue;
 import org.topazproject.ambra.models.Journal;
-import org.topazproject.ambra.models.Retraction;
 import org.topazproject.ambra.models.Volume;
 
 import java.net.URI;
@@ -53,8 +52,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import static org.testng.Assert.*;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 /**
  * TODO: Test method: isResearchArticle(...)
@@ -466,8 +466,8 @@ public class ArticleServiceTest extends BaseTest {
     return article2;
   }
 
-  @DataProvider(name = "savedArticles")
-  public Object[][] savedArticles() {
+  @DataProvider(name = "savedArticlesURI")
+  public Object[][] savedArticlesURI() {
     log.debug("data-savedArticles");
 
     dummyDataStore.store(getArticle1());
@@ -479,7 +479,23 @@ public class ArticleServiceTest extends BaseTest {
     };
   }
 
-  @Test(dataProvider = "savedArticles")
+  @DataProvider(name = "savedArticlesID")
+  public Object[][] savedArticles() {
+    log.debug("data-savedArticles");
+
+    Article article1 = getArticle1();
+    Article article2 = getArticle2();
+
+    dummyDataStore.store(article1);
+    dummyDataStore.store(article2);
+
+    return new Object[][]{
+        { article1.getID(), getArticle1() },
+        { article2.getID(), getArticle2() }
+    };
+  }
+
+  @Test(dataProvider = "savedArticlesURI")
   public void testGetArticle(String articleDoi, Article expectedArticle) throws NoSuchArticleIdException {
     log.debug("test-testGetArticle");
 
@@ -488,6 +504,19 @@ public class ArticleServiceTest extends BaseTest {
     assertNotNull(article, "returned null article");
     assertEquals(article.getDoi(), articleDoi, "returned article with incorrect DOI.  Expected "
         + articleDoi + " but returned " + article.getDoi());
+
+    compareArticles(article, expectedArticle);
+  }
+
+  @Test(dataProvider = "savedArticlesID")
+  public void testGetArticle(Long articleID, Article expectedArticle) throws NoSuchArticleIdException {
+    log.debug("test-testGetArticle");
+
+    Article article = articleService.getArticle(articleID, DEFAULT_ADMIN_AUTHID);
+
+    assertNotNull(article, "returned null article");
+    assertEquals(article.getID(), articleID, "returned article with incorrect ID.  Expected "
+        + articleID + " but returned " + article.getID());
 
     compareArticles(article, expectedArticle);
   }
@@ -629,7 +658,25 @@ public class ArticleServiceTest extends BaseTest {
     article.setDoi("id://test-article-47");
     article.setTitle("test title for article info");
     article.setDate(new Date());
+    article.setRights("article rights");
+    article.setJournal("testJournal");
+    article.setIssue("testIssue");
+    article.setVolume("testVolume");
     article.setDescription("test, test, test, this is a test");
+
+    Set<Category> categories = new HashSet<Category>(2);
+    Category cat1 = new Category();
+    cat1.setMainCategory("maincat1");
+    cat1.setSubCategory("subcat1");
+
+    Category cat2 = new Category();
+    cat2.setMainCategory("maincat2");
+    cat2.setSubCategory("subcat2");
+
+    categories.add(cat1);
+    categories.add(cat2);
+
+    article.setCategories(categories);
 
     List<ArticleAuthor> authors = new ArrayList<ArticleAuthor>(2);
     ArticleAuthor author1 = new ArticleAuthor();
@@ -648,6 +695,7 @@ public class ArticleServiceTest extends BaseTest {
     Article unpubbedArticle = new Article();
     unpubbedArticle.setDoi("id:doi-unpubbed-related-article");
     unpubbedArticle.setState(Article.STATE_UNPUBLISHED);
+    unpubbedArticle.setRights("article rights");
     unpubbedArticle.setTitle("foo");
     
     ArticleRelationship unpubbedRelationship = new ArticleRelationship();
@@ -691,39 +739,50 @@ public class ArticleServiceTest extends BaseTest {
 
     article.setRelatedArticles(articleRelationships);
 
-    Retraction retraction = new Retraction();
-    retraction.setAnnotates(URI.create(article.getDoi()));
-    URI retractionID = URI.create(dummyDataStore.store(retraction));
-
-    FormalCorrection formalCorrection = new FormalCorrection();
-    formalCorrection.setAnnotates(URI.create(article.getDoi()));
-    URI formalCorrectionID = URI.create(dummyDataStore.store(formalCorrection));
-    
     dummyDataStore.store(article);
+
+    UserProfile annotationCreator = new UserProfile(
+        "authIdForArticleServiceTest",
+        "email@articleServiceTest.org",
+        "displayNameForArticleServiceTest"
+    );
+    dummyDataStore.store(annotationCreator);
+
     return new Object[][]{
         //admins should see unpubbed article
-        {article.getDoi(), article, DEFAULT_ADMIN_AUTHID, new Article[]{unpubbedArticle, pubbedArticle}, 
-            new URI[] {retractionID}, new URI[] {formalCorrectionID}},
+        {article.getDoi(), article, DEFAULT_ADMIN_AUTHID, new Article[]{unpubbedArticle, pubbedArticle}},
         //users should not
-        {article.getDoi(), article, DEFUALT_USER_AUTHID, new Article[]{pubbedArticle},
-            new URI[] {retractionID}, new URI[] {formalCorrectionID}},
+        {article.getDoi(), article, DEFUALT_USER_AUTHID, new Article[]{pubbedArticle}}
     };
   }
 
   @Test(dataProvider = "articleInfoDataProvider", dependsOnMethods = {"testGetArticle"})
   public void testGetArticleInfo(String id, Article expectedArticle, String authId, 
-                                 Article[] expectedRelatedArticles, URI[] expectedRetractions,
-                                 URI[] expectedCorrections) throws NoSuchArticleIdException {
+                                 Article[] expectedRelatedArticles) throws NoSuchArticleIdException {
     ArticleInfo result = articleService.getArticleInfo(id, authId);
     assertNotNull(result, "returned null article info");
 
     checkArticleInfo(result, 
         expectedArticle,
-        expectedRelatedArticles,
-        expectedRetractions, 
-        expectedCorrections);
+        expectedRelatedArticles);
 
   }
 
+  @Test
+  public void testGetBasicArticleView() throws NoSuchArticleIdException {
+    Article article = new Article("id:doi-for-get-basic-article-view");
+    article.setTitle("test title for get article view");
+    dummyDataStore.store(article);
+
+    ArticleInfo result = articleService.getBasicArticleView(article.getID());
+    assertNotNull(result, "returned null result when fetching by id");
+    assertEquals(result.getDoi(), article.getDoi(), "result had incorrect doi when fetching by id");
+    assertEquals(result.getTitle(), article.getTitle(), "result had incorrect title when fetching by id");
+
+    result = articleService.getBasicArticleView(article.getDoi());
+    assertNotNull(result, "returned null result when fetching by doi");
+    assertEquals(result.getDoi(), article.getDoi(), "result had incorrect doi when fetching by doi");
+    assertEquals(result.getTitle(), article.getTitle(), "result had incorrect title when fetching by doi");
+  }
 
 }

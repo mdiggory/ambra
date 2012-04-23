@@ -47,4 +47,8 @@
     <property name="solrFieldConverter" ref="solrFieldConverter"/>
   </bean>
 
+  <bean id="createTrackbackAction" class="org.ambraproject.trackback.CreateTrackbackAction">
+    <property name="trackBackService" ref="trackbackService"/>
+    <property name="ambraConfiguration" ref="ambraConfiguration"/>
+  </bean>
 </beans>

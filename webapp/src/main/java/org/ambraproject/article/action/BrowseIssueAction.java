@@ -19,29 +19,21 @@
  */
 package org.ambraproject.article.action;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.io.Serializable;
-
-import org.ambraproject.article.service.NoSuchArticleIdException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.springframework.beans.factory.annotation.Required;
-import org.springframework.transaction.annotation.Transactional;
-
 import org.ambraproject.ApplicationException;
-import org.ambraproject.service.XMLService;
 import org.ambraproject.action.BaseActionSupport;
 import org.ambraproject.article.service.BrowseService;
 import org.ambraproject.journal.JournalService;
 import org.ambraproject.model.IssueInfo;
 import org.ambraproject.model.VolumeInfo;
+import org.ambraproject.service.XMLService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Required;
+import org.springframework.transaction.annotation.Transactional;
 import org.topazproject.ambra.models.Journal;
-import org.topazproject.ambra.models.FormalCorrection;
-import org.topazproject.ambra.models.Retraction;
+
+import java.net.URI;
+import java.util.List;
 
 /**
  * BrowseIssueAction retrieves data for presentation of an issue and a table of contents. Articles
@@ -59,13 +51,10 @@ public class BrowseIssueAction extends BaseActionSupport{
   private IssueInfo issueInfo;
   private String issueDescription;
   private List<TOCArticleGroup> articleGroups;
-  private MapContainer<URI, FormalCorrection> correctionMap;
-  private MapContainer<URI, Retraction> retractionMap;
 
   private XMLService secondaryObjectService;
 
   private VolumeInfo volumeInfo;
-  private final ArrayList<String> messages = new ArrayList<String>();
 
   @Override
   @Transactional(readOnly = true)
@@ -122,28 +111,7 @@ public class BrowseIssueAction extends BaseActionSupport{
     }
       articleGroups = browseService.getArticleGrpList(URI.create(issue), getAuthId());
 
-      correctionMap = new MapContainer<URI, FormalCorrection>(
-          browseService.getCorrectionMap(articleGroups));
-      retractionMap = new MapContainer<URI, Retraction>(
-          browseService.getRetractionMap(articleGroups));
-
     return SUCCESS;
-  }
-
-  /**
-   * This class is used to work around limitation of Freemarker to wrap Map and only
-   * accept String as a key.
-   */
-  public static class MapContainer<T,Q> implements Serializable {
-    private Map<T,Q> map;
-
-    public MapContainer(Map<T,Q> map) {
-      this.map = map;
-    }
-
-    public Q getValue(T key) {
-      return map.get(key);
-    }
   }
 
   /**
@@ -214,13 +182,5 @@ public class BrowseIssueAction extends BaseActionSupport{
    */
   public VolumeInfo getVolumeInfo() {
     return volumeInfo;
-  }
-
-  public MapContainer<URI, FormalCorrection> getCorrectionMap() {
-    return correctionMap;
-  }
-
-  public MapContainer<URI, Retraction> getRetractionMap() {
-    return retractionMap;
   }
 }
